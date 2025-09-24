@@ -65,18 +65,28 @@ export default function LoginPage() {
       toast.success("Muvaffaqiyatli kirildi");
       const redirect = searchParams.get("redirect") || "/companies";
       router.replace(redirect);
-    } catch (err: React.FormEvent<HTMLFormElement>) {
-      const server = err?.response?.data;
-      console.error("Login error:", server || err);
-      let message = "Xatolik";
-      if (typeof server === "string") message = server;
-      else if (server?.message) message = server.message;
-      else if (server?.error) message = server.error;
-      setError(message);
-      toast.error(message);
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosError = err as { response?: { data?: any } };
+        const server = axiosError.response?.data;
+        console.error("Login error:", server || err);
+
+        let message = "Xatolik";
+        if (typeof server === "string") message = server;
+        else if (server?.message) message = server.message;
+        else if (server?.error) message = server.error;
+
+        setError(message);
+        toast.error(message);
+      } else {
+        console.error("Noma'lum xato:", err);
+        setError("Noma'lum xato");
+        toast.error("Noma'lum xato");
+      }
     } finally {
       setLoading(false);
     }
+
   }
 
   return (
