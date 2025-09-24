@@ -15,7 +15,7 @@ import { log } from "console";
 export type NavItem = {
   label: string;
   href: string;
-  icon: (props: { className?: string }) => JSX.Element;
+  icon: (props: { className?: string }) => React.ReactElement;
 };
 
 export const navItems: NavItem[] = [
