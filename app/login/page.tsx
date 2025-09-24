@@ -59,13 +59,26 @@ export default function LoginPage() {
       toast.success("Muvaffaqiyatli kirildi");
       const redirect = searchParams.get("redirect") || "/companies";
       router.replace(redirect);
-    } catch (err: any) {
-      const server = err?.response?.data;
+    } catch (err: unknown) {
+      const anyErr = err as { response?: { data?: unknown } };
+      const server = anyErr?.response?.data as unknown;
       console.error("Login error:", server || err);
       let message = "Xatolik";
       if (typeof server === "string") message = server;
-      else if (server?.message) message = server.message;
-      else if (server?.error) message = server.error;
+      else if (
+        server &&
+        typeof server === "object" &&
+        "message" in (server as Record<string, unknown>) &&
+        typeof (server as any).message === "string"
+      )
+        message = (server as any).message;
+      else if (
+        server &&
+        typeof server === "object" &&
+        "error" in (server as Record<string, unknown>) &&
+        typeof (server as any).error === "string"
+      )
+        message = (server as any).error;
       setError(message);
       toast.error(message);
     } finally {
@@ -75,8 +88,15 @@ export default function LoginPage() {
 
   return (
     <div style={{ maxWidth: 360, margin: "80px auto", padding: 24 }}>
-      <img className="w-10 mx-auto mb-2" src="/images/logo.png" alt="Hoomo retailer" />
-      <h1 className="text-center" style={{ fontSize: 24, fontWeight: 600, marginBottom: 16 }}>
+      <img
+        className="w-10 mx-auto mb-2"
+        src="/images/logo.png"
+        alt="Hoomo retailer"
+      />
+      <h1
+        className="text-center"
+        style={{ fontSize: 24, fontWeight: 600, marginBottom: 16 }}
+      >
         Hoomo retailer
       </h1>
 

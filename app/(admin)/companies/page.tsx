@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
 import { toast } from "sonner";
-import { api } from "@/lib/api";
-import Loading from "@/components/Loading";
+// import { api } from "@/lib/api";
+import Loading from "@/components/loading";
 
 type Organization = { id: number; name: string };
 
@@ -20,7 +20,7 @@ export default function CompaniesPage() {
 
     setLoading(true);
     setError(null);
-    const requestOptions = {
+    const requestOptions: RequestInit = {
       method: "GET",
       redirect: "follow",
     };
@@ -127,7 +127,7 @@ export default function CompaniesPage() {
               ) : filtered.length === 0 ? (
                 <tr>
                   <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
-                    Ma'lumot topilmadi
+                    Ma&apos;lumot topilmadi
                   </td>
                 </tr>
               ) : (
