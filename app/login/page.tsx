@@ -65,7 +65,7 @@ export default function LoginPage() {
       toast.success("Muvaffaqiyatli kirildi");
       const redirect = searchParams.get("redirect") || "/companies";
       router.replace(redirect);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const server = err?.response?.data;
       console.error("Login error:", server || err);
       let message = "Xatolik";
