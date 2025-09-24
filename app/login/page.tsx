@@ -59,26 +59,13 @@ export default function LoginPage() {
       toast.success("Muvaffaqiyatli kirildi");
       const redirect = searchParams.get("redirect") || "/companies";
       router.replace(redirect);
-    } catch (err: unknown) {
-      const anyErr = err as { response?: { data?: unknown } };
-      const server = anyErr?.response?.data as unknown;
+    } catch (err: any) {
+      const server = err?.response?.data;
       console.error("Login error:", server || err);
       let message = "Xatolik";
       if (typeof server === "string") message = server;
-      else if (
-        server &&
-        typeof server === "object" &&
-        "message" in (server as Record<string, unknown>) &&
-        typeof (server as any).message === "string"
-      )
-        message = (server as any).message;
-      else if (
-        server &&
-        typeof server === "object" &&
-        "error" in (server as Record<string, unknown>) &&
-        typeof (server as any).error === "string"
-      )
-        message = (server as any).error;
+      else if (server?.message) message = server.message;
+      else if (server?.error) message = server.error;
       setError(message);
       toast.error(message);
     } finally {

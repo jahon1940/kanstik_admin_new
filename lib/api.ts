@@ -7,8 +7,6 @@ export const BASE_URL = "https://kanstik.retailer.hoomo.uz";
 
 export const api = axios.create({
 	baseURL: BASE_URL,
-     withCredentials: true,
-  timeout: 10000,
 });
 
 // Attach Authorization header if device_token exists
