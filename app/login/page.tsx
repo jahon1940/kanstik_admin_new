@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { setDeviceToken } from "@/lib/token";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
 
 type LoginResponse = {
   data?: {
@@ -13,6 +14,9 @@ type LoginResponse = {
   };
   device_token?: string; // in case API returns top-level
 };
+
+
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,6 +26,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  console.log(error);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -75,11 +81,7 @@ export default function LoginPage() {
 
   return (
     <div style={{ maxWidth: 360, margin: "80px auto", padding: 24 }}>
-      <img
-        className="w-10 mx-auto mb-2"
-        src="/images/logo.png"
-        alt="Hoomo retailer"
-      />
+      <Image src="/images/logo.png" alt="Logo" width={40} height={40} className="mx-auto" />
       <h1
         className="text-center"
         style={{ fontSize: 24, fontWeight: 600, marginBottom: 16 }}
