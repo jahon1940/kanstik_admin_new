@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/api";
 import { setDeviceToken } from "@/lib/token";
@@ -65,7 +65,7 @@ export default function LoginPage() {
       toast.success("Muvaffaqiyatli kirildi");
       const redirect = searchParams.get("redirect") || "/companies";
       router.replace(redirect);
-    } catch (err: unknown) {
+    } catch (err: React.FormEvent<HTMLFormElement>) {
       const server = err?.response?.data;
       console.error("Login error:", server || err);
       let message = "Xatolik";
