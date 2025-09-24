@@ -73,7 +73,6 @@ export default function CompaniesPage() {
     if (!q) return items;
     return items.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, query]);
-
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-semibold">Kompaniya</h1>
