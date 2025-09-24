@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 
 import { toast } from "sonner";
 // import { api } from "@/lib/api";
-import Loading from "@/components/loading";
+import Loading from "@/components/Loading";
 
 type Organization = { id: number; name: string };
 
