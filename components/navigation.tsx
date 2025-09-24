@@ -10,7 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { log } from "console";
+
 
 export type NavItem = {
   label: string;
