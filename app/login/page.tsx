@@ -3,7 +3,7 @@ import LoginPage from "./LoginPage";
 
 export default function Page() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense >
       <LoginPage/>
     </Suspense>
   );
