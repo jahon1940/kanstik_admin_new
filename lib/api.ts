@@ -1,6 +1,6 @@
 "use client";
 
-import axios, { AxiosRequestConfig, AxiosHeaders } from "axios";
+import axios, { AxiosHeaders, InternalAxiosRequestConfig } from "axios";
 import { getDeviceToken, clearDeviceToken } from "./token";
 
 export const BASE_URL = "https://kanstik.retailer.hoomo.uz";
@@ -10,11 +10,11 @@ export const api = axios.create({
 });
 
 // Attach Authorization header if device_token exists
-api.interceptors.request.use((config: AxiosRequestConfig) => {
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = getDeviceToken();
   if (token) {
     if (!config.headers) {
-      config.headers = new AxiosHeaders(); // ✅ bo‘sh headersni to‘g‘ri yaratamiz
+      config.headers = new AxiosHeaders();
     }
 
     (config.headers as AxiosHeaders).set("Authorization", `Bearer ${token}`);
@@ -31,8 +31,7 @@ api.interceptors.response.use(
       try {
         clearDeviceToken();
         if (typeof window !== "undefined") {
-          const current =
-            window.location.pathname + window.location.search;
+          const current = window.location.pathname + window.location.search;
           const redirectUrl = `/login?redirect=${encodeURIComponent(current)}`;
           window.location.replace(redirectUrl);
         }
