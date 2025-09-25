@@ -29,7 +29,13 @@ type Stock = {
   organization?: string;
   region?: string;
   poses: Pose[];
+  app_version?: string; // ✅ yangi qo‘shildi
+  gnk_id?: string; // agar shu ham bo‘lsa
+  status: boolean;
+  enable_delay: boolean;
+  order_from_site: boolean;
 };
+
 
 export default function Pos() {
   const [data, setData] = useState<Stock | null>(null);
