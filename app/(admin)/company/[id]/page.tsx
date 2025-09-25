@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 // import { api } from "@/lib/api";
 import Loading from "@/components/Loading";
@@ -11,14 +11,13 @@ import { BASE_URL } from "@/lib/api";
 
 type Organization = { id: number; name: string };
 
-export default function CompaniesPage() {
+export default function CompanyPage() {
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-
-  
+  const params = useParams();
 
   const getOrganization = () => {
     let cancelled = false;
@@ -31,7 +30,7 @@ export default function CompaniesPage() {
     };
 
     fetch(
-      `${BASE_URL}/v1/admins/organizations`,
+      `${BASE_URL}/v1/admins/organizations/${params.id}/stocks`,
       requestOptions
     )
       .then((response) => response.json())
@@ -49,8 +48,6 @@ export default function CompaniesPage() {
     return () => {
       cancelled = true;
     };
-
-    
   };
 
   useEffect(() => {
@@ -63,11 +60,22 @@ export default function CompaniesPage() {
     return items.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, query]);
 
-  const router = useRouter();  
-  
+  console.log(filtered);
+
+  const router = useRouter();
+
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Kompaniya</h1>
+      <div className="flex items-center gap-4">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-white hover:bg-primary transition-colors cursor-pointer bg-secondary"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <h1 className="text-xl font-semibold">Kompaniya</h1>
+      </div>
       <div className="rounded-lg border bg-card">
         {/* Qidiruv paneli */}
         <div className="p-4">
@@ -127,7 +135,7 @@ export default function CompaniesPage() {
                   <tr
                     key={org.id}
                     className="hover:bg-accent/50 cursor-pointer"
-                    onClick={() => router.push(`/company/${org.id}`)}
+                    onClick={() => router.push(`/stock/${org.id}`)}
                   >
                     <td className="px-4 py-3">{org.name}</td>
                     <td className="px-4 py-3">
