@@ -1,15 +1,9 @@
 import type { NextConfig } from "next";
 
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-};
-
-
-module.exports = {
   async rewrites() {
     return [
       {
@@ -19,6 +13,5 @@ module.exports = {
     ];
   },
 };
-
 
 export default nextConfig;
