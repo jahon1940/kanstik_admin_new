@@ -1,44 +1,45 @@
 "use client";
-import type { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
+
 import axios from "axios";
 import { getDeviceToken, clearDeviceToken } from "./token";
 
 export const BASE_URL = "https://kanstik.retailer.hoomo.uz";
 
 export const api = axios.create({
-	baseURL: BASE_URL,
+  baseURL: BASE_URL,
 });
 
 // Attach Authorization header if device_token exists
 api.interceptors.request.use((config) => {
-	
-	const token = getDeviceToken();
-if (token) {
-  config.headers = {
-    ...(config.headers || {}),
-    Authorization: `Bearer ${token}`,
-    "Device-Token": token,
-  } as AxiosRequestHeaders;
-}
-	return config;
+  const token = getDeviceToken();
+
+  if (token) {
+    if (!config.headers) {
+      config.headers = {};
+    }
+
+    // headers ni to‘g‘ri qo‘shish
+    (config.headers as any)["Authorization"] = `Bearer ${token}`;
+    (config.headers as any)["Device-Token"] = token;
+  }
+
+  return config;
 });
 
 // Auto-handle 401: clear token and redirect to /login
 api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error?.response?.status === 401) {
-            try {
-                clearDeviceToken();
-                if (typeof window !== "undefined") {
-                    const current = window.location.pathname + window.location.search;
-                    const redirectUrl = `/login?redirect=${encodeURIComponent(current)}`;
-                    window.location.replace(redirectUrl);
-                }
-            } catch {}
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      try {
+        clearDeviceToken();
+        if (typeof window !== "undefined") {
+          const current = window.location.pathname + window.location.search;
+          const redirectUrl = `/login?redirect=${encodeURIComponent(current)}`;
+          window.location.replace(redirectUrl);
         }
-        return Promise.reject(error);
+      } catch {}
     }
+    return Promise.reject(error);
+  }
 );
-
-
