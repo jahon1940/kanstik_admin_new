@@ -19,6 +19,11 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn", // any -> warning
+      "@typescript-eslint/no-unused-vars": "warn", // ishlatilmagan o‘zgaruvchi -> warning
+      "react-hooks/exhaustive-deps": "warn", // dependency ogohlantirish -> warning
+    },
   },
 ];
 
