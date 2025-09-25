@@ -1,5 +1,5 @@
 "use client";
-
+import type { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
 import axios from "axios";
 import { getDeviceToken, clearDeviceToken } from "./token";
 
@@ -11,14 +11,15 @@ export const api = axios.create({
 
 // Attach Authorization header if device_token exists
 api.interceptors.request.use((config) => {
+	
 	const token = getDeviceToken();
-	if (token) {
-		config.headers = {
-			...config.headers,
-            Authorization: `Bearer ${token}`,
-            "Device-Token": token,
-		};
-	}
+if (token) {
+  config.headers = {
+    ...(config.headers || {}),
+    Authorization: `Bearer ${token}`,
+    "Device-Token": token,
+  } as AxiosRequestHeaders;
+}
 	return config;
 });
 
