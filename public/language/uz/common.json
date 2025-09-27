@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "companies": "Kompaniyalar",
+    "reports": "Hisobotlar",
+    "clients": "Mijozlar",
+    "webapp": "Veb-sayt va ilova"
+  },
+  "app": {
+    "title": "Kanstik admin",
+    "search": "Qidirish...",
+    "company": {
+      "title": "Kompaniyalar",
+      "name": "Nomi",
+      "status": "Holati",
+      "not_found": "Ma'lumot topilmadi",
+      "active": "Faol"
+    },
+    "clients": { "title": "Mijozlar" },
+    "reports": { "title": "Hisobotlar" },
+    "webapp": { "title": "Veb-sayt va ilova" },
+    "stock": {
+      "account_title": "Do'kon hisobi",
+      "organization": "Tashkilot",
+      "name": "Nomi",
+      "phone": "Telefon",
+      "address": "Manzil",
+      "region": "Viloyat",
+      "products_by_stocks": "Omborlar bo'yicha mahsulotlar",
+      "cashiers": "Kassalar",
+      "add_cashier": "Kassa qo'shish"
+    },
+    "pos": {
+      "title": "Kassa",
+      "info": "Kassa haqida",
+      "cashiers": "Kassirlar",
+      "receipts": "Cheklar",
+      "payments": "To'lovlar",
+      "orders": "Saytdan buyurtmalar",
+      "discounts": "Chegirma",
+      "shop": "Do'kon kassasi",
+      "app_version": "Dastur versiyasi",
+      "status": "Holati",
+      "active": "Faol",
+      "inactive": "Faol emas",
+      "work_without_module": "Modulsiz ishlash",
+      "orders_from_site": "Saytdan buyurtmalar",
+      "last_activity": "So'nggi faollik",
+      "last_sync": "So'nggi sinxronlash",
+      "select_date": "Sana tanlang",
+      "generate_receipts": "Cheklar yaratish",
+      "download_report": "Hisobotni yuklab olish",
+      "download_receipts": "Cheklarni yuklab olish",
+      "add_cashier": "Kassir qo'shish",
+      "add_payment": "To'lov qo'shish",
+      "generate_orders": "Buyurtmalar yaratish"
+    }
+  },
+  "lang": {
+    "uz": "O'zbekcha",
+    "ru": "Ruscha"
+  }
+}
