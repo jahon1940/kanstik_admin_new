@@ -8,6 +8,8 @@ import { toast } from "sonner";
 // import { api } from "@/lib/api";
 import Loading from "@/components/Loading";
 import { BASE_URL } from "@/lib/api";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 type Organization = { id: number; name: string };
 
@@ -16,9 +18,7 @@ export default function CompaniesPage() {
   const [items, setItems] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-
-  
+  const { t } = useTranslation();
 
   const getOrganization = () => {
     let cancelled = false;
@@ -30,10 +30,7 @@ export default function CompaniesPage() {
       redirect: "follow",
     };
 
-    fetch(
-      `${BASE_URL}/v1/admins/organizations`,
-      requestOptions
-    )
+    fetch(`${BASE_URL}/v1/admins/organizations`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (!cancelled) setItems(result.results ?? []);
@@ -49,8 +46,6 @@ export default function CompaniesPage() {
     return () => {
       cancelled = true;
     };
-
-    
   };
 
   useEffect(() => {
@@ -63,26 +58,26 @@ export default function CompaniesPage() {
     return items.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, query]);
 
-  const router = useRouter();  
-  
+  const router = useRouter();
+
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Kompaniya</h1>
+      <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
       <div className="rounded-lg border bg-card">
         {/* Qidiruv paneli */}
         <div className="p-4">
           <form
             className="flex items-center gap-3"
             role="search"
-            aria-label="Qidiruv"
+            aria-label={t("app.search")}
           >
             <div className="flex items-center gap-2 rounded-md border px-3 py-2 bg-background w-full">
               <Search size={16} className="text-muted-foreground" />
               <input
                 type="search"
-                placeholder="Qidirish..."
+                placeholder={t("app.search")}
                 className="w-full bg-transparent outline-none"
-                aria-label="Qidirish"
+                aria-label={t("app.search")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
@@ -92,14 +87,14 @@ export default function CompaniesPage() {
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
         <div className="overflow-auto max-h-[70vh]">
-          <table className="w-full border-t text-sm">
-            <thead className="sticky top-0 z-10 bg-muted">
+          <table className="w-full border-t text-sm relative">
+            <thead className="sticky -top-[1px] z-10 bg-muted">
               <tr>
                 <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
-                  Nomi
+                  {t("app.company.name")}
                 </th>
                 <th className="text-left font-semibold px-4 py-3 border-b w-[40%]">
-                  Holati
+                  {t("app.company.status")}
                 </th>
               </tr>
             </thead>
@@ -119,7 +114,7 @@ export default function CompaniesPage() {
               ) : filtered.length === 0 ? (
                 <tr>
                   <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
-                    Ma&apos;lumot topilmadi
+                    {t("app.company.not_found")}
                   </td>
                 </tr>
               ) : (
@@ -127,13 +122,24 @@ export default function CompaniesPage() {
                   <tr
                     key={org.id}
                     className="hover:bg-accent/50 cursor-pointer"
-                    onClick={() => router.push(`/company/${org.id}`)}
                   >
-                    <td className="px-4 py-3">{org.name}</td>
-                    <td className="px-4 py-3">
-                      <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                        Aktiv
-                      </span>
+                    <td>
+                      <Link
+                        className="px-4 py-3 block"
+                        href={`/company/${org.id}`}
+                      >
+                        {org.name}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link
+                        className="px-4 py-3 block"
+                        href={`/company/${org.id}`}
+                      >
+                        <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                          {t("app.company.active")}
+                        </span>
+                      </Link>
                     </td>
                   </tr>
                 ))

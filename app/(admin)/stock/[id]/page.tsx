@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import Loading from "@/components/Loading";
 import { BASE_URL } from "@/lib/api";
 import { getDeviceToken } from "@/lib/token";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 // Pose (kassa) type
 type Pose = {
@@ -27,6 +29,7 @@ export default function StockPage() {
   const [data, setData] = useState<Stock | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const params = useParams();
   const router = useRouter();
@@ -53,7 +56,6 @@ export default function StockPage() {
     fetch(`${BASE_URL}/v1/admins/stocks/${params.id}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-
         if (!cancelled) setData(result ?? null);
         setLoading(false);
         setError(null);
@@ -74,8 +76,6 @@ export default function StockPage() {
     getOrganization();
   }, []);
 
-
-
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4">
@@ -86,38 +86,49 @@ export default function StockPage() {
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <h1 className="text-xl font-semibold">Kompaniya</h1>
+        <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
       </div>
       <div className=" bg-card">
         <div className="grid gap-6  md:grid-cols-6 ">
           {/* Chap panel */}
           <div className="overflow-auto max-h-[70vh] col-span-6 md:col-span-2 border rounded-2xl p-4">
-            <h1 className="text-xl ">Аккаунт магазина</h1>
-            <hr />
-            <h1>Организация : {data?.organization}</h1>
-            <h1>Название : {data?.name}</h1>
-            <h1>Телефон :</h1>
-            <h1>Адрес :</h1>
-            <h1>Регион : {data?.region}</h1>
+            <h1 className="text-xl border-b border-secondary pb-1 mb-1">
+              {t("app.stock.account_title")}
+            </h1>
 
-            <h1>Продукты по складам : 29928</h1>
-            <hr />
+            <h1>
+              {t("app.stock.organization")}: {data?.organization}
+            </h1>
+            <h1>
+              {t("app.stock.name")}: {data?.name}
+            </h1>
+            <h1>{t("app.stock.phone")}:</h1>
+            <h1>{t("app.stock.address")}:</h1>
+            <h1>
+              {t("app.stock.region")}: {data?.region}
+            </h1>
+
+            <h1 className="border-b border-secondary pb-1 mb-1">
+              {t("app.stock.products_by_stocks")}: 29928
+            </h1>
           </div>
 
           {/* O‘ng panel */}
           <div className="overflow-auto max-h-[70vh] col-span-6 md:col-span-4 border rounded-2xl p-4">
-            <h1 className="text-xl mb-3">Кассы ({data?.name}) </h1>
+            <h1 className="text-xl mb-3">
+              {t("app.stock.cashiers")} ({data?.name}){" "}
+            </h1>
             <button className="bg-secondary text-white px-4 py-2 rounded-md mb-4">
-              Добавить кассу
+              {t("app.stock.add_cashier")}
             </button>
             <table className="w-full border-t text-sm">
-              <thead className="sticky top-0 z-10 bg-muted">
+              <thead className="sticky -top-[1px] z-10 bg-muted">
                 <tr>
                   <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
-                    Nomi
+                    {t("app.company.name")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b w-[40%]">
-                    Holati
+                    {t("app.company.status")}
                   </th>
                 </tr>
               </thead>
@@ -137,7 +148,7 @@ export default function StockPage() {
                 ) : !data?.poses?.length ? (
                   <tr>
                     <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
-                      Ma&apos;lumot topilmadi
+                      {t("app.company.not_found")}
                     </td>
                   </tr>
                 ) : (
@@ -145,13 +156,24 @@ export default function StockPage() {
                     <tr
                       key={org.id}
                       className="hover:bg-accent/50 cursor-pointer"
-                      onClick={() => router.push(`/pos/${org.id}`)}
                     >
-                      <td className="px-4 py-3">{org.name}</td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                          Aktiv
-                        </span>
+                      <td>
+                        <Link
+                          className="px-4 py-3 block"
+                          href={`/pos/${org.id}`}
+                        >
+                          {org.name}
+                        </Link>
+                      </td>
+                      <td>
+                        <Link
+                          className="px-4 py-3 block"
+                          href={`/pos/${org.id}`}
+                        >
+                          <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                            {t("app.company.active")}
+                          </span>
+                        </Link>
                       </td>
                     </tr>
                   ))

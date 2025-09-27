@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "companies": "Компании",
+    "reports": "Отчеты",
+    "clients": "Клиенты",
+    "webapp": "Сайт и приложение"
+  },
+  "app": {
+    "title": "Kanstik админ",
+    "search": "Поиск...",
+    "company": {
+      "title": "Компании",
+      "name": "Название",
+      "status": "Статус",
+      "not_found": "Данные не найдены",
+      "active": "Активен"
+    },
+    "clients": { "title": "Клиенты" },
+    "reports": { "title": "Отчеты" },
+    "webapp": { "title": "Сайт и приложение" },
+    "stock": {
+      "account_title": "Аккаунт магазина",
+      "organization": "Организация",
+      "name": "Название",
+      "phone": "Телефон",
+      "address": "Адрес",
+      "region": "Регион",
+      "products_by_stocks": "Продукты по складам",
+      "cashiers": "Кассы",
+      "add_cashier": "Добавить кассу"
+    },
+    "pos": {
+      "title": "Касса",
+      "info": "О Касси",
+      "cashiers": "Кассиры",
+      "receipts": "Чеки",
+      "payments": "Платежи",
+      "orders": "Заказы с сайта",
+      "discounts": "Скидка",
+      "shop": "Касса Магазина",
+      "app_version": "Версия программы",
+      "status": "Статус",
+      "active": "Активно",
+      "inactive": "Неактивно",
+      "work_without_module": "Работа без модуля",
+      "orders_from_site": "Заказы с сайта",
+      "last_activity": "Последняя активность",
+      "last_sync": "Последняя синхронизация",
+      "select_date": "Выберите дату",
+      "generate_receipts": "Сформировать чеки",
+      "download_report": "Скачать отчет",
+      "download_receipts": "Скачать чеки",
+      "add_cashier": "Добавить кассира",
+      "add_payment": "Добавить платеж",
+      "generate_orders": "Сформировать заказы"
+    }
+  },
+  "lang": {
+    "uz": "Узбекский",
+    "ru": "Русский"
+  }
+}

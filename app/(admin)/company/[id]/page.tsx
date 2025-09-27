@@ -8,6 +8,7 @@ import { toast } from "sonner";
 // import { api } from "@/lib/api";
 import Loading from "@/components/Loading";
 import { BASE_URL } from "@/lib/api";
+import Link from "next/link";
 
 type Organization = { id: number; name: string };
 
@@ -101,7 +102,7 @@ export default function CompanyPage() {
         {/* Jadval: sticky sarlavha, 2 ustun */}
         <div className="overflow-auto max-h-[70vh]">
           <table className="w-full border-t text-sm">
-            <thead className="sticky top-0 z-10 bg-muted">
+            <thead className="sticky -top-[1px] z-10 bg-muted">
               <tr>
                 <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
                   Nomi
@@ -135,13 +136,24 @@ export default function CompanyPage() {
                   <tr
                     key={org.id}
                     className="hover:bg-accent/50 cursor-pointer"
-                    onClick={() => router.push(`/stock/${org.id}`)}
                   >
-                    <td className="px-4 py-3">{org.name}</td>
-                    <td className="px-4 py-3">
-                      <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                        Aktiv
-                      </span>
+                    <td>
+                      <Link
+                        className="px-4 py-3 block"
+                        href={`/stock/${org.id}`}
+                      >
+                        {org.name}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link
+                        className="px-4 py-3 block"
+                        href={`/stock/${org.id}`}
+                      >
+                        <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                          Aktiv
+                        </span>
+                      </Link>
                     </td>
                   </tr>
                 ))
