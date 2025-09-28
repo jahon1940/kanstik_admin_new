@@ -54,19 +54,7 @@ export function Navbar({
   collapsed?: boolean;
   onToggle?: () => void;
 }) {
-  const { t, i18n } = useTranslation();
-  const options: OptionType[] = [
-    {
-      value: "uz",
-      label: "UZ",
-      flag: "🇺🇿",
-    },
-    {
-      value: "ru",
-      label: "RU",
-      flag: "🇷🇺",
-    },
-  ];
+ 
 
 
   return (
