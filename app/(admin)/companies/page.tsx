@@ -3,13 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 // import { api } from "@/lib/api";
 import Loading from "@/components/Loading";
 import { BASE_URL } from "@/lib/api";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Organization = { id: number; name: string };
 
@@ -18,7 +17,7 @@ export default function CompaniesPage() {
   const [items, setItems] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t } = useLanguage()
 
   const getOrganization = () => {
     let cancelled = false;
@@ -58,7 +57,7 @@ export default function CompaniesPage() {
     return items.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, query]);
 
-  const router = useRouter();
+ 
 
   return (
     <div className="space-y-4">

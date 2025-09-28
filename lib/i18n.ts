@@ -1,45 +1,47 @@
-"use client";
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
-import i18next, { i18n as I18nInstance } from "i18next";
-import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import HttpBackend from "i18next-http-backend";
+// Import translation files
+import uzTranslation from '../public/locale/uz.json';
+import ruTranslation from '../public/locale/ru.json';
 
-let initialized = false;
-
-export const supportedLanguages = ["uz", "ru"] as const;
-export type SupportedLanguage = (typeof supportedLanguages)[number];
-
-export function getI18n(): I18nInstance {
-  if (!initialized) {
-    i18next
-      .use(HttpBackend)
-      .use(LanguageDetector)
-      .use(initReactI18next)
-      .init({
-        fallbackLng: "uz",
-        supportedLngs: supportedLanguages as unknown as string[],
-        ns: ["common"],
-        defaultNS: "common",
-        load: "languageOnly",
-        interpolation: { escapeValue: false },
-        detection: {
-          order: ["querystring", "cookie", "localStorage", "navigator", "htmlTag"],
-          caches: ["cookie", "localStorage"],
-          lookupQuerystring: "lng",
-          cookieMinutes: 365 * 24 * 60,
-        },
-        backend: {
-          loadPath: "/language/{{lng}}/{{ns}}.json",
-        },
-        react: {
-          useSuspense: false,
-        },
-      });
-    initialized = true;
+const resources = {
+  uz: {
+    translation: uzTranslation
+  },
+  ru: {
+    translation: ruTranslation
   }
-  return i18next;
+};
+
+// Get language from localStorage or use default
+let initialLanguage = 'ru'; // Default language
+if (typeof window !== 'undefined') {
+  const savedLanguage = localStorage.getItem('i18nextLng');
+  if (savedLanguage && (savedLanguage === 'ru' || savedLanguage === 'uz')) {
+    initialLanguage = savedLanguage;
+  }
 }
 
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources,
+    fallbackLng: 'ru',
+    lng: initialLanguage, // Use detected or default language
+    debug: process.env.NODE_ENV === 'development',
+    
+    detection: {
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
+    },
 
+    interpolation: {
+      escapeValue: false, // React already does escaping
+    },
+  });
 
+export default i18n;

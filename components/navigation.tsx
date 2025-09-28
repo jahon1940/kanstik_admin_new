@@ -12,8 +12,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getI18n, supportedLanguages } from "@/lib/i18n";
+
 import * as Select from "@radix-ui/react-select";
+import LanguageSelect from "./LanguageSelect";
 
 export type NavItem = {
   label: string;
@@ -44,6 +45,8 @@ export const navItems: NavItem[] = [
   },
 ];
 
+
+
 export function Navbar({
   collapsed,
   onToggle,
@@ -52,6 +55,20 @@ export function Navbar({
   onToggle?: () => void;
 }) {
   const { t, i18n } = useTranslation();
+  const options: OptionType[] = [
+    {
+      value: "uz",
+      label: "UZ",
+      flag: "🇺🇿",
+    },
+    {
+      value: "ru",
+      label: "RU",
+      flag: "🇷🇺",
+    },
+  ];
+
+
   return (
     <header className="fixed top-0 inset-x-0 h-14 bg-secondary border-b border-primary flex items-center px-4 z-40 justify-between">
       <div className="flex items-center gap-3">
@@ -71,7 +88,8 @@ export function Navbar({
         <div className="font-semibold text-white">hoomo Admin Retailer</div>
       </div>
       <div className="text-white">
-        <Select.Root
+        <LanguageSelect/>
+        {/* <Select.Root
           value={i18n.language}
           onValueChange={(v) => i18n.changeLanguage(v)}
         >
@@ -86,18 +104,18 @@ export function Navbar({
           </Select.Trigger>
           <Select.Content className="z-50 rounded-md border border-primary/40 bg-secondary text-white shadow-lg">
             <Select.Viewport className="p-1">
-              {supportedLanguages.map((lng) => (
+              {options.map((lng) => (
                 <Select.Item
-                  key={lng}
+                  key={lng.value}
                   value={lng}
                   className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-primary/20 focus:bg-primary/20"
                 >
-                  <Select.ItemText>{t(`lang.${lng}`)}</Select.ItemText>
+                  <Select.ItemText>{lng.label}</Select.ItemText>
                 </Select.Item>
               ))}
             </Select.Viewport>
           </Select.Content>
-        </Select.Root>
+        </Select.Root> */}
       </div>
     </header>
   );
