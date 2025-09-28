@@ -58,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-bgColor`}
       >
         <I18nProvider>
           <LanguageProvider>
@@ -66,7 +66,6 @@ export default function RootLayout({
             <Toaster richColors position="top-right" />
           </LanguageProvider>
         </I18nProvider>
-        
       </body>
     </html>
   );

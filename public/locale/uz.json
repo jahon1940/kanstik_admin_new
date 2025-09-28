@@ -3,7 +3,8 @@
     "companies": "Kompaniyalar",
     "reports": "Hisobotlar",
     "clients": "Mijozlar",
-    "webapp": "Veb-sayt va ilova"
+    "webapp": "Veb-sayt va ilova",
+    "logout": "Chiqish"
   },
   "app": {
     "title": "Kanstik admin",
@@ -53,7 +54,8 @@
       "add_cashier": "Kassir qo'shish",
       "add_payment": "To'lov qo'shish",
       "generate_orders": "Buyurtmalar yaratish"
-    }
+    },
+    "logged_out": "Profilingizdan chiqdingiz"
   },
   "lang": {
     "uz": "O'zbekcha",

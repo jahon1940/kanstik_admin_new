@@ -82,16 +82,16 @@ export default function StockPage() {
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-white hover:bg-primary transition-colors cursor-pointer bg-secondary"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
         <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
       </div>
-      <div className=" bg-card">
+      <div className="">
         <div className="grid gap-6  md:grid-cols-6 ">
           {/* Chap panel */}
-          <div className="overflow-auto max-h-[70vh] col-span-6 md:col-span-2 border rounded-2xl p-4">
+          <div className="overflow-auto max-h-[70vh] col-span-6 md:col-span-2 border rounded-2xl p-4 bg-secondary ">
             <h1 className="text-xl border-b border-secondary pb-1 mb-1">
               {t("app.stock.account_title")}
             </h1>
@@ -114,15 +114,15 @@ export default function StockPage() {
           </div>
 
           {/* O‘ng panel */}
-          <div className="overflow-auto max-h-[70vh] col-span-6 md:col-span-4 border rounded-2xl p-4">
+          <div className="overflow-auto max-h-[70vh] col-span-6 md:col-span-4 border rounded-2xl p-4 bg-secondary">
             <h1 className="text-xl mb-3">
               {t("app.stock.cashiers")} ({data?.name}){" "}
             </h1>
-            <button className="bg-secondary text-white px-4 py-2 rounded-md mb-4">
+            <button className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90 ">
               {t("app.stock.add_cashier")}
             </button>
             <table className="w-full border-t text-sm">
-              <thead className="sticky -top-[1px] z-10 bg-muted">
+              <thead className="sticky -top-[1px] z-10 bg-bgColor">
                 <tr>
                   <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
                     {t("app.company.name")}

@@ -6,8 +6,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <div className="min-h-dvh">
-      <Navbar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
-      <Sidebar collapsed={collapsed} />
+      <Navbar collapsed={collapsed} />
+      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
       <main
         className={
           collapsed

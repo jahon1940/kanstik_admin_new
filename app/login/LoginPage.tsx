@@ -89,12 +89,14 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Login Form */}
-      <div className="flex-2 flex items-center justify-center bg-white px-8">
+      <div className="flex-3 flex items-center justify-center bg-white px-8">
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="inline-block">
-              <span className="text-3xl font-bold text-gray-900">tuks</span>
+              <span className="text-3xl font-bold text-gray-900">
+                Kanstik Admin Retailer
+              </span>
               <div className="h-1 w-8 bg-blue-600 mx-auto mt-1"></div>
             </div>
           </div>
@@ -102,10 +104,10 @@ export default function LoginPage() {
           {/* Welcome Message */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Welcome back!
+              Добро пожаловать!
             </h1>
             <p className="text-gray-500 text-lg">
-              Let&apos;s get back to your business!
+              Давайте вернемся к вашим делам!
             </p>
           </div>
 
@@ -117,7 +119,7 @@ export default function LoginPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Login
+                Логин
               </label>
               <input
                 id="email"
@@ -125,7 +127,7 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                placeholder="login..."
+                placeholder="Логин..."
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
               />
             </div>
@@ -136,7 +138,7 @@ export default function LoginPage() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Password
+                Пароль
               </label>
               <div className="relative">
                 <input
@@ -151,7 +153,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 "
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -162,9 +164,9 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Вход в систему..." : "Вход"}
             </button>
 
             {/* Divider */}
@@ -222,7 +224,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Dashboard Preview */}
-      <div className="flex-1 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
+      <div className="flex-2 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
         {/* Content */}
         <div
           className="relative z-10  h-full p-12 px-20"
@@ -233,8 +235,8 @@ export default function LoginPage() {
             backgroundRepeat: "no-repeat",
           }}
         >
-          <h2 className="text-5xl font-bold max-w-sm  text-white mb-8 text-left">
-            Manage your sales in style!
+          <h2 className="text-4xl font-bold  text-white mb-8 text-left">
+            Управляйте продажами стильно!
           </h2>
           <Image
             width={500}

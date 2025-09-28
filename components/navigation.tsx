@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   Building2,
@@ -10,11 +10,15 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
+  LogOut,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import * as Select from "@radix-ui/react-select";
 import LanguageSelect from "./LanguageSelect";
+import Image from "next/image";
+import { clearDeviceToken } from "@/lib/token";
+import { toast } from "sonner";
 
 export type NavItem = {
   label: string;
@@ -45,73 +49,35 @@ export const navItems: NavItem[] = [
   },
 ];
 
+export function Navbar({ collapsed }: { collapsed?: boolean }) {
+  return (
+    <header className="fixed top-0 inset-x-0 h-14 bg-secondary border-b border-muted/20 flex items-center px-4 z-40 justify-between">
+      <div className="flex items-center gap-3">
+        <div className="font-semibold text-muted">Hoomo Admin Retailer</div>
+      </div>
+      <div className="text-muted">
+        <LanguageSelect />
+      </div>
+    </header>
+  );
+}
 
-
-export function Navbar({
+export function Sidebar({
   collapsed,
   onToggle,
 }: {
   collapsed?: boolean;
   onToggle?: () => void;
 }) {
- 
-
-
-  return (
-    <header className="fixed top-0 inset-x-0 h-14 bg-secondary border-b border-primary flex items-center px-4 z-40 justify-between">
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={onToggle}
-          className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-white hover:bg-primary/20 transition-colors cursor-pointer"
-          aria-label="Sidebarni almashtirish"
-          aria-expanded={!collapsed}
-        >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
-        </button>
-        <div className="font-semibold text-white">hoomo Admin Retailer</div>
-      </div>
-      <div className="text-white">
-        <LanguageSelect/>
-        {/* <Select.Root
-          value={i18n.language}
-          onValueChange={(v) => i18n.changeLanguage(v)}
-        >
-          <Select.Trigger
-            aria-label="Language"
-            className="inline-flex items-center justify-between gap-2 rounded-md border border-primary/40 bg-secondary px-3 py-1.5 text-sm text-white shadow-sm hover:bg-primary/20 focus:outline-none"
-          >
-            <Select.Value placeholder={t(`lang.${i18n.language}`)} />
-            <Select.Icon>
-              <ChevronDown className="h-4 w-4" />
-            </Select.Icon>
-          </Select.Trigger>
-          <Select.Content className="z-50 rounded-md border border-primary/40 bg-secondary text-white shadow-lg">
-            <Select.Viewport className="p-1">
-              {options.map((lng) => (
-                <Select.Item
-                  key={lng.value}
-                  value={lng}
-                  className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-primary/20 focus:bg-primary/20"
-                >
-                  <Select.ItemText>{lng.label}</Select.ItemText>
-                </Select.Item>
-              ))}
-            </Select.Viewport>
-          </Select.Content>
-        </Select.Root> */}
-      </div>
-    </header>
-  );
-}
-
-export function Sidebar({ collapsed }: { collapsed?: boolean }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { t } = useTranslation();
+
+  const handleLogout = () => {
+    clearDeviceToken();
+    toast.success(t("app.logged_out"));
+    router.replace("/login");
+  };
 
   return (
     <aside
@@ -123,9 +89,37 @@ export function Sidebar({ collapsed }: { collapsed?: boolean }) {
       <nav
         className={cn(
           "flex-1 space-y-2",
-          collapsed ? "p-2 overflow-y-hidden" : "p-2 overflow-y-auto"
+          collapsed ? "p-2 pt-0 overflow-y-hidden" : "p-2 pt-0 overflow-y-auto"
         )}
       >
+        <div
+          onClick={onToggle}
+          className="border-b p-2  flex items-center gap-2 cursor-pointer justify-between"
+        >
+          {!collapsed && <h2 className="text-muted">MENU</h2>}
+          <button
+            type="button"
+            className="hidden md:inline-flex h-9 w-12 items-center justify-center rounded-md  border-primary/40 text-muted hover:bg-primary/20 transition-colors cursor-pointer "
+            aria-label="Sidebarni almashtirish"
+            aria-expanded={!collapsed}
+          >
+            {collapsed ? (
+              <Image
+                src="/icons/onmenu.svg"
+                alt="home"
+                width={20}
+                height={20}
+              />
+            ) : (
+              <Image
+                src="/icons/offmenu.svg"
+                alt="home"
+                width={20}
+                height={20}
+              />
+            )}
+          </button>
+        </div>
         {navItems.map((item) => {
           const active = pathname?.startsWith(item.href);
           return (
@@ -133,10 +127,10 @@ export function Sidebar({ collapsed }: { collapsed?: boolean }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "text-white flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10",
+                "text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10",
                 active
                   ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted hover:text-primary",
+                  : "hover:bg-primary/70 hover:text-secondary",
                 collapsed ? "gap-0 justify-center px-3" : "gap-3 px-4"
               )}
             >
@@ -152,6 +146,27 @@ export function Sidebar({ collapsed }: { collapsed?: boolean }) {
             </Link>
           );
         })}
+
+        {/* Logout button */}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className={cn(
+            "w-full text-left text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10",
+            "hover:bg-primary/70 hover:text-secondary",
+            collapsed ? "gap-0 justify-center px-3" : "gap-3 px-4"
+          )}
+        >
+          <LogOut className="h-4 w-4 flex-shrink-0" />
+          <span
+            className={cn(
+              "whitespace-nowrap transition-all duration-300",
+              collapsed ? "hidden" : "opacity-100 w-auto ml-3"
+            )}
+          >
+            {t("nav.logout")}
+          </span>
+        </button>
       </nav>
     </aside>
   );
@@ -169,8 +184,8 @@ export function MobileNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex rounded-2xl flex-col items-center justify-center text-xs text-white gap-1",
-              active ? "bg-primary text-white" : "text-white"
+              "flex rounded-2xl flex-col items-center justify-center text-xs text-muted gap-1",
+              active ? "bg-primary text-muted" : "text-muted"
             )}
             aria-label={item.label}
           >
