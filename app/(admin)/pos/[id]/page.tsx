@@ -1,20 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ChevronDownIcon, ChevronLeft } from "lucide-react";
+import { ChevronDownIcon, ChevronLeft, Info, Eye, EyeOff } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/Loading";
 import { BASE_URL } from "@/lib/api";
 import { getDeviceToken } from "@/lib/token";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -32,8 +26,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
-import { log } from "node:console";
 import Link from "next/link";
+import Image from "next/image";
+import { useAlertDialog } from "@/contexts/AlertDialogContext";
 
 // Pose (kassa) type
 type Pose = {
@@ -68,13 +63,24 @@ type Receipt = {
   sent_to_1c: boolean;
   close_time: string;
   qr_code_url?: string;
+  fiscal_sign: string;
+  staff_name: string;
 };
 
 export default function Pos() {
   const [data, setData] = useState<Stock | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [managers, setManagers] = useState(null);
+  const [allManagers, setAllManagers] = useState(null);
+  const [paymentTypes, setPaymentTypes] = useState(null);
+  const [posPaymentTypes, setPosPaymentTypes] = useState(null);
+  const [selectType, setSelectType] = useState<number | null>(null);
+
   const { t } = useTranslation();
+  const { showAlert } = useAlertDialog();
+
+  console.log(selectType);
 
   const [receipts, setReceipts] = useState<Receipt[]>([]);
 
@@ -145,6 +151,161 @@ export default function Pos() {
       .then((response) => response.json())
       .then((result) => {
         if (!cancelled) setReceipts(result.results ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  const getManagers = () => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`${BASE_URL}/v1/admins/pos/${params.id}/managers`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setManagers(result ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  const getAllManagers = () => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`${BASE_URL}/v1/admins/managers?page=1&page_size=150`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setAllManagers(result.results ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  const getPaymentTypes = () => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`${BASE_URL}/v1/admins/payment-types`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setPaymentTypes(result.results ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  const getPosPaymentTypes = () => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `${BASE_URL}/v1/admins/pos/${params.id}/payment-types`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setPosPaymentTypes(result.results ?? null);
         setLoading(false);
         setError(null);
       })
@@ -283,8 +444,118 @@ export default function Pos() {
     }
   };
 
+  const set_PaymentTypes = () => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+    const raw = JSON.stringify({
+      payment_type_id: selectType,
+    });
+
+    const requestOptions: RequestInit = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      `${BASE_URL}/v1/admins/pos/${params.id}/set-payment-types`,
+      requestOptions
+    )
+      .then((response) => {
+        if (response.status == 204) {
+          setLoading(false);
+          setError(null);
+          getPosPaymentTypes();
+        }
+        // return response.json();
+      })
+      .then((result) => {
+        // if (!cancelled) setPosPaymentTypes(result.results ?? null);
+        // setLoading(false);
+        // setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  const deletePaymentType = (id) => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+    // const raw = JSON.stringify({
+    //   payment_type_id: selectType,
+    // });
+
+    const requestOptions: RequestInit = {
+      method: "PUT",
+      headers: myHeaders,
+      body: null,
+      redirect: "follow",
+    };
+
+    fetch(
+      `${BASE_URL}/v1/admins/pos/${params.id}/unset-payment-types/${id}`,
+      requestOptions
+    )
+      .then((response) => {
+        console.log(response);
+        
+        if (response.status == 204) {
+          setLoading(false);
+          setError(null);
+          getPosPaymentTypes();
+        }
+        // return response.json();
+      })
+      .then((result) => {
+        // if (!cancelled) setPosPaymentTypes(result.results ?? null);
+        // setLoading(false);
+        // setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
   useEffect(() => {
     getOrganization();
+    getManagers();
+    getAllManagers();
+    getPaymentTypes();
+    getPosPaymentTypes();
   }, []);
 
   const [open, setOpen] = React.useState(false);
@@ -299,7 +570,14 @@ export default function Pos() {
     null
   );
 
-  console.log(receipts);
+  // Modal state for adding manager
+  const [isAddManagerModalOpen, setIsAddManagerModalOpen] =
+    React.useState(false);
+  const [selectedCashier, setSelectedCashier] = React.useState<string>("");
+  const [selectedRole, setSelectedRole] = React.useState<string>("");
+  const [username, setUsername] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);
@@ -405,7 +683,13 @@ export default function Pos() {
               <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
                 {t("app.pos.cashiers")}{" "}
               </h1>
-              <Button className="mb-2">{t("app.pos.add_cashier")}</Button>
+              <Button
+                className="mb-4 cursor-pointer"
+                onClick={() => setIsAddManagerModalOpen(true)}
+              >
+                {t("app.pos.add_cashier")}
+              </Button>
+
               <table className="w-full border-t text-sm">
                 <thead className="sticky -top-[1px] z-10 bg-bgColor">
                   <tr>
@@ -430,7 +714,7 @@ export default function Pos() {
                         {error}
                       </td>
                     </tr>
-                  ) : !data?.poses?.length ? (
+                  ) : !managers?.results.length ? (
                     <tr>
                       <td
                         className="px-4 py-6 text-muted-foreground"
@@ -440,28 +724,16 @@ export default function Pos() {
                       </td>
                     </tr>
                   ) : (
-                    data.poses.map((org) => (
+                    managers?.results.map((org) => (
                       <tr
                         key={org.id}
-                        className="hover:bg-accent/50 cursor-pointer"
+                        className="hover:bg-accent/50 cursor-pointer "
                       >
+                        <td className="px-4 py-3 ">{org.name}</td>
                         <td>
-                          <Link
-                            className="px-4 py-3 block"
-                            href={`/pos/${org.id}`}
-                          >
-                            {org.name}
-                          </Link>
-                        </td>
-                        <td>
-                          <Link
-                            className="px-4 py-3 block"
-                            href={`/company/${org.id}`}
-                          >
-                            <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                              {t("app.company.active")}
-                            </span>
-                          </Link>
+                          <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                            {t("app.company.active")}
+                          </span>
                         </td>
                       </tr>
                     ))
@@ -590,28 +862,28 @@ export default function Pos() {
                   <thead className="sticky -top-[1px] z-10 bg-bgColor">
                     <tr>
                       <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
-                        Nomi
+                        Операция
                       </th>
                       <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
-                        Holati
+                        Номер чека
                       </th>
                       <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
-                        Holati
+                        Дата и время
                       </th>
                       <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
-                        Holati
+                        Тип оплаты
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-gray-300">
-                        Holati
+                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                        Наличные
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-gray-300">
-                        Holati
+                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                        Картой
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-gray-300">
-                        Holati
+                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                        Сумма
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-gray-300">
-                        Holati
+                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                        Статус 1С
                       </th>
                     </tr>
                   </thead>
@@ -625,54 +897,51 @@ export default function Pos() {
                           setIsModalOpen(true);
                         }}
                       >
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          <h2 className="text-green-500">Тип: Продажа</h2>
+                        <td className="px-4 py-2 border-r border-gray-300">
+                          <h2 className="text-green-500">Продажа</h2>
+                          {org?.qr_code_url && (
+                            <Link
+                              onClick={(e) => {
+                                e.stopPropagation(); // parent onClick ishlashini to‘xtatadi
+                              }}
+                              className="bg-primary text-white rounded-sm text-[12px] p-1 px-3"
+                              target="_blank"
+                              href={org.qr_code_url}
+                            >
+                              QR код
+                            </Link>
+                          )}
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
-                          <h2 className="mb-2">{org?.receipt_seq}</h2>
+                          <h2>{org?.receipt_seq}</h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
                           <h2> {formatDate(org?.close_time)}</h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
                           {" "}
-                          <h2 className="mb-2">
-                            {org?.received_cash.toLocaleString("ru-RU")} сум
-                          </h2>
                           <h2>{org?.payments[0]?.payment_type?.name}</h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
-                          <h2 className="mb-2">Обмен 1с:</h2>
+                          <h2>
+                            {org?.received_cash.toLocaleString("ru-RU")} сум
+                          </h2>
+                        </td>
+                        <td className="px-4 py-4 border-r border-gray-300">
+                          <h2>
+                            {org?.received_cash.toLocaleString("ru-RU")}сум
+                          </h2>
+                        </td>
+                        <td className="px-4 py-4 border-r border-gray-300">
+                          <h2>
+                            {org?.received_cash.toLocaleString("ru-RU")} сум
+                          </h2>
+                        </td>
+                        <td className="px-4 py-4 border-r border-gray-300">
                           {org?.sent_to_1c ? (
                             <span className="text-green-500">Отправлено</span>
                           ) : (
                             <span className="text-red-500">Не Отправлено</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          {" "}
-                          <h2 className="mb-2">ID : {org?.id} сум</h2>
-                        </td>
-                        <td className="px-4 py-4">
-                          {" "}
-                          {org?.qr_code_url && (
-                            <Link target="_blank" href={org.qr_code_url}>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                className="lucide lucide-link-icon lucide-link"
-                              >
-                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                              </svg>
-                            </Link>
                           )}
                         </td>
                       </tr>
@@ -688,24 +957,56 @@ export default function Pos() {
               </h1>
 
               <div className="flex gap-2">
-                <Select>
+                <Select
+                  onValueChange={(value) => {
+                    setSelectType(value);
+                  }}
+                >
                   <SelectTrigger className="w-[280px]">
                     <SelectValue placeholder="Выберите Платеж" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Выберите 1</SelectLabel>
-                      <SelectItem value="est">humo</SelectItem>
-                      <SelectItem value="cst">Uzcard</SelectItem>
+                      <SelectLabel>Выберите</SelectLabel>
+                      {paymentTypes?.map((item) => {
+                        return (
+                          <SelectItem key={item.id} value={item.id}>
+                            {item.name}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectGroup>
-                    <SelectGroup>
+                    {/* <SelectGroup>
                       <SelectLabel>Выберите 2</SelectLabel>
                       <SelectItem value="gmt">humo</SelectItem>
                       <SelectItem value="cet">Uzcard</SelectItem>
-                    </SelectGroup>
+                    </SelectGroup> */}
                   </SelectContent>
                 </Select>
-                <Button className="mb-2">{t("app.pos.add_payment")}</Button>
+                <Button
+                  onClick={() => {
+                    if (selectType) {
+                      showAlert({
+                        title: "Подтверждение",
+                        description:
+                          "Вы уверены, что хотите добавить этот способ оплаты?",
+                        confirmText: "Да, добавить",
+                        cancelText: "Отмена",
+                        onConfirm: () => {
+                          set_PaymentTypes();
+                        },
+                        onCancel: () => {
+                          console.log("Payment addition cancelled");
+                        },
+                      });
+                    } else {
+                      toast.error("выберите тип оплаты");
+                    }
+                  }}
+                  className="cursor-pointer"
+                >
+                  {t("app.pos.add_payment")}
+                </Button>
               </div>
 
               <table className="w-full border-t text-sm">
@@ -732,7 +1033,7 @@ export default function Pos() {
                         {error}
                       </td>
                     </tr>
-                  ) : !data?.poses?.length ? (
+                  ) : !posPaymentTypes?.length ? (
                     <tr>
                       <td
                         className="px-4 py-6 text-muted-foreground"
@@ -742,17 +1043,55 @@ export default function Pos() {
                       </td>
                     </tr>
                   ) : (
-                    data.poses.map((org) => (
-                      <tr
-                        key={org.id}
-                        className="hover:bg-accent/50 cursor-pointer"
-                        onClick={() => router.push(`/pos/${org.id}`)}
-                      >
-                        <td className="px-4 py-3">{org.name}</td>
-                        <td className="px-4 py-3">
-                          <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                            {t("app.company.active")}
+                    posPaymentTypes?.map((org) => (
+                      <tr key={org.id} className="hover:bg-accent/50 ">
+                        <td className="px-4 py-3 flex items-center gap-2">
+                          <span className="border border-primary rounded-sm p-1">
+                            <Image
+                              src={
+                                org.image_url
+                                  ? `${BASE_URL}${org.image_url}`
+                                  : "/images/nophoto.png" // yoki default rasm
+                              }
+                              width={28}
+                              height={28}
+                              alt={org.name || "image"}
+                              className="w-8 h-8 object-contain"
+                            />
                           </span>
+                          {org.name}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            onClick={() => {
+                              showAlert({
+                                title: "Подтверждение",
+                                description:
+                                  "Вы уверены, что хотите добавить этот способ оплаты?",
+                                confirmText: "Да, добавить",
+                                cancelText: "Отмена",
+                                onConfirm: () => {
+                                  deletePaymentType(org.id);
+                                },
+                                onCancel: () => {
+                                  console.log("Payment addition cancelled");
+                                },
+                              });
+
+                              
+                            }}
+                            className="bg-[#ED6C3C] inline-block p-2 rounded-sm cursor-pointer  "
+                          >
+                            <Image
+                              src="/icons/trash.svg"
+                              alt="home"
+                              width={20}
+                              height={20}
+                            />
+                          </span>
+                          {/* <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                            {t("app.company.active")}
+                          </span> */}
                         </td>
                       </tr>
                     ))
@@ -921,109 +1260,360 @@ export default function Pos() {
         </div>
       </div>
 
-      {/* Modal for receipt details */}
+      {/* Receipt Modal */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/50 flex items-center justify-end z-50"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setIsModalOpen(false);
             }
           }}
         >
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Данные чека</h2>
-              <button
+          <div className="bg-bgColor rounded-lg shadow-2xl max-w-md w-full h-full  overflow-auto">
+            {/* Header */}
+            <div className="bg-gray-50 px-4 py-1  flex justify-between items-center">
+              <h2 className="font-semibold flex items-center gap-2 text-green-600 text-sm">
+                <Info /> {selectedReceipt?.receipt_seq}
+              </h2>
+              {/* <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-red-500 hover:text-red-700 text-5xl cursor-pointer"
+                className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+              >
+                ×
+              </button> */}
+              {/* Status Info */}
+              <div className="w-1/2 text-right">
+                <span
+                  className={`text-xs leading-[0px] ${
+                    selectedReceipt?.sent_to_1c
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {selectedReceipt?.sent_to_1c
+                    ? " Отправлен на сервер Синхронизирован с 1С"
+                    : "Не синхронизирован"}
+                </span>
+              </div>
+            </div>
+
+            {/* Receipt Content */}
+            <div
+              className="overflow-y-auto bg-white w-[90%] mx-auto mb-4"
+              style={{
+                clipPath: `polygon(
+      0 10px, 5% 0, 10% 10px, 15% 0, 20% 10px, 25% 0,
+      30% 10px, 35% 0, 40% 10px, 45% 0, 50% 10px,
+      55% 0, 60% 10px, 65% 0, 70% 10px, 75% 0,
+      80% 10px, 85% 0, 90% 10px, 95% 0, 100% 10px,
+      100% calc(100% - 10px), 95% 100%, 90% calc(100% - 10px),
+      85% 100%, 80% 100%, 75% calc(100% - 10px), 70% 100%,
+      65% calc(100% - 10px), 60% 100%, 55% calc(100% - 10px),
+      50% 100%, 45% calc(100% - 10px), 40% 100%, 35% calc(100% - 10px),
+      30% 100%, 25% calc(100% - 10px), 20% 100%, 15% calc(100% - 10px),
+      10% 100%, 5% calc(100% - 10px), 0 100%
+    )`,
+              }}
+            >
+              {selectedReceipt && (
+                <div className="p-4 font-mono text-sm">
+                  {/* Store Header */}
+                  <div className="text-center mb-4 border-b pb-3">
+                    <div className="text-lg font-bold">Продажа</div>
+                    <div className="text-xs text-gray-600">Kanstik</div>
+                  </div>
+
+                  {/* Receipt Info */}
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between">
+                      <span>Дата и время:</span>
+                      <span className="font-semibold">
+                        {formatDate(selectedReceipt.close_time)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>ИНН/ПИНФЛ:</span>
+                      <span>{selectedReceipt.fiscal_sign}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Кассир:</span>
+                      <span className="text-right max-w-[200px]">
+                        {selectedReceipt.staff_name}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Items Section */}
+                  <div className="border-t pt-3 mb-4">
+                    <div className="text-center font-semibold mb-2">Товары</div>
+                    <div className="space-y-2">
+                      {selectedReceipt.products.map((item, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="flex justify-between items-start"
+                          >
+                            <div className="flex-1">
+                              <div className="font-medium">
+                                {item.product.classifier_title}
+                              </div>
+                              <div className="text-xs text-gray-600">
+                                {item.product.quantity}.0 шт. х{" "}
+                                {selectedReceipt.received_cash?.toLocaleString(
+                                  "ru-RU"
+                                )}
+                              </div>
+                            </div>
+                            <div className="text-right ml-2">
+                              <div className="font-semibold">
+                                {selectedReceipt.received_cash?.toLocaleString(
+                                  "ru-RU"
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Tax Info */}
+                  <div className="border-t pt-3 mb-4">
+                    <div className="flex justify-between text-xs">
+                      <span>НДС: (12)</span>
+                      <span>
+                        {Math.round(
+                          (selectedReceipt.received_cash || 0) * 0.12
+                        ).toLocaleString("ru-RU")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span>ИКПУ:</span>
+                      <span>03407001001000000</span>
+                    </div>
+                  </div>
+
+                  {/* Payment Summary */}
+                  <div className="border-t pt-3 mb-4">
+                    <div className="space-y-1">
+                      <div className="flex justify-between font-semibold">
+                        <span>Сумма:</span>
+                        <span>
+                          {selectedReceipt.received_cash?.toLocaleString(
+                            "ru-RU"
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Оплачено:</span>
+                        <span>
+                          {selectedReceipt.received_cash?.toLocaleString(
+                            "ru-RU"
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Наличные:</span>
+                        <span>
+                          {selectedReceipt.received_cash?.toLocaleString(
+                            "ru-RU"
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Картой:</span>
+                        <span>0</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Бон. картой:</span>
+                        <span>0</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Fiscal Details */}
+                  <div className="border-t pt-3 mb-4">
+                    <div className="text-center text-xs space-y-1">
+                      <div className="flex justify-between">
+                        <span>ФМ:</span> <span>LG420230640562</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>ФП:</span> <span>414675046328</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Чек №:</span>{" "}
+                        <span>{selectedReceipt.receipt_seq}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>S/N:</span> <span>LG420230640562</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* QR Code Link */}
+                  {/* {selectedReceipt.qr_code_url && (
+                    <div className="border-t pt-3 mb-4 text-center">
+                      <a
+                        href={selectedReceipt.qr_code_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline text-xs"
+                      >
+                        Просмотреть QR код
+                      </a>
+                    </div>
+                  )} */}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Manager Modal */}
+      {isAddManagerModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsAddManagerModalOpen(false);
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden">
+            {/* Header */}
+            <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-gray-800">
+                Данные входа в кассу
+              </h2>
+              <button
+                onClick={() => setIsAddManagerModalOpen(false)}
+                className="text-orange-500 hover:text-orange-700 text-2xl cursor-pointer"
               >
                 ×
               </button>
             </div>
 
-            {selectedReceipt && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Номер чека:
-                    </label>
-                    <p className="text-lg font-semibold">
-                      {selectedReceipt.receipt_seq}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Тип:
-                    </label>
-                    <p className="text-green-500 font-semibold">Продажа</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Сумма:
-                    </label>
-                    <p className="text-lg font-semibold">
-                      {selectedReceipt.received_cash?.toLocaleString("ru-RU")}{" "}
-                      сум
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Способ оплаты:
-                    </label>
-                    <p className="font-semibold">
-                      {selectedReceipt.payments?.[0]?.payment_type?.name}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Обмен 1С:
-                    </label>
-                    <p
-                      className={
-                        selectedReceipt.sent_to_1c
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }
-                    >
-                      {selectedReceipt.sent_to_1c
-                        ? "Отправлено"
-                        : "Не Отправлено"}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      ID:
-                    </label>
-                    <p className="font-semibold">{selectedReceipt.id}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Дата и время:
-                    </label>
-                    <p className="font-semibold">
-                      {formatDate(selectedReceipt.close_time)}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      QR код:
-                    </label>
-                    {selectedReceipt.qr_code_url && (
-                      <a
-                        href={selectedReceipt.qr_code_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:text-blue-700 underline"
-                      >
-                        Открыть QR код
-                      </a>
+            {/* Form Content */}
+            <div className="p-6 space-y-4">
+              {/* Cashier Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Выберите Кассира
+                </label>
+                <Select
+                  value={selectedCashier}
+                  onValueChange={setSelectedCashier}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Выберите кассира" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Кассиры</SelectLabel>
+                      {allManagers?.map((item, index) => {
+                        return (
+                          <SelectItem value="cashier1">{item.name}</SelectItem>
+                        );
+                      })}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Role Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Выберите Роль
+                </label>
+                <Select value={selectedRole} onValueChange={setSelectedRole}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Выберите роль" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Роли</SelectLabel>
+                      <SelectItem value="cashier">Кассир</SelectItem>
+                      <SelectItem value="admin">Администратор</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="username"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="password"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
                     )}
-                  </div>
+                  </button>
                 </div>
               </div>
-            )}
+            </div>
+
+            {/* Action Button */}
+            <div className="bg-gray-50 px-6 py-4 border-t">
+              <button
+                onClick={() => {
+                  // Handle add manager functionality
+                  if (
+                    !selectedCashier ||
+                    !selectedRole ||
+                    !username ||
+                    !password
+                  ) {
+                    toast.error("Пожалуйста, заполните все поля");
+                    return;
+                  }
+
+                  // Here you would typically make an API call to add the manager
+                  toast.success("Кассир успешно добавлен");
+                  setIsAddManagerModalOpen(false);
+
+                  // Reset form
+                  setSelectedCashier("");
+                  setSelectedRole("");
+                  setUsername("");
+                  setPassword("");
+                  setShowPassword(false);
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium transition-colors"
+              >
+                Добавить Кассира
+              </button>
+            </div>
           </div>
         </div>
       )}

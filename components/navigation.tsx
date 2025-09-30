@@ -147,13 +147,15 @@ export function Sidebar({
           );
         })}
 
+        <hr />
+
         {/* Logout button */}
         <button
           type="button"
           onClick={handleLogout}
           className={cn(
             "w-full text-left text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10",
-            "hover:bg-primary/70 hover:text-secondary",
+            "hover:bg-primary/70 hover:text-secondary bg-primary/50 text-white cursor-pointer",
             collapsed ? "gap-0 justify-center px-3" : "gap-3 px-4"
           )}
         >

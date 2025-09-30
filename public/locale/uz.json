@@ -1,4 +1,7 @@
 {
+  "toast":{
+    "login":"Muvaffaqiyatli kirildi!"
+  },
   "nav": {
     "companies": "Kompaniyalar",
     "reports": "Hisobotlar",

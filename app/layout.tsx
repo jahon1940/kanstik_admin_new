@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import I18nProvider from "@/components/I18nProvider";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { AlertDialogProvider } from "@/contexts/AlertDialogContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,8 +63,10 @@ export default function RootLayout({
       >
         <I18nProvider>
           <LanguageProvider>
-            {children}
-            <Toaster richColors position="top-right" />
+            <AlertDialogProvider>
+              {children}
+              <Toaster richColors position="top-right" />
+            </AlertDialogProvider>
           </LanguageProvider>
         </I18nProvider>
       </body>

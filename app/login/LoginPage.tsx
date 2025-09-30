@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 
+import { useTranslation } from "react-i18next";
+
 type LoginResponse = {
   data?: {
     device_token?: string;
@@ -16,6 +18,7 @@ type LoginResponse = {
 };
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [username, setUsername] = useState("");
@@ -25,8 +28,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  console.log(error);
-
+ 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -60,7 +62,7 @@ export default function LoginPage() {
         throw new Error("device_token topilmadi");
       }
       setDeviceToken(token);
-      toast.success("Muvaffaqiyatli kirildi");
+      toast.success(t("toast.login"));
       const redirect = searchParams.get("redirect") || "/companies";
       router.replace(redirect);
     } catch (err: unknown) {
@@ -224,7 +226,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Dashboard Preview */}
-      <div className="flex-2 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
+      <div className="hidden md:flex flex-2 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
         {/* Content */}
         <div
           className="relative z-10  h-full p-12 px-20"
