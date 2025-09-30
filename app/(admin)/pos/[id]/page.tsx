@@ -496,7 +496,7 @@ export default function Pos() {
     };
   };
 
-  const deletePaymentType = (id) => {
+  const deletePaymentType = (id: number) => {
     let cancelled = false;
 
     setLoading(true);
@@ -525,7 +525,7 @@ export default function Pos() {
     )
       .then((response) => {
         console.log(response);
-        
+
         if (response.status == 204) {
           setLoading(false);
           setError(null);
