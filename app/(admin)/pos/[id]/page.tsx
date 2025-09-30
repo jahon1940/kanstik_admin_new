@@ -724,7 +724,7 @@ export default function Pos() {
                       </td>
                     </tr>
                   ) : (
-                    managers?.results.map((org) => (
+                    managers?.results.map((org: any) => (
                       <tr
                         key={org.id}
                         className="hover:bg-accent/50 cursor-pointer "
@@ -888,7 +888,7 @@ export default function Pos() {
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {receipts?.map((org, index) => (
+                    {receipts?.map((org: any) => (
                       <tr
                         key={org?.id}
                         className="hover:bg-accent/50 cursor-pointer border-b border-gray-300"
@@ -958,7 +958,7 @@ export default function Pos() {
 
               <div className="flex gap-2">
                 <Select
-                  onValueChange={(value) => {
+                  onValueChange={(value:any) => {
                     setSelectType(value);
                   }}
                 >
@@ -968,7 +968,7 @@ export default function Pos() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Выберите</SelectLabel>
-                      {paymentTypes?.map((item) => {
+                      {paymentTypes?.map((item:any) => {
                         return (
                           <SelectItem key={item.id} value={item.id}>
                             {item.name}
@@ -1043,7 +1043,7 @@ export default function Pos() {
                       </td>
                     </tr>
                   ) : (
-                    posPaymentTypes?.map((org) => (
+                    posPaymentTypes?.map((org:any) => (
                       <tr key={org.id} className="hover:bg-accent/50 ">
                         <td className="px-4 py-3 flex items-center gap-2">
                           <span className="border border-primary rounded-sm p-1">
@@ -1238,7 +1238,7 @@ export default function Pos() {
                       </td>
                     </tr>
                   ) : (
-                    data.poses.map((org) => (
+                    data.poses.map((org:any) => (
                       <tr
                         key={org.id}
                         className="hover:bg-accent/50 cursor-pointer"
@@ -1348,7 +1348,7 @@ export default function Pos() {
                   <div className="border-t pt-3 mb-4">
                     <div className="text-center font-semibold mb-2">Товары</div>
                     <div className="space-y-2">
-                      {selectedReceipt.products.map((item, index) => {
+                      {selectedReceipt.products.map((item:any, index) => {
                         return (
                           <div
                             key={index}
@@ -1512,9 +1512,11 @@ export default function Pos() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Кассиры</SelectLabel>
-                      {allManagers?.map((item, index) => {
+                      {allManagers?.map((item:any, index:any) => {
                         return (
-                          <SelectItem value="cashier1">{item.name}</SelectItem>
+                          <SelectItem key={index} value="cashier1">
+                            {item.name}
+                          </SelectItem>
                         );
                       })}
                     </SelectGroup>
