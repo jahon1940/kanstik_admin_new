@@ -71,10 +71,10 @@ export default function Pos() {
   const [data, setData] = useState<Stock | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [managers, setManagers] = useState(null);
-  const [allManagers, setAllManagers] = useState(null);
-  const [paymentTypes, setPaymentTypes] = useState(null);
-  const [posPaymentTypes, setPosPaymentTypes] = useState(null);
+  const [managers, setManagers] = useState<any>(null);
+  const [allManagers, setAllManagers] = useState<any>(null);
+  const [paymentTypes, setPaymentTypes] = useState<any>(null);
+  const [posPaymentTypes, setPosPaymentTypes] = useState<any>(null);
   const [selectType, setSelectType] = useState<number | null>(null);
 
   const { t } = useTranslation();
