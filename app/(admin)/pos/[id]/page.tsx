@@ -65,6 +65,7 @@ type Receipt = {
   qr_code_url?: string;
   fiscal_sign: string;
   staff_name: string;
+  products?: any[];
 };
 
 export default function Pos() {
