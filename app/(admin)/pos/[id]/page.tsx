@@ -1349,7 +1349,7 @@ export default function Pos() {
                   <div className="border-t pt-3 mb-4">
                     <div className="text-center font-semibold mb-2">Товары</div>
                     <div className="space-y-2">
-                      {selectedReceipt.products.map((item:any, index) => {
+                      {selectedReceipt?.products?.map((item:any, index) => {
                         return (
                           <div
                             key={index}
