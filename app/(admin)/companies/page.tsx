@@ -6,7 +6,7 @@ import { ChevronLeft, Search } from "lucide-react";
 import { toast } from "sonner";
 // import { api } from "@/lib/api";
 import Loading from "@/components/Loading";
-import { BASE_URL } from "@/lib/api";
+
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useRouter } from "next/navigation";
@@ -14,11 +14,15 @@ import { useRouter } from "next/navigation";
 type Organization = { id: number; name: string };
 
 export default function CompaniesPage() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { t } = useLanguage()
+
+
+  
 
   const getOrganization = () => {
     let cancelled = false;
@@ -61,15 +65,15 @@ export default function CompaniesPage() {
    const router = useRouter();
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <button
+    <div className="space-y-4 ">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4">
+        {/* <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary "
         >
           <ChevronLeft className="h-4 w-4" />
-        </button>
+        </button> */}
         <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
       </div>
 
@@ -96,7 +100,7 @@ export default function CompaniesPage() {
         </div>
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
-        <div className="overflow-auto max-h-[70vh] px-4">
+        <div className="overflow-auto max-h-[calc(100vh-10rem)]  px-4">
           <table className="w-full text-sm relative">
             <thead className="sticky -top-[1px] z-10 bg-bgColor">
               <tr>

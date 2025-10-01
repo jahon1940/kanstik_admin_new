@@ -7,12 +7,13 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 // import { api } from "@/lib/api";
 import Loading from "@/components/Loading";
-import { BASE_URL } from "@/lib/api";
+
 import Link from "next/link";
 
 type Organization = { id: number; name: string };
 
 export default function CompanyPage() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
@@ -67,7 +68,7 @@ export default function CompanyPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2">
         <button
           type="button"
           onClick={() => router.back()}
@@ -100,7 +101,7 @@ export default function CompanyPage() {
         </div>
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
-        <div className="overflow-auto max-h-[70vh] px-4">
+        <div className="overflow-auto max-h-[calc(100vh-10rem)] px-4">
           <table className="w-full border-t text-sm  ">
             <thead className="sticky -top-[1px] z-10 bg-bgColor ">
               <tr>

@@ -49,18 +49,11 @@ export const navItems: NavItem[] = [
   },
 ];
 
-export function Navbar({ collapsed }: { collapsed?: boolean }) {
-  return (
-    <header className="fixed top-0 inset-x-0 h-14 bg-secondary border-b border-muted/20 flex items-center px-4 z-40 justify-between">
-      <div className="flex items-center gap-3">
-        <div className="font-semibold text-muted">Hoomo Admin Retailer</div>
-      </div>
-      <div className="text-muted">
-        <LanguageSelect />
-      </div>
-    </header>
-  );
-}
+// export function Navbar({ collapsed }: { collapsed?: boolean }) {
+//   return (
+    
+//   );
+// }
 
 export function Sidebar({
   collapsed,
@@ -82,10 +75,27 @@ export function Sidebar({
   return (
     <aside
       className={cn(
-        "hidden md:flex fixed left-0 top-14 bottom-0 border-r z-30 bg-secondary transition-[width] duration-300 overflow-x-hidden",
+        "hidden md:block fixed left-0 top-0 bottom-0 border-r z-30 bg-secondary transition-[width] duration-300 overflow-x-hidden",
         collapsed ? "w-16" : "w-60"
       )}
     >
+      <header className=" h-14  border-b border-muted/20 flex items-center px-2 justify-center">
+        <div className="flex items-center gap-3">
+          <div className="font-semibold text-muted flex items-center gap-1">
+            <div className="w-10 h-10 flex items-center justify-center">
+              <Image src="/images/logo.png" alt="home" width={20} height={20} />
+            </div>
+            <span
+              className={cn(
+                "whitespace-nowrap transition-all duration-300",
+                collapsed ? "hidden" : "opacity-100 w-auto ml-3"
+              )}
+            >
+              Hoomo Admin Retailer
+            </span>
+          </div>
+        </div>
+      </header>
       <nav
         className={cn(
           "flex-1 space-y-2",
@@ -155,7 +165,7 @@ export function Sidebar({
           onClick={handleLogout}
           className={cn(
             "w-full text-left text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10",
-            "hover:bg-primary/70 hover:text-secondary bg-primary/50 text-white cursor-pointer",
+            "hover:bg-[#ED6C3C] hover:text-secondary bg-[#ed6b3cb0] text-white cursor-pointer",
             collapsed ? "gap-0 justify-center px-3" : "gap-3 px-4"
           )}
         >
@@ -169,6 +179,8 @@ export function Sidebar({
             {t("nav.logout")}
           </span>
         </button>
+
+        <LanguageSelect />
       </nav>
     </aside>
   );

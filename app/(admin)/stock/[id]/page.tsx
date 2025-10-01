@@ -5,7 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/Loading";
-import { BASE_URL } from "@/lib/api";
+
 import { getDeviceToken } from "@/lib/token";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
@@ -26,6 +26,7 @@ type Stock = {
 };
 
 export default function StockPage() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const [data, setData] = useState<Stock | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +79,7 @@ export default function StockPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2">
         <button
           type="button"
           onClick={() => router.back()}

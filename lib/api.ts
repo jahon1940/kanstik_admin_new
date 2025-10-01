@@ -3,7 +3,7 @@
 import axios, { AxiosHeaders, InternalAxiosRequestConfig } from "axios";
 import { getDeviceToken, clearDeviceToken } from "./token";
 
-export const BASE_URL = "https://kanstik.retailer.hoomo.uz";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const api = axios.create({
   baseURL: BASE_URL,

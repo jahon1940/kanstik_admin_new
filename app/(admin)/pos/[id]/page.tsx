@@ -5,7 +5,7 @@ import { ChevronDownIcon, ChevronLeft, Info, Eye, EyeOff } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/Loading";
-import { BASE_URL } from "@/lib/api";
+
 import { getDeviceToken } from "@/lib/token";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import Image from "next/image";
@@ -69,6 +70,7 @@ type Receipt = {
 };
 
 export default function Pos() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const [data, setData] = useState<Stock | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -594,7 +596,7 @@ export default function Pos() {
 
   return (
     <Tabs defaultValue="info" className="space-y-4">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4">
         <div className="flex items-center gap-4">
           <button
             type="button"
@@ -617,9 +619,9 @@ export default function Pos() {
         </TabsList>
       </div>
       <div className="">
-        <div className="overflow-auto max-h-[75vh] col-span-6 md:col-span-4 border rounded-2xl p-4 pt-0 bg-secondary ">
+        <div className="overflow-auto max-h-[calc(100vh-7rem)] col-span-6 md:col-span-4 border rounded-2xl p-4 pt-0 bg-secondary ">
           {/* content */}
-          <div className="min-h-[70vh] w-full pt-4">
+          <div className=" w-full pt-4">
             {/* info */}
             <TabsContent value="info" className="w-full">
               <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
@@ -959,7 +961,7 @@ export default function Pos() {
 
               <div className="flex gap-2">
                 <Select
-                  onValueChange={(value:any) => {
+                  onValueChange={(value: any) => {
                     setSelectType(value);
                   }}
                 >
@@ -969,7 +971,7 @@ export default function Pos() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Выберите</SelectLabel>
-                      {paymentTypes?.map((item:any) => {
+                      {paymentTypes?.map((item: any) => {
                         return (
                           <SelectItem key={item.id} value={item.id}>
                             {item.name}
@@ -1044,7 +1046,7 @@ export default function Pos() {
                       </td>
                     </tr>
                   ) : (
-                    posPaymentTypes?.map((org:any) => (
+                    posPaymentTypes?.map((org: any) => (
                       <tr key={org.id} className="hover:bg-accent/50 ">
                         <td className="px-4 py-3 flex items-center gap-2">
                           <span className="border border-primary rounded-sm p-1">
@@ -1078,8 +1080,6 @@ export default function Pos() {
                                   console.log("Payment addition cancelled");
                                 },
                               });
-
-                              
                             }}
                             className="bg-[#ED6C3C] inline-block p-2 rounded-sm cursor-pointer  "
                           >
@@ -1239,7 +1239,7 @@ export default function Pos() {
                       </td>
                     </tr>
                   ) : (
-                    data.poses.map((org:any) => (
+                    data.poses.map((org: any) => (
                       <tr
                         key={org.id}
                         className="hover:bg-accent/50 cursor-pointer"
@@ -1349,7 +1349,7 @@ export default function Pos() {
                   <div className="border-t pt-3 mb-4">
                     <div className="text-center font-semibold mb-2">Товары</div>
                     <div className="space-y-2">
-                      {selectedReceipt?.products?.map((item:any, index) => {
+                      {selectedReceipt?.products?.map((item: any, index) => {
                         return (
                           <div
                             key={index}
@@ -1503,26 +1503,19 @@ export default function Pos() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Выберите Кассира
                 </label>
-                <Select
-                  value={selectedCashier}
-                  onValueChange={setSelectedCashier}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Выберите кассира" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Кассиры</SelectLabel>
-                      {allManagers?.map((item:any, index:any) => {
-                        return (
-                          <SelectItem key={index} value="cashier1">
-                            {item.name}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                <SearchableSelect
+                  options={
+                    allManagers?.map((item: any, index: number) => ({
+                      value: item.id ? item.id.toString() : index.toString(), // value faqat string
+                      label: item.name,
+                    })) || []
+                  }
+                  value={selectedCashier?.toString() || ""} // bu ham string bo‘lishi shart
+                  onValueChange={(val) => setSelectedCashier(val)} // val string bo‘lib keladi
+                  placeholder="Выберите кассира"
+                  searchPlaceholder="Поиск кассира..."
+                  emptyText="Кассир не найден"
+                />
               </div>
 
               {/* Role Selection */}
