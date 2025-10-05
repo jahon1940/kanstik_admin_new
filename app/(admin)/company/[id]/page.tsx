@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Loading from "@/components/Loading";
 
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 type Organization = { id: number; name: string };
 
@@ -18,6 +19,7 @@ export default function CompanyPage() {
   const [items, setItems] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+   const { t } = useTranslation();
 
   const params = useParams();
 
@@ -68,7 +70,7 @@ export default function CompanyPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16">
         <button
           type="button"
           onClick={() => router.back()}
@@ -101,7 +103,7 @@ export default function CompanyPage() {
         </div>
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
-        <div className="overflow-auto max-h-[calc(100vh-10rem)] px-4">
+        <div className="overflow-auto h-[calc(100vh-11rem)] px-4">
           <table className="w-full border-t text-sm  ">
             <thead className="sticky -top-[1px] z-10 bg-bgColor ">
               <tr>
@@ -129,7 +131,7 @@ export default function CompanyPage() {
               ) : filtered.length === 0 ? (
                 <tr>
                   <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
-                    Ma&apos;lumot topilmadi
+                    {t("toast.no_data")}
                   </td>
                 </tr>
               ) : (

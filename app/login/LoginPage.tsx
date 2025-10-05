@@ -96,8 +96,9 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="inline-block">
+              <Image src="/images/logo.png" alt="home" width={40} height={40} className="mx-auto mb-1" />
               <span className="text-3xl font-bold text-gray-900">
-                Kanstik Admin Retailer
+                 Retailer
               </span>
               <div className="h-1 w-8 bg-blue-600 mx-auto mt-1"></div>
             </div>

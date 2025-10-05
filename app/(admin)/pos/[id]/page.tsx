@@ -80,13 +80,18 @@ export default function Pos() {
   const [posPaymentTypes, setPosPaymentTypes] = useState<any>(null);
   const [selectType, setSelectType] = useState<number | null>(null);
 
+
+  
+
   const { t } = useTranslation();
   const { showAlert } = useAlertDialog();
 
-  console.log(selectType);
 
   const [receipts, setReceipts] = useState<Receipt[]>([]);
 
+
+  console.log(receipts);
+  
   const params = useParams();
   const router = useRouter();
 
@@ -595,8 +600,8 @@ export default function Pos() {
   };
 
   return (
-    <Tabs defaultValue="info" className="space-y-4">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4">
+    <Tabs defaultValue="info" className="space-y-2">
+      <div className="flex items-center gap-4 bg-secondary rounded-md pl-4 min-h-16">
         <div className="flex items-center gap-4">
           <button
             type="button"
@@ -609,7 +614,7 @@ export default function Pos() {
             {t("app.pos.title")}({data?.name})
           </h1>
         </div>
-        <TabsList className="flex w-full mx-auto xl:mx-0 gap-2 ">
+        <TabsList className="flex w-full mx-auto xl:mx-0 gap-2 border-none ">
           <TabsTrigger value="info">{t("app.pos.info")}</TabsTrigger>
           <TabsTrigger value="cashiers">{t("app.pos.cashiers")}</TabsTrigger>
           <TabsTrigger value="receipts">{t("app.pos.receipts")}</TabsTrigger>
@@ -857,7 +862,7 @@ export default function Pos() {
               ) : receipts?.length == 0 ? (
                 <tr>
                   <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
-                    Ma&apos;lumot topilmadi
+                    {t("toast.no_data")}
                   </td>
                 </tr>
               ) : (
@@ -926,13 +931,36 @@ export default function Pos() {
                           <h2>{org?.payments[0]?.payment_type?.name}</h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
+                          {/* <h2>
+                            {org?.payments.map((item) => {
+                              if (item.payment_type.name === "Наличные") {
+                                return item.price.toLocaleString("ru-RU");
+                              } else {
+                                return 0;
+                              }
+                            })}{" "}
+                            сум
+                          </h2> */}
                           <h2>
                             {org?.received_cash.toLocaleString("ru-RU")} сум
                           </h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
+                          {/* <h2>
+                            {org?.payments.map((item) => {
+                              if (
+                                item.payment_type.name === "HUMO" ||
+                                item.payment_type.name === "UZCARD"
+                              ) {
+                                return item.price.toLocaleString("ru-RU");
+                              } else {
+                                return 0;
+                              }
+                            })}{" "}
+                            сум
+                          </h2> */}
                           <h2>
-                            {org?.received_cash.toLocaleString("ru-RU")}сум
+                            {org?.received_card.toLocaleString("ru-RU")} сум
                           </h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">

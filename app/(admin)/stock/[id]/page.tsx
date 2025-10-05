@@ -79,7 +79,7 @@ export default function StockPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16">
         <button
           type="button"
           onClick={() => router.back()}
@@ -90,9 +90,9 @@ export default function StockPage() {
         <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
       </div>
       <div className="">
-        <div className="grid gap-6  md:grid-cols-6 ">
+        <div className="flex flex-col md:flex-row gap-4 items-start">
           {/* Chap panel */}
-          <div className="overflow-auto max-h-[70vh] col-span-6 md:col-span-2 border rounded-2xl p-4 bg-secondary ">
+          <div className="w-full md:w-1/3 border rounded-2xl p-4 bg-secondary">
             <h1 className="text-xl border-b border-secondary pb-1 mb-1">
               {t("app.stock.account_title")}
             </h1>
@@ -115,11 +115,11 @@ export default function StockPage() {
           </div>
 
           {/* O‘ng panel */}
-          <div className="overflow-auto max-h-[70vh] col-span-6 md:col-span-4 border rounded-2xl p-4 bg-secondary">
+          <div className="flex-1 border rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full">
             <h1 className="text-xl mb-3">
               {t("app.stock.cashiers")} ({data?.name}){" "}
             </h1>
-            <button className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90 ">
+            <button className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90">
               {t("app.stock.add_cashier")}
             </button>
             <table className="w-full border-t text-sm">

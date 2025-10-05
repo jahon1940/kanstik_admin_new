@@ -1,12 +1,14 @@
 {
   "toast":{
-    "login":"Muvaffaqiyatli kirildi!"
+    "login":"Muvaffaqiyatli kirildi!",
+    "no_data":"Ma'lumot topilmadi"
   },
   "nav": {
     "companies": "Kompaniyalar",
     "reports": "Hisobotlar",
     "clients": "Mijozlar",
     "webapp": "Veb-sayt va ilova",
+    "setting": "Sozlamalar",
     "logout": "Chiqish"
   },
   "app": {

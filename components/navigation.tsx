@@ -19,6 +19,13 @@ import LanguageSelect from "./LanguageSelect";
 import Image from "next/image";
 import { clearDeviceToken } from "@/lib/token";
 import { toast } from "sonner";
+import LogOutIcon from "./icons/logout";
+import SettingIcon from "./icons/setting";
+import SiteIcon from "./icons/site";
+import ClientIcon from "./icons/client";
+import ReportIcon from "./icons/report";
+import CompanyIcon from "./icons/company";
+import { useAlertDialog } from "@/contexts/AlertDialogContext";
 
 export type NavItem = {
   label: string;
@@ -30,28 +37,29 @@ export const navItems: NavItem[] = [
   {
     label: "nav.companies",
     href: "/companies",
-    icon: (p) => <Building2 className={p.className} />,
+
+    icon: (p) => <CompanyIcon className={p.className} />,
   },
   {
     label: "nav.reports",
     href: "/reports",
-    icon: (p) => <BarChart3 className={p.className} />,
+    icon: (p) => <ReportIcon className={p.className} />,
   },
   {
     label: "nav.clients",
     href: "/clients",
-    icon: (p) => <Users className={p.className} />,
+    icon: (p) => <ClientIcon className={p.className} />,
   },
   {
     label: "nav.webapp",
     href: "/webapp",
-    icon: (p) => <Globe className={p.className} />,
+    icon: (p) => <SiteIcon className={p.className} />,
   },
 ];
 
 // export function Navbar({ collapsed }: { collapsed?: boolean }) {
 //   return (
-    
+
 //   );
 // }
 
@@ -65,6 +73,7 @@ export function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useTranslation();
+  const { showAlert } = useAlertDialog();
 
   const handleLogout = () => {
     clearDeviceToken();
@@ -79,27 +88,25 @@ export function Sidebar({
         collapsed ? "w-16" : "w-60"
       )}
     >
-      <header className=" h-14  border-b border-muted/20 flex items-center px-2 justify-center">
-        <div className="flex items-center gap-3">
-          <div className="font-semibold text-muted flex items-center gap-1">
-            <div className="w-10 h-10 flex items-center justify-center">
-              <Image src="/images/logo.png" alt="home" width={20} height={20} />
-            </div>
-            <span
-              className={cn(
-                "whitespace-nowrap transition-all duration-300",
-                collapsed ? "hidden" : "opacity-100 w-auto ml-3"
-              )}
-            >
-              Hoomo Admin Retailer
-            </span>
+      <header className=" h-14  border-b border-muted/20 flex items-center px-2">
+        <div className="font-semibold text-muted flex items-center gap-1">
+          <div className="w-10 h-10 flex items-center justify-center">
+            <Image src="/images/logo.png" alt="home" width={20} height={20} />
           </div>
+          <span
+            className={cn(
+              "whitespace-nowrap transition-all duration-300",
+              collapsed ? "hidden" : "opacity-100 w-auto"
+            )}
+          >
+            Retailer
+          </span>
         </div>
       </header>
       <nav
         className={cn(
           "flex-1 space-y-2",
-          collapsed ? "p-2 pt-0 overflow-y-hidden" : "p-2 pt-0 overflow-y-auto"
+          collapsed ? "p-2 pt-0 overflow-y-hidden" : "p-2 pt-0"
         )}
       >
         <div
@@ -137,14 +144,18 @@ export function Sidebar({
               key={item.href}
               href={item.href}
               className={cn(
-                "text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10",
+                "text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10 group",
                 active
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-primary/70 hover:text-secondary",
-                collapsed ? "gap-0 justify-center px-3" : "gap-3 px-4"
+                collapsed ? "justify-center px-3" : " px-4"
               )}
             >
-              {item.icon({ className: "h-4 w-4 flex-shrink-0" })}
+              {item.icon({
+                className: active
+                  ? "[&_path]:stroke-[#FFFFFF]"
+                  : "group-hover:[&_path]:stroke-[#FFFFFF]",
+              })}
               <span
                 className={cn(
                   "whitespace-nowrap transition-all duration-300",
@@ -159,17 +170,49 @@ export function Sidebar({
 
         <hr />
 
-        {/* Logout button */}
-        <button
-          type="button"
-          onClick={handleLogout}
+        <Link
+          href="/settings"
           className={cn(
-            "w-full text-left text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10",
-            "hover:bg-[#ED6C3C] hover:text-secondary bg-[#ed6b3cb0] text-white cursor-pointer",
+            "text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10",
+
             collapsed ? "gap-0 justify-center px-3" : "gap-3 px-4"
           )}
         >
-          <LogOut className="h-4 w-4 flex-shrink-0" />
+          <SettingIcon />
+          <span
+            className={cn(
+              "whitespace-nowrap transition-all duration-300",
+              collapsed ? "hidden" : "opacity-100 w-auto ml-3"
+            )}
+          >
+            {t("nav.setting")}
+          </span>
+        </Link>
+
+        {/* Logout button */}
+        <button
+          type="button"
+          onClick={() => {
+            showAlert({
+              title: "Подтверждение",
+              description: "Вы уверены, что хотите выйти?",
+              confirmText: "Да, Выход",
+              cancelText: "Отмена",
+              onConfirm: () => {
+                handleLogout();
+              },
+              onCancel: () => {
+                console.log("Payment addition cancelled");
+              },
+            });
+          }}
+          className={cn(
+            "w-full text-left text-muted flex items-center rounded-md py-2 text-sm transition-colors min-w-0 h-10 hover:bg-[#ED6C3C] hover:text-white group",
+            "cursor-pointer",
+            collapsed ? "gap-0 justify-center px-3" : "gap-3 px-4"
+          )}
+        >
+          <LogOutIcon className="group-hover:[&_path]:stroke-[#FFFFFF]" />
           <span
             className={cn(
               "whitespace-nowrap transition-all duration-300",
@@ -203,7 +246,11 @@ export function MobileNav() {
             )}
             aria-label={item.label}
           >
-            {item.icon({ className: "h-5 w-5" })}
+            {item.icon({
+              className: active
+                ? "[&_path]:stroke-[#FFFFFF]"
+                : "group-hover:[&_path]:stroke-[#FFFFFF]",
+            })}
           </Link>
         );
       })}
