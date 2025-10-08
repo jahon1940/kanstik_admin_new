@@ -13,7 +13,24 @@ import { useTranslation } from "react-i18next";
 import { getDeviceToken } from "@/lib/token";
 import Image from "next/image";
 
-type Organization = { id: number; name: string; products: any[] };
+type Organization = {
+  id: number;
+  name: string;
+  products: any[];
+  head_company?: {
+    full_name?: string;
+    phone_number?: string;
+    // boshqa fieldlar bo‘lsa shu yerda yoziladi
+  };
+  created_at: string;
+  status: string;
+  price: string;
+  stock: {
+    name?: string;
+  };
+  payment_type: string;
+  delivery_type: string;
+};
 
 export default function OrderPage() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -21,7 +38,7 @@ export default function OrderPage() {
   const [orders, setOrders] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-   const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const params = useParams();
 
@@ -31,13 +48,12 @@ export default function OrderPage() {
     setLoading(true);
     setError(null);
 
-     const myHeaders = new Headers();
-     myHeaders.append("Content-Type", "application/json");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-     if (getDeviceToken()) {
-       myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-     }
-
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
 
     const requestOptions: RequestInit = {
       method: "GET",
@@ -47,13 +63,12 @@ export default function OrderPage() {
 
     //kanstik.retailer.hoomo.uz/v1/admins/orders/129/order
     console.log(orders);
-    
 
     fetch(`${BASE_URL}/v1/admins/orders/${params.id}/order`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        
+
         if (!cancelled) setOrders(result ?? []);
         setLoading(false);
         setError(null);
@@ -72,8 +87,6 @@ export default function OrderPage() {
   useEffect(() => {
     getOrder();
   }, []);
- 
-  
 
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);
@@ -86,8 +99,6 @@ export default function OrderPage() {
 
     return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
-
-
 
   const router = useRouter();
 
@@ -116,7 +127,7 @@ export default function OrderPage() {
         {loading ? (
           <Loading />
         ) : error ? (
-          { error }
+          <h2>error</h2>
         ) : orders?.products?.length === 0 ? (
           <h2>{t("toast.no_data")}</h2>
         ) : (
@@ -200,7 +211,7 @@ export default function OrderPage() {
                 )}
               </tbody>
             </table>
-            {orders.products && (
+            {orders?.products && (
               <div className="flex justify-between text-xs bg-bgColor rounded-xl p-3 mb-4 sticky bottom-4 w-full left-0 z-40 ">
                 <div className="flex flex-col gap-2 ">
                   <h2>Дата: {formatDate(orders.created_at)} </h2>
@@ -208,7 +219,7 @@ export default function OrderPage() {
                   <h2>Магазин получение: {orders.stock.name}</h2>
                 </div>
                 <div className="flex flex-col gap-2 ">
-                  <h2>Сумма: {orders.price?.toLocaleString("ru-RU")} сум</h2>
+                  <h2>Сумма: {orders?.price?.toLocaleString("ru-RU")} сум</h2>
                   <h2>
                     Тип оплаты:{" "}
                     {orders.payment_type == "byCash" ? "Наличными" : "Картой"}{" "}
