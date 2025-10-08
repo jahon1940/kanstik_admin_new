@@ -18,7 +18,7 @@ type Organization = { id: number; name: string; products: any[] };
 export default function OrderPage() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-  const [orders, setOrders] = useState<Organization[]>([]);
+  const [orders, setOrders] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
    const { t } = useTranslation();
