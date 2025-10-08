@@ -24,7 +24,7 @@ type Organization = {
   };
   created_at: string;
   status: string;
-  price: string;
+  price: number;
   stock: {
     name?: string;
   };
