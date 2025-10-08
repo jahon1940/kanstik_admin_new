@@ -92,8 +92,8 @@ export default function StockPage() {
       <div className="">
         <div className="flex flex-col md:flex-row gap-4 items-start">
           {/* Chap panel */}
-          <div className="w-full md:w-1/3 border rounded-2xl p-4 bg-secondary">
-            <h1 className="text-xl border-b border-secondary pb-1 mb-1">
+          <div className="w-full md:w-1/3  rounded-2xl p-4 bg-secondary">
+            <h1 className="text-xl  pb-1 mb-1">
               {t("app.stock.account_title")}
             </h1>
 
@@ -109,26 +109,26 @@ export default function StockPage() {
               {t("app.stock.region")}: {data?.region}
             </h1>
 
-            <h1 className="border-b border-secondary pb-1 mb-1">
+            <h1 className=" pb-1 mb-1">
               {t("app.stock.products_by_stocks")}: 29928
             </h1>
           </div>
 
           {/* O‘ng panel */}
-          <div className="flex-1 border rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full">
+          <div className="flex-1  rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full">
             <h1 className="text-xl mb-3">
               {t("app.stock.cashiers")} ({data?.name}){" "}
             </h1>
             <button className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90">
               {t("app.stock.add_cashier")}
             </button>
-            <table className="w-full border-t text-sm">
+            <table className="w-full  text-sm">
               <thead className="sticky -top-[1px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
+                  <th className="text-left font-semibold px-4 py-3  w-[60%]">
                     {t("app.company.name")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b w-[40%]">
+                  <th className="text-left font-semibold px-4 py-3  w-[40%]">
                     {t("app.company.status")}
                   </th>
                 </tr>

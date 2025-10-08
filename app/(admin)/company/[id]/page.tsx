@@ -80,7 +80,7 @@ export default function CompanyPage() {
         </button>
         <h1 className="text-xl font-semibold">Kompaniya</h1>
       </div>
-      <div className="rounded-lg border bg-card">
+      <div className="rounded-lg  bg-card">
         {/* Qidiruv paneli */}
         <div className="p-4">
           <form
@@ -104,13 +104,13 @@ export default function CompanyPage() {
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
         <div className="overflow-auto h-[calc(100vh-11rem)] px-4">
-          <table className="w-full border-t text-sm  ">
+          <table className="w-full text-sm  ">
             <thead className="sticky -top-[1px] z-10 bg-bgColor ">
               <tr>
-                <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
+                <th className="text-left font-semibold px-4 py-3 w-[60%]">
                   Nomi
                 </th>
-                <th className="text-left font-semibold px-4 py-3 border-b w-[40%]">
+                <th className="text-left font-semibold px-4 py-3 w-[40%]">
                   Holati
                 </th>
               </tr>

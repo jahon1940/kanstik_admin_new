@@ -109,7 +109,7 @@ const LanguageSelect = () => {
   // Prevent hydration mismatch by only rendering on client
   if (!isMounted) {
     return (
-      <div className="flex items-center justify-end space-x-2">
+      <div className="flex items-center space-x-2">
         <div className="flex items-center space-x-3">
           <span className="text-xl">{currentOption?.flag}</span>
           <span className="font-medium text-lg">{currentOption?.label}</span>
@@ -119,7 +119,7 @@ const LanguageSelect = () => {
   }
 
   return (
-    <div className="flex items-center justify-end space-x-2 ">
+    <div className="flex items-center space-x-2 ">
       <Select
         value={currentOption}
         onChange={(option: SingleValue<OptionType>) => {

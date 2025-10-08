@@ -49,6 +49,8 @@ type Stock = {
   status: boolean;
   enable_delay: boolean;
   order_from_site: boolean;
+  last_active: string;
+  last_synchronize: string;
 };
 
 // Receipt type
@@ -79,19 +81,13 @@ export default function Pos() {
   const [paymentTypes, setPaymentTypes] = useState<any>(null);
   const [posPaymentTypes, setPosPaymentTypes] = useState<any>(null);
   const [selectType, setSelectType] = useState<number | null>(null);
-
-
-  
+   const [ordersSite, setOrdersSite] = useState<any>(null);
 
   const { t } = useTranslation();
   const { showAlert } = useAlertDialog();
 
-
   const [receipts, setReceipts] = useState<Receipt[]>([]);
 
-
-  console.log(receipts);
-  
   const params = useParams();
   const router = useRouter();
 
@@ -173,6 +169,49 @@ export default function Pos() {
       cancelled = true;
     };
   };
+
+   const getOrders = (date: string) => {
+     let cancelled = false;
+
+     setLoading(true);
+     setError(null);
+
+     const myHeaders = new Headers();
+     myHeaders.append("Content-Type", "application/json");
+
+     if (getDeviceToken()) {
+       myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+     }
+
+     const requestOptions: RequestInit = {
+       method: "GET",
+       headers: myHeaders,
+       redirect: "follow",
+     };
+
+     fetch(
+       `${BASE_URL}/v1/admins/pos/${params.id}/orders/${date}?page=1&page_size=200`,
+       requestOptions
+     )
+       .then((response) => response.json())
+       .then((result) => {
+         if (!cancelled) setOrdersSite(result.results ?? null);
+         setLoading(false);
+         setError(null);
+       })
+       .catch((e) => {
+         const msg =
+           e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+         if (!cancelled) setError(msg);
+         toast.error(msg);
+       });
+
+     return () => {
+       cancelled = true;
+     };
+   };
+
+   
 
   const getManagers = () => {
     let cancelled = false;
@@ -504,6 +543,60 @@ export default function Pos() {
     };
   };
 
+   const set_TypesImage = (base64: string) => {
+     let cancelled = false;
+
+     setLoading(true);
+     setError(null);
+
+     const myHeaders = new Headers();
+     myHeaders.append("Content-Type", "application/json");
+
+     if (getDeviceToken()) {
+       myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+     }
+     const raw = JSON.stringify({
+       image: base64,
+     });
+
+     const requestOptions: RequestInit = {
+       method: "PUT",
+       headers: myHeaders,
+       body: raw,
+       redirect: "follow",
+     };
+
+     fetch(`${BASE_URL}/v1/admins/payment-types/${selectedPaymentType.id}`, requestOptions)
+       .then((response) => {
+         if (response.status == 204) {
+           setLoading(false);
+           setError(null);
+           toast.success("Изображение успешно загружено!");
+           getPosPaymentTypes();
+           setIsImageModalOpen(false)
+           setSelectedImage(null);
+           setSelectedImageFile(null);
+           setSelectedPaymentType(null);
+         }
+         // return response.json();
+       })
+       .then((result) => {
+         // if (!cancelled) setPosPaymentTypes(result.results ?? null);
+         // setLoading(false);
+         // setError(null);
+       })
+       .catch((e) => {
+         const msg =
+           e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+         if (!cancelled) setError(msg);
+         toast.error(msg);
+       });
+
+     return () => {
+       cancelled = true;
+     };
+   };
+
   const deletePaymentType = (id: number) => {
     let cancelled = false;
 
@@ -532,8 +625,6 @@ export default function Pos() {
       requestOptions
     )
       .then((response) => {
-        console.log(response);
-
         if (response.status == 204) {
           setLoading(false);
           setError(null);
@@ -571,6 +662,9 @@ export default function Pos() {
 
   const [open2, setOpen2] = React.useState(false);
   const [date2, setDate2] = React.useState<string | undefined>(undefined);
+  const [ordersDate, setOrdersDate] = React.useState<string | undefined>(
+    undefined
+  );
 
   // Modal state for receipt details
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -587,6 +681,15 @@ export default function Pos() {
   const [password, setPassword] = React.useState<string>("");
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
+  // Modal state for image upload
+  const [isImageModalOpen, setIsImageModalOpen] = React.useState(false);
+  const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
+  const [selectedImageFile, setSelectedImageFile] = React.useState<File | null>(
+    null
+  );
+  const [selectedPaymentType, setSelectedPaymentType] =
+    React.useState<any>(null);
+
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);
 
@@ -596,9 +699,11 @@ export default function Pos() {
     const hours = String(d.getHours()).padStart(2, "0");
     const minutes = String(d.getMinutes()).padStart(2, "0");
 
-    return `${day}.${month}.${year},${hours}:${minutes}`;
+    return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
 
+
+  
   return (
     <Tabs defaultValue="info" className="space-y-2">
       <div className="flex items-center gap-4 bg-secondary rounded-md pl-4 min-h-16">
@@ -624,7 +729,7 @@ export default function Pos() {
         </TabsList>
       </div>
       <div className="">
-        <div className="overflow-auto max-h-[calc(100vh-7rem)] col-span-6 md:col-span-4 border rounded-2xl p-4 pt-0 bg-secondary ">
+        <div className="overflow-auto h-[calc(100vh-6rem)] col-span-6 md:col-span-4  rounded-2xl p-4 pt-0 bg-secondary ">
           {/* content */}
           <div className=" w-full pt-4">
             {/* info */}
@@ -632,8 +737,8 @@ export default function Pos() {
               <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
                 {t("app.pos.info")}{" "}
               </h1>
-              <div className="overflow-auto col-span-6 md:col-span-2 border rounded-2xl p-4 flex flex-col gap-2 max-h-[75vh] text-sm">
-                <h1 className="text-xl border-b-2 border-secondary py-2 mb-2 font-extrabold">
+              <div className="overflow-auto col-span-6 md:col-span-2  rounded-2xl p-4 flex flex-col gap-2 max-h-[75vh] text-sm">
+                <h1 className="text-xl -2 border-secondary py-2 mb-2 font-extrabold">
                   {t("app.pos.shop")}
                 </h1>
 
@@ -647,11 +752,11 @@ export default function Pos() {
                 <h1>
                   {t("app.pos.status")} :{" "}
                   {data?.status ? (
-                    <span className="bg-green-500 text-white text-[13px] p-1.5 rounded-sm">
+                    <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
                       {t("app.pos.active")}
                     </span>
                   ) : (
-                    <span className="bg-red-500 text-white text-[13px] p-1.5 rounded-sm">
+                    <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
                       {t("app.pos.inactive")}
                     </span>
                   )}
@@ -659,11 +764,11 @@ export default function Pos() {
                 <h1>
                   {t("app.pos.work_without_module")} :{" "}
                   {data?.enable_delay ? (
-                    <span className="bg-green-500 text-white text-[13px] p-1.5 rounded-sm">
+                    <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
                       {t("app.pos.active")}
                     </span>
                   ) : (
-                    <span className="bg-red-500 text-white text-[13px] p-1.5 rounded-sm">
+                    <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
                       {t("app.pos.inactive")}
                     </span>
                   )}
@@ -671,18 +776,24 @@ export default function Pos() {
                 <h1>
                   {t("app.pos.orders_from_site")} :{" "}
                   {data?.order_from_site ? (
-                    <span className="bg-green-500 text-white text-[13px] p-1.5 rounded-sm">
+                    <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
                       {t("app.pos.active")}
                     </span>
                   ) : (
-                    <span className="bg-red-500 text-white text-[13px] p-1.5 rounded-sm">
+                    <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
                       {t("app.pos.inactive")}
                     </span>
                   )}
                 </h1>
-                <h1>{t("app.pos.last_activity")} :</h1>
-                <h1 className="border-b-2 border-secondary py-2 mb-2">
-                  {t("app.pos.last_sync")} :
+                <h1>
+                  {t("app.pos.last_activity")} :{" "}
+                  {data?.last_active ? formatDate(data.last_active) : "N/A"}
+                </h1>
+                <h1 className="-2 border-secondary py-2 mb-2">
+                  {t("app.pos.last_sync")} :{" "}
+                  {data?.last_synchronize
+                    ? formatDate(data.last_synchronize)
+                    : "N/A"}
                 </h1>
               </div>
             </TabsContent>
@@ -698,13 +809,13 @@ export default function Pos() {
                 {t("app.pos.add_cashier")}
               </Button>
 
-              <table className="w-full border-t text-sm">
+              <table className="w-full  text-sm">
                 <thead className="sticky -top-[1px] z-10 bg-bgColor">
                   <tr>
-                    <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
+                    <th className="text-left font-semibold px-4 py-3  w-[60%]">
                       {t("app.company.name")}
                     </th>
-                    <th className="text-left font-semibold px-4 py-3 border-b w-[40%]">
+                    <th className="text-left font-semibold px-4 py-3  w-[40%]">
                       {t("app.company.status")}
                     </th>
                   </tr>
@@ -869,28 +980,28 @@ export default function Pos() {
                 <table className="w-full border border-gray-300 text-sm">
                   <thead className="sticky -top-[1px] z-10 bg-bgColor">
                     <tr>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                         Операция
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                         Номер чека
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                         Дата и время
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                         Тип оплаты
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                         Наличные
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                         Картой
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                         Сумма
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                         Статус 1С
                       </th>
                     </tr>
@@ -899,7 +1010,7 @@ export default function Pos() {
                     {receipts?.map((org: any) => (
                       <tr
                         key={org?.id}
-                        className="hover:bg-accent/50 cursor-pointer border-b border-gray-300"
+                        className="hover:bg-accent/50 cursor-pointer  border-gray-300"
                         onClick={() => {
                           setSelectedReceipt(org);
                           setIsModalOpen(true);
@@ -1040,14 +1151,14 @@ export default function Pos() {
                 </Button>
               </div>
 
-              <table className="w-full border-t text-sm">
+              <table className="w-full  text-sm">
                 <thead className="sticky -top-[1px] z-10 bg-bgColor">
                   <tr>
-                    <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
-                      Nomi
+                    <th className="text-left font-semibold px-4 py-3  w-[60%]">
+                      {t("app.company.name")}
                     </th>
-                    <th className="text-left font-semibold px-4 py-3 border-b w-[40%]">
-                      Holati
+                    <th className="text-left font-semibold px-4 py-3  w-[40%]">
+                      {t("app.company.status")}
                     </th>
                   </tr>
                 </thead>
@@ -1092,35 +1203,48 @@ export default function Pos() {
                           </span>
                           {org.name}
                         </td>
-                        <td className="px-4 py-3">
-                          <span
-                            onClick={() => {
-                              showAlert({
-                                title: "Подтверждение",
-                                description:
-                                  "Вы уверены, что хотите добавить этот способ оплаты?",
-                                confirmText: "Да, добавить",
-                                cancelText: "Отмена",
-                                onConfirm: () => {
-                                  deletePaymentType(org.id);
-                                },
-                                onCancel: () => {
-                                  console.log("Payment addition cancelled");
-                                },
-                              });
-                            }}
-                            className="bg-[#ED6C3C] inline-block p-2 rounded-sm cursor-pointer  "
-                          >
-                            <Image
-                              src="/icons/trash.svg"
-                              alt="home"
-                              width={20}
-                              height={20}
-                            />
-                          </span>
-                          {/* <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                            {t("app.company.active")}
-                          </span> */}
+                        <td className="px-4 py-3 ">
+                          <div className="flex gap-2">
+                            <span
+                              onClick={() => {
+                                setSelectedPaymentType(org);
+                                setIsImageModalOpen(true);
+                              }}
+                              className="bg-[#6EC8F7] inline-block p-2 rounded-lg cursor-pointer  "
+                            >
+                              <Image
+                                src="/icons/edit.svg"
+                                alt="home"
+                                width={20}
+                                height={20}
+                              />
+                            </span>
+                            <span
+                              onClick={() => {
+                                showAlert({
+                                  title: "Подтверждение",
+                                  description:
+                                    "Вы уверены, что хотите добавить этот способ оплаты?",
+                                  confirmText: "Да, добавить",
+                                  cancelText: "Отмена",
+                                  onConfirm: () => {
+                                    deletePaymentType(org.id);
+                                  },
+                                  onCancel: () => {
+                                    console.log("Payment addition cancelled");
+                                  },
+                                });
+                              }}
+                              className="bg-[#ED6C3C] inline-block p-2 rounded-lg cursor-pointer  "
+                            >
+                              <Image
+                                src="/icons/trash.svg"
+                                alt="home"
+                                width={20}
+                                height={20}
+                              />
+                            </span>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -1143,7 +1267,7 @@ export default function Pos() {
                         id="date"
                         className="w-48 justify-between font-normal"
                       >
-                        {date ? date : "Select date"}
+                        {ordersDate ? ordersDate : "Select date"}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
@@ -1153,7 +1277,7 @@ export default function Pos() {
                     >
                       <Calendar
                         mode="single"
-                        selected={date ? new Date(date) : undefined}
+                        selected={ordersDate ? new Date(ordersDate) : undefined}
                         captionLayout="dropdown"
                         onSelect={(selectedDate) => {
                           if (selectedDate) {
@@ -1162,70 +1286,80 @@ export default function Pos() {
                             ).padStart(2, "0")}-${String(
                               selectedDate.getDate()
                             ).padStart(2, "0")}`;
-                            setDate(formatted);
+                            setOrdersDate(formatted);
                             setOpen(false);
                           }
                         }}
                       />
                     </PopoverContent>
                   </Popover>
-                  <Button className="mb-2 cursor-pointer">
+                  <Button
+                    onClick={() => {
+                      if (ordersDate) getOrders(ordersDate);
+                    }}
+                    className="mb-2 cursor-pointer"
+                  >
                     {t("app.pos.generate_orders")}
                   </Button>
                 </div>
               </div>
 
-              {/* <table className="w-full border-t text-sm">
-                    <thead className="sticky -top-[1px] z-10 bg-bgColor">
-                      <tr>
-                        <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
-                          Nomi
-                        </th>
-                        <th className="text-left font-semibold px-4 py-3 border-b w-[40%]">
-                          Holati
-                        </th>
+              {loading ? (
+                <Loading />
+              ) : error ? (
+                <tr>
+                  <td className="px-4 py-6 text-red-600" colSpan={2}>
+                    {error}
+                  </td>
+                </tr>
+              ) : ordersSite?.length == 0 ? (
+                <tr>
+                  <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                    {t("toast.no_data")}
+                  </td>
+                </tr>
+              ) : (
+                <table className="w-full  text-sm">
+                  <thead className="sticky -top-[1px] z-10 bg-bgColor">
+                    <tr>
+                      <th className="text-left font-semibold px-4 py-3 ">
+                        ID заказы
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3 ">
+                        Дата и время
+                      </th>
+
+                      <th className="text-left font-semibold px-4 py-3 ">
+                        Сумма
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {ordersSite?.map((org: any) => (
+                      <tr
+                        key={org?.id}
+                        className="hover:bg-accent/50 cursor-pointer"
+                      >
+                        <td className="px-4 py-2">
+                          <Link href={`/order/${org.id}`}>
+                            <h2 className="text-green-500">#{org.id}</h2>
+                          </Link>
+                        </td>
+                        <td className="px-4 py-4">
+                          <Link href={`/order/${org.id}`}>
+                            <h2> {formatDate(org?.created_at)}</h2>
+                          </Link>
+                        </td>
+                        <td className="px-4 py-4">
+                          <Link href={`/order/${org.id}`}>
+                            <h2>{org?.price?.toLocaleString("ru-RU")} сум </h2>
+                          </Link>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                      {loading ? (
-                        <tr>
-                          <td colSpan={2}>
-                            <Loading />
-                          </td>
-                        </tr>
-                      ) : error ? (
-                        <tr>
-                          <td className="px-4 py-6 text-red-600" colSpan={2}>
-                            {error}
-                          </td>
-                        </tr>
-                      ) : !data?.poses?.length ? (
-                        <tr>
-                          <td
-                            className="px-4 py-6 text-muted-foreground"
-                            colSpan={2}
-                          >
-                            Ma&apos;lumot topilmadi
-                          </td>
-                        </tr>
-                      ) : (
-                        data.poses.map((org) => (
-                          <tr
-                            key={org.id}
-                            className="hover:bg-accent/50 cursor-pointer"
-                            onClick={() => router.push(`/pos/${org.id}`)}
-                          >
-                            <td className="px-4 py-3">{org.name}</td>
-                            <td className="px-4 py-3">
-                              <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                                Aktiv
-                              </span>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table> */}
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </TabsContent>
             {/* discounts */}
             <TabsContent value="discounts" className="w-full h-full">
@@ -1233,13 +1367,13 @@ export default function Pos() {
                 {t("app.pos.discounts")}{" "}
               </h1>
 
-              <table className="w-full border-t text-sm">
+              <table className="w-full  text-sm">
                 <thead className="sticky -top-[1px] z-10 bg-bgColor">
                   <tr>
-                    <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
+                    <th className="text-left font-semibold px-4 py-3  w-[60%]">
                       Nomi
                     </th>
-                    <th className="text-left font-semibold px-4 py-3 border-b w-[40%]">
+                    <th className="text-left font-semibold px-4 py-3  w-[40%]">
                       Holati
                     </th>
                   </tr>
@@ -1348,7 +1482,7 @@ export default function Pos() {
               {selectedReceipt && (
                 <div className="p-4 font-mono text-sm">
                   {/* Store Header */}
-                  <div className="text-center mb-4 border-b pb-3">
+                  <div className="text-center mb-4  pb-3">
                     <div className="text-lg font-bold">Продажа</div>
                     <div className="text-xs text-gray-600">Kanstik</div>
                   </div>
@@ -1374,7 +1508,7 @@ export default function Pos() {
                   </div>
 
                   {/* Items Section */}
-                  <div className="border-t pt-3 mb-4">
+                  <div className=" pt-3 mb-4">
                     <div className="text-center font-semibold mb-2">Товары</div>
                     <div className="space-y-2">
                       {selectedReceipt?.products?.map((item: any, index) => {
@@ -1408,7 +1542,7 @@ export default function Pos() {
                   </div>
 
                   {/* Tax Info */}
-                  <div className="border-t pt-3 mb-4">
+                  <div className=" pt-3 mb-4">
                     <div className="flex justify-between text-xs">
                       <span>НДС: (12)</span>
                       <span>
@@ -1424,7 +1558,7 @@ export default function Pos() {
                   </div>
 
                   {/* Payment Summary */}
-                  <div className="border-t pt-3 mb-4">
+                  <div className=" pt-3 mb-4">
                     <div className="space-y-1">
                       <div className="flex justify-between font-semibold">
                         <span>Сумма:</span>
@@ -1462,7 +1596,7 @@ export default function Pos() {
                   </div>
 
                   {/* Fiscal Details */}
-                  <div className="border-t pt-3 mb-4">
+                  <div className=" pt-3 mb-4">
                     <div className="text-center text-xs space-y-1">
                       <div className="flex justify-between">
                         <span>ФМ:</span> <span>LG420230640562</span>
@@ -1482,7 +1616,7 @@ export default function Pos() {
 
                   {/* QR Code Link */}
                   {/* {selectedReceipt.qr_code_url && (
-                    <div className="border-t pt-3 mb-4 text-center">
+                    <div className=" pt-3 mb-4 text-center">
                       <a
                         href={selectedReceipt.qr_code_url}
                         target="_blank"
@@ -1512,7 +1646,7 @@ export default function Pos() {
         >
           <div className="bg-white rounded-lg shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden">
             {/* Header */}
-            <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+            <div className="bg-gray-50 px-6 py-4  flex justify-between items-center">
               <h2 className="text-lg font-semibold text-gray-800">
                 Данные входа в кассу
               </h2>
@@ -1575,7 +1709,7 @@ export default function Pos() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="username"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ransparent"
                 />
               </div>
 
@@ -1590,7 +1724,7 @@ export default function Pos() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="password"
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ransparent"
                   />
                   <button
                     type="button"
@@ -1608,7 +1742,7 @@ export default function Pos() {
             </div>
 
             {/* Action Button */}
-            <div className="bg-gray-50 px-6 py-4 border-t">
+            <div className="bg-gray-50 px-6 py-4 ">
               <button
                 onClick={() => {
                   // Handle add manager functionality
@@ -1636,6 +1770,132 @@ export default function Pos() {
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium transition-colors"
               >
                 Добавить Кассира
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Upload Modal */}
+      {isImageModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsImageModalOpen(false);
+              setSelectedImage(null);
+              setSelectedImageFile(null);
+              setSelectedPaymentType(null);
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden">
+            {/* Header */}
+            <div className="bg-gray-50 px-6 py-4  flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-gray-800">
+                Обновить фото для {selectedPaymentType?.name || "CLICK"}
+              </h2>
+              <button
+                onClick={() => {
+                  setIsImageModalOpen(false);
+                  setSelectedImage(null);
+                  setSelectedImageFile(null);
+                  setSelectedPaymentType(null);
+                }}
+                className="text-orange-500 hover:text-orange-700 text-2xl cursor-pointer w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Image Upload Area */}
+            <div className="p-6">
+              <div
+                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:lue-400 transition-colors relative"
+                onClick={() => {
+                  const input = document.getElementById(
+                    "image-upload"
+                  ) as HTMLInputElement;
+                  input?.click();
+                }}
+              >
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setSelectedImageFile(file);
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        setSelectedImage(event.target?.result as string);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+                {selectedImage ? (
+                  <div className="relative">
+                    <img
+                      src={selectedImage}
+                      alt="Selected"
+                      className="w-full h-48 object-contain mx-auto rounded"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded opacity-0 hover:opacity-100 transition-opacity">
+                      <Image
+                        src="/icons/edit.svg"
+                        alt="Edit"
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 text-white"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="mx-auto w-16 h-16 mb-4 flex items-center justify-center">
+                      <svg
+                        className="w-12 h-12 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-gray-500 text-sm">
+                      Нажмите для выбора изображения
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <div className="bg-gray-50 px-6 py-4 ">
+              <button
+                onClick={() => {
+                  if (selectedImageFile) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      const base64 = event.target?.result as string;
+                      set_TypesImage(base64);
+                    };
+                    reader.readAsDataURL(selectedImageFile);
+                  } else {
+                    toast.error("Пожалуйста, выберите изображение");
+                  }
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium transition-colors"
+              >
+                Обновить фото
               </button>
             </div>
           </div>

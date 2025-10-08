@@ -67,13 +67,7 @@ export default function CompaniesPage() {
   return (
     <div className="space-y-4 ">
       <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16">
-        {/* <button
-          type="button"
-          onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary "
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button> */}
+        
         <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
       </div>
 
