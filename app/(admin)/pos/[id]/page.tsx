@@ -1119,196 +1119,204 @@ export default function Pos() {
                 </tbody>
               </table>
             </TabsContent>
-            {/* receipts */}
-            <TabsContent value="receipts" className="w-full">
-              <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
-                {t("app.pos.receipts")}{" "}
-              </h1>
-              <div className="flex flex-col gap-3">
-                <div className="flex gap-2">
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        id="date"
-                        className="w-48 justify-between font-normal"
-                      >
-                        {date ? date : t("app.pos.from")}
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto overflow-hidden p-0"
-                      align="start"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={date ? new Date(date) : undefined}
-                        captionLayout="dropdown"
-                        onSelect={(selectedDate) => {
-                          if (selectedDate) {
-                            const formatted = `${selectedDate.getFullYear()}-${String(
-                              selectedDate.getMonth() + 1
-                            ).padStart(2, "0")}-${String(
-                              selectedDate.getDate()
-                            ).padStart(2, "0")}`;
+            {/* Receipts Tab */}
+            <TabsContent value="receipts" className="w-full mt-0">
+              <div className="space-y-4">
+                <h2 className="text-sm md:text-base font-medium bg-bgColor text-black rounded-sm p-2 px-3">
+                  {t("app.pos.receipts")}
+                </h2>
 
-                            setDate(formatted); // ✅ endi 2025-09-26 shaklida ketadi
-                            setOpen(false);
-                          }
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Popover open={open2} onOpenChange={setOpen2}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        id="date"
-                        className="w-48 justify-between font-normal"
+                {/* Date filters - responsive */}
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <div className="flex flex-col sm:flex-row gap-2 flex-1">
+                    <Popover open={open} onOpenChange={setOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          id="date"
+                          className="w-full sm:w-48 justify-between font-normal text-sm"
+                        >
+                          {date ? date : t("app.pos.from")}
+                          <ChevronDownIcon className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto overflow-hidden p-0"
+                        align="start"
                       >
-                        {date2 ? date2 : t("app.pos.to")}
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto overflow-hidden p-0"
-                      align="start"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={date2 ? new Date(date2) : undefined}
-                        captionLayout="dropdown"
-                        onSelect={(selectedDate) => {
-                          if (selectedDate) {
-                            const formatted = `${selectedDate.getFullYear()}-${String(
-                              selectedDate.getMonth() + 1
-                            ).padStart(2, "0")}-${String(
-                              selectedDate.getDate()
-                            ).padStart(2, "0")}`;
+                        <Calendar
+                          mode="single"
+                          selected={date ? new Date(date) : undefined}
+                          captionLayout="dropdown"
+                          onSelect={(selectedDate) => {
+                            if (selectedDate) {
+                              const formatted = `${selectedDate.getFullYear()}-${String(
+                                selectedDate.getMonth() + 1
+                              ).padStart(2, "0")}-${String(
+                                selectedDate.getDate()
+                              ).padStart(2, "0")}`;
 
-                            setDate2(formatted); // ✅ endi 2025-09-26 shaklida ketadi
-                            setOpen2(false);
-                          }
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Button
-                    onClick={() => {
-                      if (date && date2) {
-                        setReceipts([]); // Reset receipts
-                        getReceipts(date, date2, 1, 50);
-                      }
-                    }}
-                    className="mb-2 cursor-pointer"
-                  >
-                    {t("app.pos.generate_receipts")}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (date) downloadReport(date);
-                    }}
-                    className="mb-2 cursor-pointer"
-                  >
-                    {t("app.pos.download_report")}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (date) downloadReceipts(date);
-                    }}
-                    className="mb-2 cursor-pointer"
-                  >
-                    {t("app.pos.download_receipts")}
-                  </Button>
+                              setDate(formatted);
+                              setOpen(false);
+                            }
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    <Popover open={open2} onOpenChange={setOpen2}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          id="date"
+                          className="w-full sm:w-48 justify-between font-normal text-sm"
+                        >
+                          {date2 ? date2 : t("app.pos.to")}
+                          <ChevronDownIcon className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto overflow-hidden p-0"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={date2 ? new Date(date2) : undefined}
+                          captionLayout="dropdown"
+                          onSelect={(selectedDate) => {
+                            if (selectedDate) {
+                              const formatted = `${selectedDate.getFullYear()}-${String(
+                                selectedDate.getMonth() + 1
+                              ).padStart(2, "0")}-${String(
+                                selectedDate.getDate()
+                              ).padStart(2, "0")}`;
+
+                              setDate2(formatted);
+                              setOpen2(false);
+                            }
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Action buttons - responsive */}
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button
+                      onClick={() => {
+                        if (date && date2) {
+                          setReceipts([]);
+                          getReceipts(date, date2, 1, 50);
+                        }
+                      }}
+                      className="cursor-pointer text-sm px-3 py-2"
+                    >
+                      {t("app.pos.generate_receipts")}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (date) downloadReport(date);
+                      }}
+                      className="cursor-pointer text-sm px-3 py-2"
+                    >
+                      {t("app.pos.download_report")}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (date) downloadReceipts(date);
+                      }}
+                      className="cursor-pointer text-sm px-3 py-2"
+                    >
+                      {t("app.pos.download_receipts")}
+                    </Button>
+                  </div>
                 </div>
-              </div>
 
-              {loading ? (
-                <Loading />
-              ) : error ? (
-                <tr>
-                  <td className="px-4 py-6 text-red-600" colSpan={2}>
-                    {error}
-                  </td>
-                </tr>
-              ) : receipts?.length == 0 ? (
-                <tr>
-                  <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
-                    {t("toast.no_data")}
-                  </td>
-                </tr>
-              ) : (
-                <table className="w-full border border-gray-300 text-sm">
-                  <thead className="sticky -top-[1px] z-10 bg-bgColor">
-                    <tr>
-                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                        Операция
-                      </th>
-                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                        Номер чека
-                      </th>
-                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                        Дата и время
-                      </th>
-                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                        Тип оплаты
-                      </th>
-                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                        Наличные
-                      </th>
-                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                        Картой
-                      </th>
-                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                        Сумма
-                      </th>
-                      <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                        Статус 1С
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y">
-                    {receipts?.map((org: any) => (
-                      <tr
-                        key={org?.id}
-                        className="hover:bg-accent/50 cursor-pointer  border-gray-300"
-                        onClick={() => {
-                          setSelectedReceipt(org);
-                          setIsModalOpen(true);
-                        }}
-                      >
-                        <td className="px-4 py-2 border-r border-gray-300">
-                          <h2 className="text-green-500">Продажа</h2>{" "}
-                          {org?.qr_code_url && (
-                            <Link
-                              onClick={(e) => {
-                                e.stopPropagation(); // parent onClick ishlashini to‘xtatadi
-                              }}
-                              className="bg-primary text-white rounded-sm text-[12px] p-1 px-3"
-                              target="_blank"
-                              href={org.qr_code_url}
-                            >
-                              QR код
-                            </Link>
-                          )}
-                        </td>
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          <h2>{org?.receipt_seq}</h2>
-                        </td>
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          <h2> {formatDate(org?.close_time)}</h2>
-                        </td>
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          {" "}
-                          <h2>
-                            {org?.payments?.map((type: any) => {
-                              return type.payment_type.name + " ";
-                            })}
-                          </h2>
-                        </td>
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          {/* <h2>
+                {loading ? (
+                  <Loading />
+                ) : error ? (
+                  <tr>
+                    <td className="px-4 py-6 text-red-600" colSpan={2}>
+                      {error}
+                    </td>
+                  </tr>
+                ) : receipts?.length == 0 ? (
+                  <tr>
+                    <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                      {t("toast.no_data")}
+                    </td>
+                  </tr>
+                ) : (
+                  <table className="w-full border border-gray-300 text-sm">
+                    <thead className="sticky -top-[1px] z-10 bg-bgColor">
+                      <tr>
+                        <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                          Операция
+                        </th>
+                        <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                          Номер чека
+                        </th>
+                        <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                          Дата и время
+                        </th>
+                        <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                          Тип оплаты
+                        </th>
+                        <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                          Наличные
+                        </th>
+                        <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                          Картой
+                        </th>
+                        <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                          Сумма
+                        </th>
+                        <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                          Статус 1С
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {receipts?.map((org: any) => (
+                        <tr
+                          key={org?.id}
+                          className="hover:bg-accent/50 cursor-pointer  border-gray-300"
+                          onClick={() => {
+                            setSelectedReceipt(org);
+                            setIsModalOpen(true);
+                          }}
+                        >
+                          <td className="px-4 py-2 border-r border-gray-300">
+                            <h2 className="text-green-500">Продажа</h2>{" "}
+                            {org?.qr_code_url && (
+                              <Link
+                                onClick={(e) => {
+                                  e.stopPropagation(); // parent onClick ishlashini to‘xtatadi
+                                }}
+                                className="bg-primary text-white rounded-sm text-[12px] p-1 px-3"
+                                target="_blank"
+                                href={org.qr_code_url}
+                              >
+                                QR код
+                              </Link>
+                            )}
+                          </td>
+                          <td className="px-4 py-4 border-r border-gray-300">
+                            <h2>{org?.receipt_seq}</h2>
+                          </td>
+                          <td className="px-4 py-4 border-r border-gray-300">
+                            <h2> {formatDate(org?.close_time)}</h2>
+                          </td>
+                          <td className="px-4 py-4 border-r border-gray-300">
+                            {" "}
+                            <h2>
+                              {org?.payments?.map((type: any) => {
+                                return type.payment_type.name + " ";
+                              })}
+                            </h2>
+                          </td>
+                          <td className="px-4 py-4 border-r border-gray-300">
+                            {/* <h2>
                             {org?.payments.map((item) => {
                               if (item.payment_type.name === "Наличные") {
                                 return item.price.toLocaleString("ru-RU");
@@ -1318,12 +1326,12 @@ export default function Pos() {
                             })}{" "}
                             сум
                           </h2> */}
-                          <h2>
-                            {org?.received_cash.toLocaleString("ru-RU")} сум
-                          </h2>
-                        </td>
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          {/* <h2>
+                            <h2>
+                              {org?.received_cash.toLocaleString("ru-RU")} сум
+                            </h2>
+                          </td>
+                          <td className="px-4 py-4 border-r border-gray-300">
+                            {/* <h2>
                             {org?.payments.map((item) => {
                               if (
                                 item.payment_type.name === "HUMO" ||
@@ -1336,403 +1344,420 @@ export default function Pos() {
                             })}{" "}
                             сум
                           </h2> */}
-                          <h2>
-                            {org?.received_card.toLocaleString("ru-RU")} сум
-                          </h2>
-                        </td>
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          <h2>
-                            {(
-                              Number(org?.received_cash) +
-                              Number(org?.received_card)
-                            ).toLocaleString("ru-RU")}{" "}
-                            сум
-                            {/* {org?.received_cash +
+                            <h2>
+                              {org?.received_card.toLocaleString("ru-RU")} сум
+                            </h2>
+                          </td>
+                          <td className="px-4 py-4 border-r border-gray-300">
+                            <h2>
+                              {(
+                                Number(org?.received_cash) +
+                                Number(org?.received_card)
+                              ).toLocaleString("ru-RU")}{" "}
+                              сум
+                              {/* {org?.received_cash +
                               org?.received_card.toLocaleString("ru-RU")}
                             сум */}
-                          </h2>
-                        </td>
-                        <td className="px-4 py-4 border-r border-gray-300">
-                          {org?.sent_to_1c ? (
-                            <span className="text-green-500">Отправлено</span>
-                          ) : (
-                            <span className="text-red-500">Не отправлено</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
+                            </h2>
+                          </td>
+                          <td className="px-4 py-4 border-r border-gray-300">
+                            {org?.sent_to_1c ? (
+                              <span className="text-green-500">Отправлено</span>
+                            ) : (
+                              <span className="text-red-500">
+                                Не отправлено
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
 
-              {/* Pagination */}
-              {receipts?.length > 0 && (
-                <Pagination
-                  currentPage={receiptsPagination.currentPage}
-                  totalPages={receiptsPagination.totalPages}
-                  onPageChange={(page) => {
-                    if (date && date2) {
-                      getReceipts(
-                        date,
-                        date2,
-                        page,
-                        receiptsPagination.pageSize
-                      );
-                    }
-                  }}
-                  showMoreItems={
-                    receiptsPagination.currentPage <
-                      receiptsPagination.totalPages ||
-                    (receiptsPagination.totalPages === 1 &&
-                      receiptsPagination.totalItems >
-                        receiptsPagination.pageSize) ||
-                    receiptsPagination.totalItems > receipts.length
-                      ? receiptsPagination.pageSize
-                      : 0
-                  }
-                  onShowMore={() => {
-                    if (
-                      date &&
-                      date2 &&
-                      (receiptsPagination.currentPage <
-                        receiptsPagination.totalPages ||
-                        (receiptsPagination.totalPages === 1 &&
-                          receiptsPagination.totalItems >
-                            receiptsPagination.pageSize) ||
-                        receiptsPagination.totalItems > receipts.length)
-                    ) {
-                      getReceipts(
-                        date,
-                        date2,
-                        receiptsPagination.currentPage + 1,
-                        receiptsPagination.pageSize,
-                        true // append = true for "Show More" functionality
-                      );
-                    }
-                  }}
-                  disabled={loading}
-                  className="mt-4"
-                />
-              )}
-            </TabsContent>
-            {/* payments */}
-            <TabsContent value="payments" className="w-full h-full">
-              <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
-                {t("app.pos.payments")}{" "}
-              </h1>
-
-              <div className="flex gap-2">
-                <Select
-                  onValueChange={(value: any) => {
-                    setSelectType(value);
-                  }}
-                >
-                  <SelectTrigger className="w-[280px]">
-                    <SelectValue placeholder="Выберите Платеж" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Выберите</SelectLabel>
-                      {paymentTypes?.map((item: any) => {
-                        return (
-                          <SelectItem key={item.id} value={item.id}>
-                            {item.name}
-                          </SelectItem>
+                {/* Pagination */}
+                {receipts?.length > 0 && (
+                  <Pagination
+                    currentPage={receiptsPagination.currentPage}
+                    totalPages={receiptsPagination.totalPages}
+                    onPageChange={(page) => {
+                      if (date && date2) {
+                        getReceipts(
+                          date,
+                          date2,
+                          page,
+                          receiptsPagination.pageSize
                         );
-                      })}
-                    </SelectGroup>
-                    {/* <SelectGroup>
-                      <SelectLabel>Выберите 2</SelectLabel>
-                      <SelectItem value="gmt">humo</SelectItem>
-                      <SelectItem value="cet">Uzcard</SelectItem>
-                    </SelectGroup> */}
-                  </SelectContent>
-                </Select>
-                <Button
-                  onClick={() => {
-                    if (selectType) {
-                      showAlert({
-                        title: "Подтверждение",
-                        description:
-                          "Вы уверены, что хотите добавить этот способ оплаты?",
-                        confirmText: "Да, добавить",
-                        cancelText: "Отмена",
-                        onConfirm: () => {
-                          set_PaymentTypes();
-                        },
-                        onCancel: () => {
-                          console.log("Payment addition cancelled");
-                        },
-                      });
-                    } else {
-                      toast.error("выберите тип оплаты");
+                      }
+                    }}
+                    showMoreItems={
+                      receiptsPagination.currentPage <
+                        receiptsPagination.totalPages ||
+                      (receiptsPagination.totalPages === 1 &&
+                        receiptsPagination.totalItems >
+                          receiptsPagination.pageSize) ||
+                      receiptsPagination.totalItems > receipts.length
+                        ? receiptsPagination.pageSize
+                        : 0
                     }
-                  }}
-                  className="cursor-pointer"
-                >
-                  {t("app.pos.add_payment")}
-                </Button>
+                    onShowMore={() => {
+                      if (
+                        date &&
+                        date2 &&
+                        (receiptsPagination.currentPage <
+                          receiptsPagination.totalPages ||
+                          (receiptsPagination.totalPages === 1 &&
+                            receiptsPagination.totalItems >
+                              receiptsPagination.pageSize) ||
+                          receiptsPagination.totalItems > receipts.length)
+                      ) {
+                        getReceipts(
+                          date,
+                          date2,
+                          receiptsPagination.currentPage + 1,
+                          receiptsPagination.pageSize,
+                          true // append = true for "Show More" functionality
+                        );
+                      }
+                    }}
+                    disabled={loading}
+                    className="mt-4"
+                  />
+                )}
               </div>
-
-              <table className="w-full  text-sm">
-                <thead className="sticky -top-[1px] z-10 bg-bgColor">
-                  <tr>
-                    <th className="text-left font-semibold px-4 py-3  w-[60%]">
-                      {t("app.company.name")}
-                    </th>
-                    <th className="text-left font-semibold px-4 py-3  w-[40%]">
-                      {t("app.company.status")}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {loading ? (
-                    <tr>
-                      <td colSpan={2}>
-                        <Loading />
-                      </td>
-                    </tr>
-                  ) : error ? (
-                    <tr>
-                      <td className="px-4 py-6 text-red-600" colSpan={2}>
-                        {error}
-                      </td>
-                    </tr>
-                  ) : !posPaymentTypes?.length ? (
-                    <tr>
-                      <td
-                        className="px-4 py-6 text-muted-foreground"
-                        colSpan={2}
-                      >
-                        {t("app.company.not_found")}
-                      </td>
-                    </tr>
-                  ) : (
-                    posPaymentTypes?.map((org: any) => (
-                      <tr key={org.id} className="hover:bg-accent/50 ">
-                        <td className="px-4 py-3 flex items-center gap-2">
-                          <span className="border border-primary rounded-sm p-1">
-                            <Image
-                              src={
-                                org.image_url
-                                  ? `${BASE_URL}${org.image_url}`
-                                  : "/images/nophoto.png" // yoki default rasm
-                              }
-                              width={28}
-                              height={28}
-                              alt={org.name || "image"}
-                              className="w-8 h-8 object-contain"
-                            />
-                          </span>
-                          {org.name}
-                        </td>
-                        <td className="px-4 py-3 ">
-                          <div className="flex gap-2">
-                            <span
-                              onClick={() => {
-                                setSelectedPaymentType(org);
-                                setIsImageModalOpen(true);
-                              }}
-                              className="bg-[#6EC8F7] inline-block p-2 rounded-lg cursor-pointer  "
-                            >
-                              <Image
-                                src="/icons/edit.svg"
-                                alt="home"
-                                width={20}
-                                height={20}
-                              />
-                            </span>
-                            <span
-                              onClick={() => {
-                                showAlert({
-                                  title: "Подтверждение",
-                                  description:
-                                    "Вы уверены, что хотите добавить этот способ оплаты?",
-                                  confirmText: "Да, добавить",
-                                  cancelText: "Отмена",
-                                  onConfirm: () => {
-                                    deletePaymentType(org.id);
-                                  },
-                                  onCancel: () => {
-                                    console.log("Payment addition cancelled");
-                                  },
-                                });
-                              }}
-                              className="bg-[#ED6C3C] inline-block p-2 rounded-lg cursor-pointer  "
-                            >
-                              <Image
-                                src="/icons/trash.svg"
-                                alt="home"
-                                width={20}
-                                height={20}
-                              />
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
             </TabsContent>
-            {/* orders */}
-            <TabsContent value="orders" className="w-full h-full">
-              <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
-                {t("app.pos.orders")}{" "}
-              </h1>
+            {/* Payments Tab */}
+            <TabsContent value="payments" className="w-full mt-0">
+              <div className="space-y-4">
+                <h2 className="text-sm md:text-base font-medium bg-bgColor text-black rounded-sm p-2 px-3">
+                  {t("app.pos.payments")}
+                </h2>
 
-              <div className="flex flex-col gap-3">
-                <div className="flex gap-2">
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        id="date"
-                        className="w-48 justify-between font-normal"
-                      >
-                        {ordersDate ? ordersDate : t("app.pos.from")}
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto overflow-hidden p-0"
-                      align="start"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={ordersDate ? new Date(ordersDate) : undefined}
-                        captionLayout="dropdown"
-                        onSelect={(selectedDate) => {
-                          if (selectedDate) {
-                            const formatted = `${selectedDate.getFullYear()}-${String(
-                              selectedDate.getMonth() + 1
-                            ).padStart(2, "0")}-${String(
-                              selectedDate.getDate()
-                            ).padStart(2, "0")}`;
-                            setOrdersDate(formatted);
-                            setOpen(false);
-                          }
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Popover open={open2} onOpenChange={setOpen2}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        id="date"
-                        className="w-48 justify-between font-normal"
-                      >
-                        {ordersDate2 ? ordersDate2 : t("app.pos.to")}
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto overflow-hidden p-0"
-                      align="start"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={ordersDate ? new Date(ordersDate) : undefined}
-                        captionLayout="dropdown"
-                        onSelect={(selectedDate) => {
-                          if (selectedDate) {
-                            const formatted = `${selectedDate.getFullYear()}-${String(
-                              selectedDate.getMonth() + 1
-                            ).padStart(2, "0")}-${String(
-                              selectedDate.getDate()
-                            ).padStart(2, "0")}`;
-                            setOrdersDate2(formatted);
-                            setOpen2(false);
-                          }
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                {/* Payment type selector - responsive */}
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <Select
+                    onValueChange={(value: any) => {
+                      setSelectType(value);
+                    }}
+                  >
+                    <SelectTrigger className="w-full sm:w-[280px]">
+                      <SelectValue placeholder="Выберите Платеж" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Выберите</SelectLabel>
+                        {paymentTypes?.map((item: any) => {
+                          return (
+                            <SelectItem key={item.id} value={item.id}>
+                              {item.name}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
                   <Button
                     onClick={() => {
-                      if (ordersDate && ordersDate2)
-                        getOrders(ordersDate, ordersDate2);
+                      if (selectType) {
+                        showAlert({
+                          title: "Подтверждение",
+                          description:
+                            "Вы уверены, что хотите добавить этот способ оплаты?",
+                          confirmText: "Да, добавить",
+                          cancelText: "Отмена",
+                          onConfirm: () => {
+                            set_PaymentTypes();
+                          },
+                          onCancel: () => {
+                            console.log("Payment addition cancelled");
+                          },
+                        });
+                      } else {
+                        toast.error("выберите тип оплаты");
+                      }
                     }}
-                    className="mb-2 cursor-pointer"
+                    className="cursor-pointer text-sm px-3 py-2"
                   >
-                    {t("app.pos.generate_orders")}
+                    {t("app.pos.add_payment")}
                   </Button>
                 </div>
-              </div>
 
-              {loading ? (
-                <Loading />
-              ) : error ? (
-                <tr>
-                  <td className="px-4 py-6 text-red-600" colSpan={2}>
-                    {error}
-                  </td>
-                </tr>
-              ) : ordersSite?.length == 0 ? (
-                <tr>
-                  <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
-                    {t("toast.no_data")}
-                  </td>
-                </tr>
-              ) : (
                 <table className="w-full  text-sm">
                   <thead className="sticky -top-[1px] z-10 bg-bgColor">
                     <tr>
-                      <th className="text-left font-semibold px-4 py-3 ">
-                        ID заказы
+                      <th className="text-left font-semibold px-4 py-3  w-[60%]">
+                        {t("app.company.name")}
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 ">
-                        Дата и время
-                      </th>
-
-                      <th className="text-left font-semibold px-4 py-3 ">
-                        Сумма
+                      <th className="text-left font-semibold px-4 py-3  w-[40%]">
+                        {t("app.company.status")}
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {ordersSite?.map((org: any) => (
-                      <tr
-                        key={org?.id}
-                        className="hover:bg-accent/50 cursor-pointer"
-                      >
-                        <td className="px-4 py-2">
-                          <Link href={`/order/${org.id}`}>
-                            <h2 className="text-green-500">#{org.id}</h2>
-                          </Link>
-                        </td>
-                        <td className="px-4 py-4">
-                          <Link href={`/order/${org.id}`}>
-                            <h2> {formatDate(org?.created_at)}</h2>
-                          </Link>
-                        </td>
-                        <td className="px-4 py-4">
-                          <Link href={`/order/${org.id}`}>
-                            <h2>{org?.price?.toLocaleString("ru-RU")} сум </h2>
-                          </Link>
+                    {loading ? (
+                      <tr>
+                        <td colSpan={2}>
+                          <Loading />
                         </td>
                       </tr>
-                    ))}
+                    ) : error ? (
+                      <tr>
+                        <td className="px-4 py-6 text-red-600" colSpan={2}>
+                          {error}
+                        </td>
+                      </tr>
+                    ) : !posPaymentTypes?.length ? (
+                      <tr>
+                        <td
+                          className="px-4 py-6 text-muted-foreground"
+                          colSpan={2}
+                        >
+                          {t("app.company.not_found")}
+                        </td>
+                      </tr>
+                    ) : (
+                      posPaymentTypes?.map((org: any) => (
+                        <tr key={org.id} className="hover:bg-accent/50 ">
+                          <td className="px-4 py-3 flex items-center gap-2">
+                            <span className="border border-primary rounded-sm p-1">
+                              <Image
+                                src={
+                                  org.image_url
+                                    ? `${BASE_URL}${org.image_url}`
+                                    : "/images/nophoto.png" // yoki default rasm
+                                }
+                                width={28}
+                                height={28}
+                                alt={org.name || "image"}
+                                className="w-8 h-8 object-contain"
+                              />
+                            </span>
+                            {org.name}
+                          </td>
+                          <td className="px-4 py-3 ">
+                            <div className="flex gap-2">
+                              <span
+                                onClick={() => {
+                                  setSelectedPaymentType(org);
+                                  setIsImageModalOpen(true);
+                                }}
+                                className="bg-[#6EC8F7] inline-block p-2 rounded-lg cursor-pointer  "
+                              >
+                                <Image
+                                  src="/icons/edit.svg"
+                                  alt="home"
+                                  width={20}
+                                  height={20}
+                                />
+                              </span>
+                              <span
+                                onClick={() => {
+                                  showAlert({
+                                    title: "Подтверждение",
+                                    description:
+                                      "Вы уверены, что хотите добавить этот способ оплаты?",
+                                    confirmText: "Да, добавить",
+                                    cancelText: "Отмена",
+                                    onConfirm: () => {
+                                      deletePaymentType(org.id);
+                                    },
+                                    onCancel: () => {
+                                      console.log("Payment addition cancelled");
+                                    },
+                                  });
+                                }}
+                                className="bg-[#ED6C3C] inline-block p-2 rounded-lg cursor-pointer  "
+                              >
+                                <Image
+                                  src="/icons/trash.svg"
+                                  alt="home"
+                                  width={20}
+                                  height={20}
+                                />
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
-              )}
+              </div>
             </TabsContent>
-            {/* discounts */}
-            <TabsContent value="discounts" className="w-full h-full">
-              <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
-                {t("app.pos.discounts")}{" "}
-              </h1>
-              <div className="discounts">
-                <div className="max-w-md space-y-6">
+            {/* Orders Tab */}
+            <TabsContent value="orders" className="w-full mt-0">
+              <div className="space-y-4">
+                <h2 className="text-sm md:text-base font-medium bg-bgColor text-black rounded-sm p-2 px-3">
+                  {t("app.pos.orders")}
+                </h2>
+
+                {/* Date filters - responsive */}
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <div className="flex flex-col sm:flex-row gap-2 flex-1">
+                    <Popover open={open} onOpenChange={setOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          id="date"
+                          className="w-full sm:w-48 justify-between font-normal text-sm"
+                        >
+                          {ordersDate ? ordersDate : t("app.pos.from")}
+                          <ChevronDownIcon className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto overflow-hidden p-0"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={
+                            ordersDate ? new Date(ordersDate) : undefined
+                          }
+                          captionLayout="dropdown"
+                          onSelect={(selectedDate) => {
+                            if (selectedDate) {
+                              const formatted = `${selectedDate.getFullYear()}-${String(
+                                selectedDate.getMonth() + 1
+                              ).padStart(2, "0")}-${String(
+                                selectedDate.getDate()
+                              ).padStart(2, "0")}`;
+                              setOrdersDate(formatted);
+                              setOpen(false);
+                            }
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    <Popover open={open2} onOpenChange={setOpen2}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          id="date"
+                          className="w-full sm:w-48 justify-between font-normal text-sm"
+                        >
+                          {ordersDate2 ? ordersDate2 : t("app.pos.to")}
+                          <ChevronDownIcon className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto overflow-hidden p-0"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={
+                            ordersDate ? new Date(ordersDate) : undefined
+                          }
+                          captionLayout="dropdown"
+                          onSelect={(selectedDate) => {
+                            if (selectedDate) {
+                              const formatted = `${selectedDate.getFullYear()}-${String(
+                                selectedDate.getMonth() + 1
+                              ).padStart(2, "0")}-${String(
+                                selectedDate.getDate()
+                              ).padStart(2, "0")}`;
+                              setOrdersDate2(formatted);
+                              setOpen2(false);
+                            }
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Generate button - responsive */}
+                  <div className="flex">
+                    <Button
+                      onClick={() => {
+                        if (ordersDate && ordersDate2)
+                          getOrders(ordersDate, ordersDate2);
+                      }}
+                      className="cursor-pointer text-sm px-3 py-2"
+                    >
+                      {t("app.pos.generate_orders")}
+                    </Button>
+                  </div>
+                </div>
+
+                {loading ? (
+                  <Loading />
+                ) : error ? (
+                  <tr>
+                    <td className="px-4 py-6 text-red-600" colSpan={2}>
+                      {error}
+                    </td>
+                  </tr>
+                ) : ordersSite?.length == 0 ? (
+                  <tr>
+                    <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                      {t("toast.no_data")}
+                    </td>
+                  </tr>
+                ) : (
+                  <table className="w-full  text-sm">
+                    <thead className="sticky -top-[1px] z-10 bg-bgColor">
+                      <tr>
+                        <th className="text-left font-semibold px-4 py-3 ">
+                          ID заказы
+                        </th>
+                        <th className="text-left font-semibold px-4 py-3 ">
+                          Дата и время
+                        </th>
+
+                        <th className="text-left font-semibold px-4 py-3 ">
+                          Сумма
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {ordersSite?.map((org: any) => (
+                        <tr
+                          key={org?.id}
+                          className="hover:bg-accent/50 cursor-pointer"
+                        >
+                          <td className="px-4 py-2">
+                            <Link href={`/order/${org.id}`}>
+                              <h2 className="text-green-500">#{org.id}</h2>
+                            </Link>
+                          </td>
+                          <td className="px-4 py-4">
+                            <Link href={`/order/${org.id}`}>
+                              <h2> {formatDate(org?.created_at)}</h2>
+                            </Link>
+                          </td>
+                          <td className="px-4 py-4">
+                            <Link href={`/order/${org.id}`}>
+                              <h2>
+                                {org?.price?.toLocaleString("ru-RU")} сум{" "}
+                              </h2>
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </TabsContent>
+            {/* Discounts Tab */}
+            <TabsContent value="discounts" className="w-full mt-0">
+              <div className="space-y-4">
+                <h2 className="text-sm md:text-base font-medium bg-bgColor text-black rounded-sm p-2 px-3">
+                  {t("app.pos.discounts")}
+                </h2>
+
+                <div className="max-w-full md:max-w-md space-y-4 md:space-y-6">
                   {/* Discount Status Toggle */}
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <div className="bg-white rounded-lg border border-gray-200 p-3 md:p-4">
                     <div className="flex items-center justify-between">
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <h3 className="text-sm font-medium text-gray-900">
                           {t("app.pos.discount_status")}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs md:text-sm text-gray-500">
                           {enableDiscount
                             ? t("app.pos.discount_enabled")
                             : t("app.pos.discount_disabled")}{" "}
@@ -1758,7 +1783,7 @@ export default function Pos() {
                   </div>
 
                   {/* Discount Percentage Input */}
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <div className="bg-white rounded-lg border border-gray-200 p-3 md:p-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {t("app.pos.discount_percentage")}
                     </label>
@@ -1771,10 +1796,10 @@ export default function Pos() {
                             e.target.value === "" ? 0 : Number(e.target.value)
                           )
                         }
-                        className="w-full px-3 py-2 pr-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
                         placeholder="0"
                       />
-                      <div className="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                         <span className="text-gray-500 text-sm">%</span>
                       </div>
                     </div>
@@ -1784,7 +1809,7 @@ export default function Pos() {
                   <button
                     onClick={handleDiscountSubmit}
                     disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-md font-medium transition-colors cursor-pointerz "
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-2.5 md:py-3 px-4 rounded-md font-medium transition-colors cursor-pointer text-sm md:text-base"
                   >
                     {loading
                       ? t("app.pos.applying")
