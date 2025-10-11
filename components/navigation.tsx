@@ -173,7 +173,7 @@ export function Sidebar({
         <Link
           href="/settings"
           className={cn(
-            "text-muted flex items-center rounded-md py-2 text-base transition-colors min-w-0 h-10",
+            "text-muted flex items-center rounded-md py-2 text-base transition-colors min-w-0 h-10 group",
             pathname?.startsWith("/settings")
               ? "bg-primary text-primary-foreground"
               : "hover:bg-primary/70 hover:text-secondary",
@@ -181,9 +181,14 @@ export function Sidebar({
             collapsed ? "gap-0 justify-center px-3" : "gap-3 px-4"
           )}
         >
-          <SettingIcon className={pathname?.startsWith("/settings")
-                  ? "[&_path]:stroke-[#FFFFFF]"
-                  : "group-hover:[&_path]:stroke-[#FFFFFF]"} />
+          <SettingIcon
+            className={cn(
+              "group-hover:[&_path]:stroke-[#FFFFFF] ",
+              pathname?.startsWith("/settings")
+                ? "[&_path]:stroke-[#FFFFFF]"
+                : "group-hover:[&_path]:stroke-[#FFFFFF] "
+            )}
+          />
           <span
             className={cn(
               "whitespace-nowrap transition-all duration-300",
@@ -227,8 +232,6 @@ export function Sidebar({
             {t("nav.logout")}
           </span>
         </button>
-
-        
       </nav>
     </aside>
   );

@@ -1,14 +1,25 @@
 {
-  "toast":{
+  "toast": {
     "login": "Вход успешен!",
-    "no_data": "Данные не найдены"
+    "no_data": "Данные не найдены",
+    "required": "обязательно",
+    "pos_created_successfully": "Касса успешно создана!",
+    "cash_register_name_required": "Название кассы обязательно",
+    "app_version_required": "Версия программы обязательна",
+    "gnk_id_required": "GNK ID обязателен",
+    "error_occurred": "Произошла ошибка",
+    "network_error": "Ошибка сети",
+    "auth_error": "Ошибка авторизации",
+    "permission_error": "Нет доступа",
+    "not_found_error": "Данные не найдены",
+    "server_error": "Ошибка сервера"
   },
   "nav": {
     "companies": "Компании",
     "reports": "Отчеты",
     "clients": "Клиенты",
     "webapp": "Сайт и приложение",
-    "setting" : "Настройки",
+    "setting": "Настройки",
     "logout": "Выйти"
   },
   "app": {
@@ -19,7 +30,10 @@
       "name": "Название",
       "status": "Действие",
       "not_found": "Данные не найдены",
-      "active": "Активен"
+      "active": "Активен",
+      "role": "Роль",
+      "casher": "кассир",
+      "admin": "админ"
     },
     "clients": { "title": "Клиенты" },
     "reports": { "title": "Отчеты" },
@@ -33,7 +47,21 @@
       "region": "Регион",
       "products_by_stocks": "Продукты по складам",
       "cashiers": "Кассы",
-      "add_cashier": "Добавить кассу"
+      "add_cashier": "Добавить кассу",
+      "cash_register_data": "Данные кассы",
+      "cash_register_name": "Название кассы",
+      "app_version": "Версия программы",
+      "gnk_id": "GNK ID",
+      "allow_without_module": "Разрешить работу без модуля",
+      "allow_credit_sales": "Разрешить продажу в кредит",
+      "orders_from_site": "Заказы с сайта",
+      "integration_with_1c": "Интеграция с 1C",
+      "manager_sale": "Продажа менеджера",
+      "payment_dollar": "Оплата долларами",
+      "show_purchase_price": "Показать цену покупки",
+      "edit_price": "Редактировать цену",
+      "create": "Создать",
+      "creating": "Создание..."
     },
     "pos": {
       "title": "Касса",
@@ -58,7 +86,35 @@
       "download_receipts": "Скачать чеки",
       "add_cashier": "Добавить кассира",
       "add_payment": "Добавить платеж",
-      "generate_orders": "Сформировать заказы"
+      "generate_orders": "Сформировать заказы",
+      "from": "от:",
+      "to": "до:",
+      "select_cashier_error": "Выберите кассира",
+      "select_role_error": "Выберите роль",
+      "username_required": "Username обязателен",
+      "password_required": "Пароль обязателен",
+      "manager_added_success": "Кассир успешно добавлен",
+      "manager_add_error": "Ошибка при добавлении кассира",
+      "adding": "Добавление...",
+      "select_cashier": "Выберите кассира",
+      "select_role": "Выберите роль",
+      "cashier": "Кассир",
+      "admin": "Администратор",
+      "roles": "Роли",
+      "cashier_login_data": "Данные входа в кассу",
+      "discount_status": "Статус скидки",
+      "discount_enabled": "Включен",
+      "discount_disabled": "Выключен",
+      "discount_percentage": "Укажите скидку в процентах",
+      "apply_changes": "Применить изменения",
+      "applying": "Применение...",
+      "discount_updated_success": "Скидка успешно обновлена",
+      "discount_update_error": "Ошибка при обновлении скидки"
+    },
+    "pagination": {
+      "show_more": "Показать ещё",
+      "previous": "Назад",
+      "next": "Вперёд"
     },
     "logged_out": "Вы вышли из аккаунта"
   },

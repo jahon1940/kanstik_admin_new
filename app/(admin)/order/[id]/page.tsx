@@ -132,7 +132,7 @@ export default function OrderPage() {
           <h2>{t("toast.no_data")}</h2>
         ) : (
           <div className="overflow-auto h-full px-4 relative">
-            <table className="w-full border-t text-sm  ">
+            <table className="w-full mb-3 text-sm ">
               <thead className="sticky -top-[1px] z-10 bg-bgColor ">
                 <tr>
                   <th className="text-left font-semibold px-4 py-3 border-b ">
@@ -202,7 +202,10 @@ export default function OrderPage() {
                       </td>
                       <td className="px-4 py-3">{org?.product?.brand?.name}</td>
                       <td className="px-4 py-3">{org?.quantity} штук</td>
-                      <td className="px-4 py-3">--- сум</td>
+                      <td className="px-4 py-3">
+                        {" "}
+                        {org?.product?.price?.toLocaleString("ru-RU")} сум
+                      </td>
                       <td className="px-4 py-3">
                         {org?.price?.toLocaleString("ru-RU")} сум
                       </td>
@@ -212,7 +215,7 @@ export default function OrderPage() {
               </tbody>
             </table>
             {orders?.products && (
-              <div className="flex justify-between text-xs bg-bgColor rounded-xl p-3 mb-4 sticky bottom-4 w-full left-0 z-40 ">
+              <div className="flex justify-between text-xs bg-bgColor rounded-xl p-3 mb-4 sticky bottom-0 w-full left-0 z-40 ">
                 <div className="flex flex-col gap-2 ">
                   <h2>Дата: {formatDate(orders.created_at)} </h2>
                   <h2>Статус: {orders.status}</h2>

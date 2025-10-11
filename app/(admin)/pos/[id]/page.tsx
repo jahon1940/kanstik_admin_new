@@ -5,6 +5,7 @@ import { ChevronDownIcon, ChevronLeft, Info, Eye, EyeOff } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/Loading";
+import { X } from "lucide-react";
 
 import { getDeviceToken } from "@/lib/token";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,6 +31,8 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import Image from "next/image";
 import { useAlertDialog } from "@/contexts/AlertDialogContext";
+import { Pagination } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 // Pose (kassa) type
 type Pose = {
@@ -81,12 +84,20 @@ export default function Pos() {
   const [paymentTypes, setPaymentTypes] = useState<any>(null);
   const [posPaymentTypes, setPosPaymentTypes] = useState<any>(null);
   const [selectType, setSelectType] = useState<number | null>(null);
-   const [ordersSite, setOrdersSite] = useState<any>(null);
+  const [ordersSite, setOrdersSite] = useState<any>(null);
 
   const { t } = useTranslation();
   const { showAlert } = useAlertDialog();
 
   const [receipts, setReceipts] = useState<Receipt[]>([]);
+  const [receiptsPagination, setReceiptsPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    pageSize: 50,
+    hasNext: false,
+    hasPrevious: false,
+  });
 
   const params = useParams();
   const router = useRouter();
@@ -129,7 +140,13 @@ export default function Pos() {
     };
   };
 
-  const getReceipts = (date: string) => {
+  const getReceipts = (
+    date: string,
+    date2: string,
+    page: number = 1,
+    pageSize: number = 50,
+    append: boolean = false
+  ) => {
     let cancelled = false;
 
     setLoading(true);
@@ -149,12 +166,59 @@ export default function Pos() {
     };
 
     fetch(
-      `${BASE_URL}/v1/admins/pos/${params.id}/receipts/${date}?page=1&page_size=200`,
+      `${BASE_URL}/v1/admins/pos/${params.id}/receipts?from_date=${date}&to_date=${date2}&page=${page}&page_size=${pageSize}`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
-        if (!cancelled) setReceipts(result.results ?? null);
+        console.log("Receipts API Response:", result);
+        console.log("Append mode:", append, "Page:", page);
+
+        if (!cancelled) {
+          if (append && page > 1) {
+            // Append new results to existing ones for "Show More" functionality
+            setReceipts((prevReceipts) => {
+              const newReceipts = [...prevReceipts, ...(result.results ?? [])];
+              console.log(
+                "Appending receipts. Previous count:",
+                prevReceipts.length,
+                "New count:",
+                newReceipts.length
+              );
+              return newReceipts;
+            });
+          } else {
+            // Replace results for normal pagination
+            setReceipts(result.results ?? []);
+          }
+
+          // Update pagination state
+          const paginationData = {
+            currentPage: result.current_page || result.page || page,
+            totalPages:
+              result.total_pages ||
+              result.totalPages ||
+              Math.ceil(
+                (result.total || result.count || 0) /
+                  (result.page_size || result.pageSize || pageSize)
+              ) ||
+              1,
+            totalItems: result.total_items || result.total || result.count || 0,
+            pageSize: result.page_size || result.pageSize || pageSize,
+            hasNext:
+              result.has_next ||
+              result.hasNext ||
+              (result.current_page || result.page || page) <
+                (result.total_pages || result.totalPages || 1),
+            hasPrevious:
+              result.has_previous ||
+              result.hasPrevious ||
+              (result.current_page || result.page || page) > 1,
+          };
+          console.log("API Result:", result);
+          console.log("Calculated Pagination data:", paginationData);
+          setReceiptsPagination(paginationData);
+        }
         setLoading(false);
         setError(null);
       })
@@ -170,48 +234,46 @@ export default function Pos() {
     };
   };
 
-   const getOrders = (date: string) => {
-     let cancelled = false;
+  const getOrders = (date: string, date2: string) => {
+    let cancelled = false;
 
-     setLoading(true);
-     setError(null);
+    setLoading(true);
+    setError(null);
 
-     const myHeaders = new Headers();
-     myHeaders.append("Content-Type", "application/json");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-     if (getDeviceToken()) {
-       myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-     }
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
 
-     const requestOptions: RequestInit = {
-       method: "GET",
-       headers: myHeaders,
-       redirect: "follow",
-     };
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
 
-     fetch(
-       `${BASE_URL}/v1/admins/pos/${params.id}/orders/${date}?page=1&page_size=200`,
-       requestOptions
-     )
-       .then((response) => response.json())
-       .then((result) => {
-         if (!cancelled) setOrdersSite(result.results ?? null);
-         setLoading(false);
-         setError(null);
-       })
-       .catch((e) => {
-         const msg =
-           e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-         if (!cancelled) setError(msg);
-         toast.error(msg);
-       });
+    fetch(
+      `${BASE_URL}/v1/admins/pos/${params.id}/orders?from_date=${date}&to_date=${date2}&page=1&page_size=200`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setOrdersSite(result.results ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
 
-     return () => {
-       cancelled = true;
-     };
-   };
-
-   
+    return () => {
+      cancelled = true;
+    };
+  };
 
   const getManagers = () => {
     let cancelled = false;
@@ -543,59 +605,62 @@ export default function Pos() {
     };
   };
 
-   const set_TypesImage = (base64: string) => {
-     let cancelled = false;
+  const set_TypesImage = (base64: string) => {
+    let cancelled = false;
 
-     setLoading(true);
-     setError(null);
+    setLoading(true);
+    setError(null);
 
-     const myHeaders = new Headers();
-     myHeaders.append("Content-Type", "application/json");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-     if (getDeviceToken()) {
-       myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-     }
-     const raw = JSON.stringify({
-       image: base64,
-     });
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+    const raw = JSON.stringify({
+      image: base64,
+    });
 
-     const requestOptions: RequestInit = {
-       method: "PUT",
-       headers: myHeaders,
-       body: raw,
-       redirect: "follow",
-     };
+    const requestOptions: RequestInit = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
 
-     fetch(`${BASE_URL}/v1/admins/payment-types/${selectedPaymentType.id}`, requestOptions)
-       .then((response) => {
-         if (response.status == 204) {
-           setLoading(false);
-           setError(null);
-           toast.success("Изображение успешно загружено!");
-           getPosPaymentTypes();
-           setIsImageModalOpen(false)
-           setSelectedImage(null);
-           setSelectedImageFile(null);
-           setSelectedPaymentType(null);
-         }
-         // return response.json();
-       })
-       .then((result) => {
-         // if (!cancelled) setPosPaymentTypes(result.results ?? null);
-         // setLoading(false);
-         // setError(null);
-       })
-       .catch((e) => {
-         const msg =
-           e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-         if (!cancelled) setError(msg);
-         toast.error(msg);
-       });
+    fetch(
+      `${BASE_URL}/v1/admins/payment-types/${selectedPaymentType.id}`,
+      requestOptions
+    )
+      .then((response) => {
+        if (response.status == 204) {
+          setLoading(false);
+          setError(null);
+          toast.success("Изображение успешно загружено!");
+          getPosPaymentTypes();
+          setIsImageModalOpen(false);
+          setSelectedImage(null);
+          setSelectedImageFile(null);
+          setSelectedPaymentType(null);
+        }
+        // return response.json();
+      })
+      .then((result) => {
+        // if (!cancelled) setPosPaymentTypes(result.results ?? null);
+        // setLoading(false);
+        // setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
 
-     return () => {
-       cancelled = true;
-     };
-   };
+    return () => {
+      cancelled = true;
+    };
+  };
 
   const deletePaymentType = (id: number) => {
     let cancelled = false;
@@ -649,6 +714,124 @@ export default function Pos() {
     };
   };
 
+  const handleAddManager = async () => {
+    // Validatsiya
+    if (!selectedCashier) {
+      toast.error(t("app.pos.select_cashier_error"));
+      return;
+    }
+    if (!selectedRole) {
+      toast.error(t("app.pos.select_role_error"));
+      return;
+    }
+    if (!username.trim()) {
+      toast.error(t("app.pos.username_required"));
+      return;
+    }
+    if (!password.trim()) {
+      toast.error(t("app.pos.password_required"));
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestData = {
+        manager_id: parseInt(selectedCashier),
+        username: username.trim(),
+        password: password.trim(),
+        role: selectedRole === "cashier" ? "casher" : selectedRole,
+      };
+
+      const requestOptions: RequestInit = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify(requestData),
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/pos/${params.id}/set-managers`,
+        requestOptions
+      );
+
+      if (response.ok || response.status === 204) {
+        toast.success(t("app.pos.manager_added_success"));
+        setIsAddManagerModalOpen(false);
+        // Form-ni tozalash
+        setSelectedCashier("");
+        setSelectedRole("");
+        setUsername("");
+        setPassword("");
+        // Managerlar ro'yxatini yangilash
+        getManagers();
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage =
+          errorData.message || t("app.pos.manager_add_error");
+        toast.error(errorMessage);
+      }
+    } catch (error: any) {
+      const msg = error?.message || t("app.pos.manager_add_error");
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDiscountSubmit = async () => {
+    try {
+      setLoading(true);
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestData = {
+        enable_discount: enableDiscount,
+        discount: discountValue,
+      };
+
+      console.log(requestData);
+
+      const requestOptions: RequestInit = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify(requestData),
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/pos/${params.id}/discount`,
+        requestOptions
+      );
+
+      if (response.ok || response.status === 204) {
+        toast.success(t("app.pos.discount_updated_success"));
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage =
+          errorData.message || t("app.pos.discount_update_error");
+        toast.error(errorMessage);
+      }
+    } catch (error: any) {
+      const msg = error?.message || t("app.pos.discount_update_error");
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getOrganization();
     getManagers();
@@ -663,6 +846,9 @@ export default function Pos() {
   const [open2, setOpen2] = React.useState(false);
   const [date2, setDate2] = React.useState<string | undefined>(undefined);
   const [ordersDate, setOrdersDate] = React.useState<string | undefined>(
+    undefined
+  );
+  const [ordersDate2, setOrdersDate2] = React.useState<string | undefined>(
     undefined
   );
 
@@ -690,6 +876,10 @@ export default function Pos() {
   const [selectedPaymentType, setSelectedPaymentType] =
     React.useState<any>(null);
 
+  // Discount state
+  const [enableDiscount, setEnableDiscount] = React.useState<boolean>(false);
+  const [discountValue, setDiscountValue] = React.useState<number>(0);
+
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);
 
@@ -702,8 +892,8 @@ export default function Pos() {
     return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
 
+  console.log(managers);
 
-  
   return (
     <Tabs defaultValue="info" className="space-y-2">
       <div className="flex items-center gap-4 bg-secondary rounded-md pl-4 min-h-16">
@@ -741,60 +931,85 @@ export default function Pos() {
                 <h1 className="text-xl -2 border-secondary py-2 mb-2 font-extrabold">
                   {t("app.pos.shop")}
                 </h1>
-
-                <h1>
-                  {t("app.stock.name")} : {data?.name}{" "}
-                </h1>
-                <h1>
-                  {t("app.pos.app_version")} : {data?.app_version}{" "}
-                </h1>
-                <h1>gnk_id : {data?.gnk_id} </h1>
-                <h1>
-                  {t("app.pos.status")} :{" "}
-                  {data?.status ? (
-                    <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
-                      {t("app.pos.active")}
-                    </span>
-                  ) : (
-                    <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
-                      {t("app.pos.inactive")}
-                    </span>
-                  )}
-                </h1>
-                <h1>
-                  {t("app.pos.work_without_module")} :{" "}
-                  {data?.enable_delay ? (
-                    <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
-                      {t("app.pos.active")}
-                    </span>
-                  ) : (
-                    <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
-                      {t("app.pos.inactive")}
-                    </span>
-                  )}
-                </h1>
-                <h1>
-                  {t("app.pos.orders_from_site")} :{" "}
-                  {data?.order_from_site ? (
-                    <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
-                      {t("app.pos.active")}
-                    </span>
-                  ) : (
-                    <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
-                      {t("app.pos.inactive")}
-                    </span>
-                  )}
-                </h1>
-                <h1>
-                  {t("app.pos.last_activity")} :{" "}
-                  {data?.last_active ? formatDate(data.last_active) : "N/A"}
-                </h1>
-                <h1 className="-2 border-secondary py-2 mb-2">
-                  {t("app.pos.last_sync")} :{" "}
-                  {data?.last_synchronize
-                    ? formatDate(data.last_synchronize)
-                    : "N/A"}
-                </h1>
+                <table className="md:w-[400px]">
+                  <tbody>
+                    <tr>
+                      <td className="py-1">{t("app.stock.name")} :</td>
+                      <td className="py-1">{data?.name} </td>
+                    </tr>
+                    <tr>
+                      <td className="py-1">{t("app.pos.app_version")} :</td>
+                      <td className="py-1">{data?.app_version} </td>
+                    </tr>
+                    <tr>
+                      <td className="py-1">gnk_id :</td>
+                      <td className="py-1">{data?.gnk_id} </td>
+                    </tr>
+                    <tr>
+                      <td className="py-1">{t("app.pos.status")} :</td>
+                      <td className="py-1">
+                        {data?.status ? (
+                          <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
+                            {t("app.pos.active")}
+                          </span>
+                        ) : (
+                          <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
+                            {t("app.pos.inactive")}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-1">
+                        {t("app.pos.work_without_module")} :
+                      </td>
+                      <td className="py-1">
+                        {data?.enable_delay ? (
+                          <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
+                            {t("app.pos.active")}
+                          </span>
+                        ) : (
+                          <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
+                            {t("app.pos.inactive")}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-1">
+                        {t("app.pos.orders_from_site")} :
+                      </td>
+                      <td className="py-1">
+                        {data?.order_from_site ? (
+                          <span className="bg-green-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
+                            {t("app.pos.active")}
+                          </span>
+                        ) : (
+                          <span className="bg-red-500 text-white text-[13px] p-1.5 py-1 rounded-sm">
+                            {t("app.pos.inactive")}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-1">{t("app.pos.last_activity")} :</td>
+                      <td className="py-1">
+                        {data?.last_active
+                          ? formatDate(data.last_active)
+                          : "N/A"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-1">{t("app.pos.last_sync")} :</td>
+                      <td className="py-1">
+                        {" "}
+                        {data?.last_synchronize
+                          ? formatDate(data.last_synchronize)
+                          : "N/A"}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </TabsContent>
             {/* cashiers */}
@@ -816,7 +1031,7 @@ export default function Pos() {
                       {t("app.company.name")}
                     </th>
                     <th className="text-left font-semibold px-4 py-3  w-[40%]">
-                      {t("app.company.status")}
+                      {t("app.company.role")}
                     </th>
                   </tr>
                 </thead>
@@ -849,9 +1064,15 @@ export default function Pos() {
                         className="hover:bg-accent/50 cursor-pointer "
                       >
                         <td className="px-4 py-3 ">{org.name}</td>
-                        <td>
-                          <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                            {t("app.company.active")}
+                        <td className="py-1">
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300",
+                              org.role === "admin" &&
+                                "bg-red-600/20 text-red-600/90"
+                            )}
+                          >
+                            {t(`app.company.${org.role}`)}
                           </span>
                         </td>
                       </tr>
@@ -874,7 +1095,7 @@ export default function Pos() {
                         id="date"
                         className="w-48 justify-between font-normal"
                       >
-                        {date ? date : t("app.pos.select_date")}
+                        {date ? date : t("app.pos.from")}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
@@ -908,7 +1129,7 @@ export default function Pos() {
                         id="date"
                         className="w-48 justify-between font-normal"
                       >
-                        {date2 ? date2 : t("app.pos.select_date")}
+                        {date2 ? date2 : t("app.pos.to")}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
@@ -937,7 +1158,10 @@ export default function Pos() {
                   </Popover>
                   <Button
                     onClick={() => {
-                      if (date) getReceipts(date);
+                      if (date && date2) {
+                        setReceipts([]); // Reset receipts
+                        getReceipts(date, date2, 1, 50);
+                      }
                     }}
                     className="mb-2 cursor-pointer"
                   >
@@ -1017,7 +1241,7 @@ export default function Pos() {
                         }}
                       >
                         <td className="px-4 py-2 border-r border-gray-300">
-                          <h2 className="text-green-500">Продажа</h2>
+                          <h2 className="text-green-500">Продажа</h2>{" "}
                           {org?.qr_code_url && (
                             <Link
                               onClick={(e) => {
@@ -1083,13 +1307,63 @@ export default function Pos() {
                           {org?.sent_to_1c ? (
                             <span className="text-green-500">Отправлено</span>
                           ) : (
-                            <span className="text-red-500">Не Отправлено</span>
+                            <span className="text-red-500">Не отправлено</span>
                           )}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              )}
+
+              {/* Pagination */}
+              {receipts?.length > 0 && (
+                <Pagination
+                  currentPage={receiptsPagination.currentPage}
+                  totalPages={receiptsPagination.totalPages}
+                  onPageChange={(page) => {
+                    if (date && date2) {
+                      getReceipts(
+                        date,
+                        date2,
+                        page,
+                        receiptsPagination.pageSize
+                      );
+                    }
+                  }}
+                  showMoreItems={
+                    receiptsPagination.currentPage <
+                      receiptsPagination.totalPages ||
+                    (receiptsPagination.totalPages === 1 &&
+                      receiptsPagination.totalItems >
+                        receiptsPagination.pageSize) ||
+                    receiptsPagination.totalItems > receipts.length
+                      ? receiptsPagination.pageSize
+                      : 0
+                  }
+                  onShowMore={() => {
+                    if (
+                      date &&
+                      date2 &&
+                      (receiptsPagination.currentPage <
+                        receiptsPagination.totalPages ||
+                        (receiptsPagination.totalPages === 1 &&
+                          receiptsPagination.totalItems >
+                            receiptsPagination.pageSize) ||
+                        receiptsPagination.totalItems > receipts.length)
+                    ) {
+                      getReceipts(
+                        date,
+                        date2,
+                        receiptsPagination.currentPage + 1,
+                        receiptsPagination.pageSize,
+                        true // append = true for "Show More" functionality
+                      );
+                    }
+                  }}
+                  disabled={loading}
+                  className="mt-4"
+                />
               )}
             </TabsContent>
             {/* payments */}
@@ -1267,7 +1541,7 @@ export default function Pos() {
                         id="date"
                         className="w-48 justify-between font-normal"
                       >
-                        {ordersDate ? ordersDate : "Select date"}
+                        {ordersDate ? ordersDate : t("app.pos.from")}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
@@ -1293,9 +1567,43 @@ export default function Pos() {
                       />
                     </PopoverContent>
                   </Popover>
+                  <Popover open={open2} onOpenChange={setOpen2}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        id="date"
+                        className="w-48 justify-between font-normal"
+                      >
+                        {ordersDate2 ? ordersDate2 : t("app.pos.to")}
+                        <ChevronDownIcon />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto overflow-hidden p-0"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={ordersDate ? new Date(ordersDate) : undefined}
+                        captionLayout="dropdown"
+                        onSelect={(selectedDate) => {
+                          if (selectedDate) {
+                            const formatted = `${selectedDate.getFullYear()}-${String(
+                              selectedDate.getMonth() + 1
+                            ).padStart(2, "0")}-${String(
+                              selectedDate.getDate()
+                            ).padStart(2, "0")}`;
+                            setOrdersDate2(formatted);
+                            setOpen2(false);
+                          }
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <Button
                     onClick={() => {
-                      if (ordersDate) getOrders(ordersDate);
+                      if (ordersDate && ordersDate2)
+                        getOrders(ordersDate, ordersDate2);
                     }}
                     className="mb-2 cursor-pointer"
                   >
@@ -1366,58 +1674,75 @@ export default function Pos() {
               <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
                 {t("app.pos.discounts")}{" "}
               </h1>
+              <div className="discounts">
+                <div className="max-w-md space-y-6">
+                  {/* Discount Status Toggle */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-900">
+                          {t("app.pos.discount_status")}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {enableDiscount
+                            ? t("app.pos.discount_enabled")
+                            : t("app.pos.discount_disabled")}{" "}
+                          0%
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setEnableDiscount(!enableDiscount)}
+                        className={cn(
+                          "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                          enableDiscount ? "bg-blue-600" : "bg-gray-200"
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                            enableDiscount ? "translate-x-5" : "translate-x-0"
+                          )}
+                        />
+                      </button>
+                    </div>
+                  </div>
 
-              <table className="w-full  text-sm">
-                <thead className="sticky -top-[1px] z-10 bg-bgColor">
-                  <tr>
-                    <th className="text-left font-semibold px-4 py-3  w-[60%]">
-                      Nomi
-                    </th>
-                    <th className="text-left font-semibold px-4 py-3  w-[40%]">
-                      Holati
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {loading ? (
-                    <tr>
-                      <td colSpan={2}>
-                        <Loading />
-                      </td>
-                    </tr>
-                  ) : error ? (
-                    <tr>
-                      <td className="px-4 py-6 text-red-600" colSpan={2}>
-                        {error}
-                      </td>
-                    </tr>
-                  ) : !data?.poses?.length ? (
-                    <tr>
-                      <td
-                        className="px-4 py-6 text-muted-foreground"
-                        colSpan={2}
-                      >
-                        {t("app.company.not_found")}
-                      </td>
-                    </tr>
-                  ) : (
-                    data.poses.map((org: any) => (
-                      <tr
-                        key={org.id}
-                        className="hover:bg-accent/50 cursor-pointer"
-                        onClick={() => router.push(`/pos/${org.id}`)}
-                      >
-                        <td className="px-4 py-3">{org.name}</td>
-                        <td className="px-4 py-3">
-                          <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                            {t("app.company.active")}
-                          </span>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                  {/* Discount Percentage Input */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t("app.pos.discount_percentage")}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={discountValue === 0 ? "" : discountValue}
+                        onChange={(e) =>
+                          setDiscountValue(
+                            e.target.value === "" ? 0 : Number(e.target.value)
+                          )
+                        }
+                        className="w-full px-3 py-2 pr-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="0"
+                      />
+                      <div className="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
+                        <span className="text-gray-500 text-sm">%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Apply Changes Button */}
+                  <button
+                    onClick={handleDiscountSubmit}
+                    disabled={loading}
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-md font-medium transition-colors cursor-pointer "
+                  >
+                    {loading
+                      ? t("app.pos.applying")
+                      : t("app.pos.apply_changes")}
+                  </button>
+                </div>
+              </div>
             </TabsContent>
           </div>
         </div>
@@ -1648,13 +1973,13 @@ export default function Pos() {
             {/* Header */}
             <div className="bg-gray-50 px-6 py-4  flex justify-between items-center">
               <h2 className="text-lg font-semibold text-gray-800">
-                Данные входа в кассу
+                {t("app.pos.cashier_login_data")}
               </h2>
               <button
                 onClick={() => setIsAddManagerModalOpen(false)}
-                className="text-orange-500 hover:text-orange-700 text-2xl cursor-pointer"
+                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
               >
-                ×
+                <X className="h-4 w-4 " />
               </button>
             </div>
 
@@ -1663,7 +1988,7 @@ export default function Pos() {
               {/* Cashier Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Выберите Кассира
+                  {t("app.pos.select_cashier")}
                 </label>
                 <SearchableSelect
                   options={
@@ -1674,26 +1999,30 @@ export default function Pos() {
                   }
                   value={selectedCashier?.toString() || ""} // bu ham string bo‘lishi shart
                   onValueChange={(val) => setSelectedCashier(val)} // val string bo‘lib keladi
-                  placeholder="Выберите кассира"
-                  searchPlaceholder="Поиск кассира..."
-                  emptyText="Кассир не найден"
+                  placeholder={t("app.pos.select_cashier")}
+                  searchPlaceholder={t("app.search")}
+                  emptyText={t("app.company.not_found")}
                 />
               </div>
 
               {/* Role Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Выберите Роль
+                  {t("app.pos.select_role")}
                 </label>
                 <Select value={selectedRole} onValueChange={setSelectedRole}>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Выберите роль" />
+                    <SelectValue placeholder={t("app.pos.select_role")} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Роли</SelectLabel>
-                      <SelectItem value="cashier">Кассир</SelectItem>
-                      <SelectItem value="admin">Администратор</SelectItem>
+                      <SelectLabel>{t("app.pos.roles")}</SelectLabel>
+                      <SelectItem value="cashier">
+                        {t("app.pos.cashier")}
+                      </SelectItem>
+                      <SelectItem value="admin">
+                        {t("app.pos.admin")}
+                      </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -1744,32 +2073,11 @@ export default function Pos() {
             {/* Action Button */}
             <div className="bg-gray-50 px-6 py-4 ">
               <button
-                onClick={() => {
-                  // Handle add manager functionality
-                  if (
-                    !selectedCashier ||
-                    !selectedRole ||
-                    !username ||
-                    !password
-                  ) {
-                    toast.error("Пожалуйста, заполните все поля");
-                    return;
-                  }
-
-                  // Here you would typically make an API call to add the manager
-                  toast.success("Кассир успешно добавлен");
-                  setIsAddManagerModalOpen(false);
-
-                  // Reset form
-                  setSelectedCashier("");
-                  setSelectedRole("");
-                  setUsername("");
-                  setPassword("");
-                  setShowPassword(false);
-                }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium transition-colors"
+                onClick={handleAddManager}
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-2 px-4 rounded-md font-medium transition-colors"
               >
-                Добавить Кассира
+                {loading ? t("app.pos.adding") : t("app.pos.add_cashier")}
               </button>
             </div>
           </div>

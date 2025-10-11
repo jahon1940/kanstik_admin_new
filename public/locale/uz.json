@@ -1,7 +1,18 @@
 {
-  "toast":{
-    "login":"Muvaffaqiyatli kirildi!",
-    "no_data":"Ma'lumot topilmadi"
+  "toast": {
+    "login": "Muvaffaqiyatli kirildi!",
+    "no_data": "Ma'lumot topilmadi",
+    "required": "majburiy",
+    "pos_created_successfully": "Kassa muvaffaqiyatli yaratildi!",
+    "cash_register_name_required": "Kassa nomi majburiy",
+    "app_version_required": "Dastur versiyasi majburiy",
+    "gnk_id_required": "GNK ID majburiy",
+    "error_occurred": "Xatolik yuz berdi",
+    "network_error": "Internet aloqasi xatoligi",
+    "auth_error": "Avtorizatsiya xatoligi",
+    "permission_error": "Ruxsat yo'q",
+    "not_found_error": "Ma'lumot topilmadi",
+    "server_error": "Server xatoligi"
   },
   "nav": {
     "companies": "Kompaniyalar",
@@ -19,7 +30,10 @@
       "name": "Nomi",
       "status": "Tahrirlash",
       "not_found": "Ma'lumot topilmadi",
-      "active": "Faol"
+      "active": "Faol",
+      "role": "Rol",
+      "casher": "кассир",
+      "admin": "админ"
     },
     "clients": { "title": "Mijozlar" },
     "reports": { "title": "Hisobotlar" },
@@ -33,7 +47,21 @@
       "region": "Viloyat",
       "products_by_stocks": "Omborlar bo'yicha mahsulotlar",
       "cashiers": "Kassalar",
-      "add_cashier": "Kassa qo'shish"
+      "add_cashier": "Kassa qo'shish",
+      "cash_register_data": "Kassa ma'lumotlari",
+      "cash_register_name": "Kassa nomi",
+      "app_version": "Dastur versiyasi",
+      "gnk_id": "GNK ID",
+      "allow_without_module": "Modulsiz ishlashga ruxsat berish",
+      "allow_credit_sales": "Qarzga sotishga ruxsat berish",
+      "orders_from_site": "Saytdan buyurtmalar",
+      "integration_with_1c": "1C bilan integratsiya",
+      "manager_sale": "Menejer sotuvi",
+      "payment_dollar": "Dollar bilan to'lov",
+      "show_purchase_price": "Sotib olish narxini ko'rsatish",
+      "edit_price": "Narxni tahrirlash",
+      "create": "Yaratish",
+      "creating": "Yaratilmoqda..."
     },
     "pos": {
       "title": "Kassa",
@@ -58,7 +86,35 @@
       "download_receipts": "Cheklarni yuklab olish",
       "add_cashier": "Kassir qo'shish",
       "add_payment": "To'lov qo'shish",
-      "generate_orders": "Buyurtmalar yaratish"
+      "generate_orders": "Buyurtmalar yaratish",
+      "from": "dan",
+      "to": "gacha",
+      "select_cashier_error": "Kassirni tanlang",
+      "select_role_error": "Rolni tanlang",
+      "username_required": "Username majburiy",
+      "password_required": "Parol majburiy",
+      "manager_added_success": "Kassir muvaffaqiyatli qo'shildi",
+      "manager_add_error": "Kassir qo'shishda xatolik",
+      "adding": "Qo'shilmoqda...",
+      "select_cashier": "Kassirni tanlang",
+      "select_role": "Rolni tanlang",
+      "cashier": "Kassir",
+      "admin": "Administrator",
+      "roles": "Rollar",
+      "cashier_login_data": "Kassaga kirish ma'lumotlari",
+      "discount_status": "Chegirma holati",
+      "discount_enabled": "Yoqilgan",
+      "discount_disabled": "O'chirilgan",
+      "discount_percentage": "Chegirma foizini kiriting",
+      "apply_changes": "O'zgarishlarni qo'llash",
+      "applying": "Qo'llanmoqda...",
+      "discount_updated_success": "Chegirma muvaffaqiyatli yangilandi",
+      "discount_update_error": "Chegirmani yangilashda xatolik"
+    },
+    "pagination": {
+      "show_more": "Ko'rsatish",
+      "previous": "Oldingi",
+      "next": "Keyingi"
     },
     "logged_out": "Profilingizdan chiqdingiz"
   },
