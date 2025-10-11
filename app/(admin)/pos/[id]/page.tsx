@@ -235,7 +235,7 @@ export default function Pos() {
   };
 
   console.log(receipts);
-  
+
   const getOrders = (date: string, date2: string) => {
     let cancelled = false;
 
@@ -898,30 +898,66 @@ export default function Pos() {
 
   return (
     <Tabs defaultValue="info" className="space-y-2">
-      <div className="flex items-center gap-4 bg-secondary rounded-md pl-4 min-h-16">
-        <div className="flex items-center gap-4">
+      {/* Header - responsive */}
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg shadow-black/10 dark:shadow-black/30">
+        <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
           <button
             type="button"
             onClick={() => router.back()}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+            className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3 w-3 md:h-4 md:w-4" />
           </button>
-          <h1 className="text-xl font-semibold">
+          <h1 className="text-base md:text-xl font-semibold truncate">
             {t("app.pos.title")}({data?.name})
           </h1>
         </div>
-        <TabsList className="flex w-full mx-auto xl:mx-0 gap-2 border-none ">
-          <TabsTrigger value="info">{t("app.pos.info")}</TabsTrigger>
-          <TabsTrigger value="cashiers">{t("app.pos.cashiers")}</TabsTrigger>
-          <TabsTrigger value="receipts">{t("app.pos.receipts")}</TabsTrigger>
-          <TabsTrigger value="payments">{t("app.pos.payments")}</TabsTrigger>
-          <TabsTrigger value="orders">{t("app.pos.orders")}</TabsTrigger>
-          <TabsTrigger value="discounts">{t("app.pos.discounts")}</TabsTrigger>
-        </TabsList>
+
+        {/* Tabs - responsive */}
+        <div className="w-full md:w-auto overflow-x-auto">
+          <TabsList className="flex w-max md:w-full gap-1 md:gap-2 border-none bg-transparent p-0">
+            <TabsTrigger
+              value="info"
+              className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2 whitespace-nowrap"
+            >
+              {t("app.pos.info")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="cashiers"
+              className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2 whitespace-nowrap"
+            >
+              {t("app.pos.cashiers")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="receipts"
+              className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2 whitespace-nowrap"
+            >
+              {t("app.pos.receipts")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="payments"
+              className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2 whitespace-nowrap"
+            >
+              {t("app.pos.payments")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="orders"
+              className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2 whitespace-nowrap"
+            >
+              {t("app.pos.orders")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="discounts"
+              className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2 whitespace-nowrap"
+            >
+              {t("app.pos.discounts")}
+            </TabsTrigger>
+          </TabsList>
+        </div>
       </div>
-      <div className="">
-        <div className="overflow-auto h-[calc(100vh-6rem)] col-span-6 md:col-span-4  rounded-2xl p-4 pt-0 bg-secondary ">
+      {/* Main content - responsive */}
+      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30">
+        <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
           {/* content */}
           <div className=" w-full pt-4">
             {/* info */}
@@ -1265,9 +1301,11 @@ export default function Pos() {
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
                           {" "}
-                          <h2>{org?.payments?.map((type:any)=>{
-                            return type.payment_type.name + " "
-                          })}</h2>
+                          <h2>
+                            {org?.payments?.map((type: any) => {
+                              return type.payment_type.name + " ";
+                            })}
+                          </h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
                           {/* <h2>
@@ -1307,7 +1345,8 @@ export default function Pos() {
                             {(
                               Number(org?.received_cash) +
                               Number(org?.received_card)
-                            ).toLocaleString("ru-RU")} сум
+                            ).toLocaleString("ru-RU")}{" "}
+                            сум
                             {/* {org?.received_cash +
                               org?.received_card.toLocaleString("ru-RU")}
                             сум */}

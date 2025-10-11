@@ -83,12 +83,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Side - Login Form */}
-      <div className="flex-3 flex items-center justify-center bg-white px-8">
+      <div className="flex-1 md:flex-3 flex items-center justify-center bg-white px-4 md:px-8 py-8 md:py-0">
         <div className="w-full max-w-md">
           {/* Logo */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 md:mb-8">
             <div className="inline-block">
               <Image
                 src="/images/logo.png"
@@ -97,23 +97,25 @@ export default function LoginPage() {
                 height={40}
                 className="mx-auto mb-1"
               />
-              <span className="text-3xl font-bold text-gray-900">Retailer</span>
+              <span className="text-2xl md:text-3xl font-bold text-gray-900">
+                Retailer
+              </span>
               <div className="h-1 w-8 bg-blue-600 mx-auto mt-1"></div>
             </div>
           </div>
 
           {/* Welcome Message */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-6 md:mb-8">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
               Добро пожаловать!
             </h1>
-            <p className="text-gray-500 text-lg">
+            <p className="text-gray-500 text-base md:text-lg">
               Давайте вернемся к вашим делам!
             </p>
           </div>
 
           {/* Login Form */}
-          <form onSubmit={onSubmit} className="space-y-6">
+          <form onSubmit={onSubmit} className="space-y-4 md:space-y-6">
             {/* Email Field */}
             <div>
               <label
@@ -129,7 +131,7 @@ export default function LoginPage() {
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 placeholder="Логин..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-base"
               />
             </div>
 
@@ -149,14 +151,14 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 pr-10 md:pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-base"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 "
+                  className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
@@ -165,7 +167,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="w-full bg-primary text-white py-2.5 md:py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer text-base"
             >
               {loading ? "Вход в систему..." : "Вход"}
             </button>
@@ -225,10 +227,10 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Dashboard Preview */}
-      <div className="hidden md:flex flex-2 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
+      <div className="hidden lg:flex flex-1 md:flex-2 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
         {/* Content */}
         <div
-          className="relative z-10  h-full p-12 px-20"
+          className="relative z-10 h-full p-6 md:p-12 lg:px-20 flex flex-col justify-center"
           style={{
             backgroundImage: "url('/images/login_bg.png')",
             backgroundSize: "cover",
@@ -236,13 +238,13 @@ export default function LoginPage() {
             backgroundRepeat: "no-repeat",
           }}
         >
-          <h2 className="text-4xl font-bold  text-white mb-8 text-left">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 md:mb-8 text-left">
             Управляйте продажами стильно!
           </h2>
           <Image
-            width={500}
-            height={500}
-            className="object-contain absolute bottom-0 right-0"
+            width={400}
+            height={400}
+            className="object-contain absolute bottom-0 right-0 w-64 md:w-80 lg:w-96"
             src="/images/login_img.png"
             alt=""
           />

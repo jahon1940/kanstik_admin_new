@@ -20,6 +20,12 @@ export const metadata: Metadata = {
   title: "Kanstik admin",
   description:
     "Tovarlar, mijozlar, kassa, moliya va boshqa ko'p ma'lumotlarni hisobga olish - barchasi bitta oddiy va qulay dasturda",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
   icons: {
     icon: "/favicon.png", // PNG favicon
   },

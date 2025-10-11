@@ -239,8 +239,10 @@ export function Sidebar({
 
 export function MobileNav() {
   const pathname = usePathname();
+  const { t } = useTranslation();
+
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 h-14 bg-secondary border-t grid grid-cols-4 z-40">
+    <nav className="md:hidden fixed bottom-0 inset-x-0 h-16 bg-secondary border-t grid grid-cols-4 z-40 safe-area-pb">
       {navItems.map((item) => {
         const active =
           pathname === item.href || pathname?.startsWith(item.href);
@@ -249,16 +251,27 @@ export function MobileNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex rounded-2xl flex-col items-center justify-center text-xs text-muted gap-1",
-              active ? "bg-primary text-muted" : "text-muted"
+              "flex flex-col items-center justify-center text-xs gap-1 p-2",
+              active
+                ? "bg-primary text-white rounded-lg mx-1 my-1"
+                : "text-muted hover:bg-accent/50 rounded-lg mx-1 my-1"
             )}
-            aria-label={item.label}
+            aria-label={t(item.label)}
           >
             {item.icon({
-              className: active
-                ? "[&_path]:stroke-[#FFFFFF]"
-                : "group-hover:[&_path]:stroke-[#FFFFFF]",
+              className: cn(
+                "w-5 h-5",
+                active ? "[&_path]:stroke-[#FFFFFF]" : "[&_path]:stroke-current"
+              ),
             })}
+            <span
+              className={cn(
+                "text-[10px] font-medium truncate max-w-full",
+                active ? "text-white" : "text-muted-foreground"
+              )}
+            >
+              {t(item.label).replace("nav.", "")}
+            </span>
           </Link>
         );
       })}

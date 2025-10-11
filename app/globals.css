@@ -132,3 +132,37 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+
+  /* Safe area utilities for mobile devices */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Custom responsive utilities */
+  .text-responsive {
+    @apply text-sm md:text-base;
+  }
+
+  .p-responsive {
+    @apply p-3 md:p-4;
+  }
+
+  .px-responsive {
+    @apply px-3 md:px-4;
+  }
+
+  .py-responsive {
+    @apply py-3 md:py-4;
+  }
+
+  /* Mobile-first container */
+  .container-responsive {
+    @apply w-full max-w-none px-4 md:max-w-7xl md:mx-auto;
+  }
+}
