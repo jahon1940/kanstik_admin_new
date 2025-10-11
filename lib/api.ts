@@ -5,13 +5,6 @@ import { getDeviceToken, clearDeviceToken } from "./token";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://kanstik.retailer.hoomo.uz';
 
-// Debug uchun
-if (typeof window !== 'undefined') {
-  console.log('Environment:', process.env.NODE_ENV);
-  console.log('Base URL:', BASE_URL);
-  console.log('All env vars:', Object.keys(process.env).filter(key => key.startsWith('NEXT_PUBLIC')));
-}
-
 export const api = axios.create({
   baseURL: BASE_URL,
 });

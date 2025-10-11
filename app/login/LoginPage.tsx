@@ -97,9 +97,7 @@ export default function LoginPage() {
                 height={40}
                 className="mx-auto mb-1"
               />
-              <span className="text-3xl font-bold text-gray-900">
-                HOOMO Retailer
-              </span>
+              <span className="text-3xl font-bold text-gray-900">Retailer</span>
               <div className="h-1 w-8 bg-blue-600 mx-auto mt-1"></div>
             </div>
           </div>
