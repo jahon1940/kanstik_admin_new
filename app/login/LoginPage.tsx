@@ -24,14 +24,10 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
- 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
     try {
       // Ensure a non-empty device identifier for backend validation
@@ -76,11 +72,9 @@ export default function LoginPage() {
         else if (server?.message) message = server.message;
         else if (server?.error) message = server.error;
 
-        setError(message);
         toast.error(message);
       } else {
         console.error("Noma'lum xato:", err);
-        setError("Noma'lum xato");
         toast.error("Noma'lum xato");
       }
     } finally {
@@ -96,7 +90,13 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="inline-block">
-              <Image src="/images/logo.png" alt="home" width={40} height={40} className="mx-auto mb-1" />
+              <Image
+                src="/images/logo.png"
+                alt="home"
+                width={40}
+                height={40}
+                className="mx-auto mb-1"
+              />
               <span className="text-3xl font-bold text-gray-900">
                 HOOMO Retailer
               </span>

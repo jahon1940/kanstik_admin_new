@@ -1735,7 +1735,7 @@ export default function Pos() {
                   <button
                     onClick={handleDiscountSubmit}
                     disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-md font-medium transition-colors cursor-pointer "
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-md font-medium transition-colors cursor-pointerz "
                   >
                     {loading
                       ? t("app.pos.applying")

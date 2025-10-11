@@ -19,10 +19,9 @@ export default function middleware(req: NextRequest) {
 
 	const token = req.cookies.get("device_token")?.value;
 	if (!token) {
-		const url = req.nextUrl.clone();
-		url.pathname = "/login";
-		url.searchParams.set("redirect", pathname);
-		return NextResponse.redirect(url);
+		const loginUrl = new URL("/login", req.url);
+		loginUrl.searchParams.set("redirect", pathname);
+		return NextResponse.redirect(loginUrl);
 	}
 
 	return NextResponse.next();
