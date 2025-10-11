@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { toast } from "sonner";
 // import { api } from "@/lib/api";
@@ -9,7 +9,6 @@ import Loading from "@/components/Loading";
 
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useRouter } from "next/navigation";
 
 type Organization = { id: number; name: string };
 
@@ -19,10 +18,7 @@ export default function CompaniesPage() {
   const [items, setItems] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { t } = useLanguage()
-
-
-  
+  const { t } = useLanguage();
 
   const getOrganization = () => {
     let cancelled = false;
@@ -62,16 +58,13 @@ export default function CompaniesPage() {
     return items.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, query]);
 
-   const router = useRouter();
-
   return (
     <div className="space-y-4 ">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16">
-        
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16 shadow-lg shadow-black/10 dark:shadow-black/30">
         <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
       </div>
 
-      <div className="rounded-lg bg-card">
+      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30">
         {/* Qidiruv paneli */}
         <div className="p-4">
           <form
@@ -94,8 +87,8 @@ export default function CompaniesPage() {
         </div>
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
-        <div className="overflow-auto h-[calc(100vh-11rem)]  px-4">
-          <table className="w-full text-sm relative">
+        <div className="overflow-auto h-[calc(100vh-11rem)] px-4 pb-4">
+          <table className="w-full text-sm relative border-separate border-spacing-y-2">
             <thead className="sticky -top-[1px] z-10 bg-bgColor">
               <tr>
                 <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
@@ -106,22 +99,31 @@ export default function CompaniesPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={2}>
+                  <td
+                    colSpan={2}
+                    className="border border-border rounded-lg px-4 py-6"
+                  >
                     <Loading />
                   </td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td className="px-4 py-6 text-red-600" colSpan={2}>
+                  <td
+                    className="px-4 py-6 text-red-600 border border-border rounded-lg"
+                    colSpan={2}
+                  >
                     {error}
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                  <td
+                    className="px-4 py-6 text-muted-foreground border border-border rounded-lg"
+                    colSpan={2}
+                  >
                     {t("app.company.not_found")}
                   </td>
                 </tr>
@@ -131,19 +133,13 @@ export default function CompaniesPage() {
                     key={org.id}
                     className="hover:bg-accent/50 cursor-pointer"
                   >
-                    <td>
-                      <Link
-                        className="px-4 py-3 block"
-                        href={`/company/${org.id}`}
-                      >
+                    <td className="px-4 py-3 border border-border border-r-0 rounded-l-lg">
+                      <Link className="block" href={`/company/${org.id}`}>
                         {org.name}
                       </Link>
                     </td>
-                    <td>
-                      <Link
-                        className="px-4 py-3 block"
-                        href={`/company/${org.id}`}
-                      >
+                    <td className="px-4 py-3 border border-border border-l-0 rounded-r-lg">
+                      <Link className="block" href={`/company/${org.id}`}>
                         <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
                           {t("app.company.active")}
                         </span>

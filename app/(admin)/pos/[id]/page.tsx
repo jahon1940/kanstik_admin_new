@@ -234,6 +234,8 @@ export default function Pos() {
     };
   };
 
+  console.log(receipts);
+  
   const getOrders = (date: string, date2: string) => {
     let cancelled = false;
 
@@ -1263,7 +1265,9 @@ export default function Pos() {
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
                           {" "}
-                          <h2>{org?.payments[0]?.payment_type?.name}</h2>
+                          <h2>{org?.payments?.map((type:any)=>{
+                            return type.payment_type.name + " "
+                          })}</h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
                           {/* <h2>
@@ -1300,7 +1304,13 @@ export default function Pos() {
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
                           <h2>
-                            {org?.received_cash.toLocaleString("ru-RU")} сум
+                            {(
+                              Number(org?.received_cash) +
+                              Number(org?.received_card)
+                            ).toLocaleString("ru-RU")} сум
+                            {/* {org?.received_cash +
+                              org?.received_card.toLocaleString("ru-RU")}
+                            сум */}
                           </h2>
                         </td>
                         <td className="px-4 py-4 border-r border-gray-300">
