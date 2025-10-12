@@ -234,7 +234,6 @@ export default function Pos() {
     };
   };
 
-  console.log(receipts);
 
   const getOrders = (date: string, date2: string) => {
     let cancelled = false;
@@ -804,7 +803,7 @@ export default function Pos() {
         discount: discountValue,
       };
 
-      console.log(requestData);
+
 
       const requestOptions: RequestInit = {
         method: "PUT",
@@ -894,7 +893,7 @@ export default function Pos() {
     return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
 
-  console.log(managers);
+
 
   return (
     <Tabs defaultValue="info" className="space-y-2">
@@ -1122,19 +1121,41 @@ export default function Pos() {
             {/* Receipts Tab */}
             <TabsContent value="receipts" className="w-full mt-0">
               <div className="space-y-4">
-                <h2 className="text-sm md:text-base font-medium bg-bgColor text-black rounded-sm p-2 px-3">
-                  {t("app.pos.receipts")}
-                </h2>
+                <div className="bg-bgColor flex justify-between">
+                  <h2 className="text-sm md:text-base font-medium  text-black rounded-sm p-2 px-3">
+                    {t("app.pos.receipts")}
+                  </h2>
+                  {/* Action buttons - responsive */}
+                  <div className="flex gap-2 md:hidden">
+                   
+                    <Button
+                      onClick={() => {
+                        if (date) downloadReport(date);
+                      }}
+                      className="cursor-pointer text-sm px-3 py-2"
+                    >
+                      {t("app.pos.download_report")}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (date) downloadReceipts(date);
+                      }}
+                      className="cursor-pointer text-sm px-3 py-2"
+                    >
+                      {t("app.pos.download_receipts")}
+                    </Button>
+                  </div>
+                </div>
 
                 {/* Date filters - responsive */}
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <div className="flex flex-col sm:flex-row gap-2 flex-1">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-start">
+                  <div className="flex gap-2">
                     <Popover open={open} onOpenChange={setOpen}>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           id="date"
-                          className="w-full sm:w-48 justify-between font-normal text-sm"
+                          className="w-[49%] sm:w-46 justify-between font-normal text-sm"
                         >
                           {date ? date : t("app.pos.from")}
                           <ChevronDownIcon className="h-4 w-4" />
@@ -1169,7 +1190,7 @@ export default function Pos() {
                         <Button
                           variant="outline"
                           id="date"
-                          className="w-full sm:w-48 justify-between font-normal text-sm"
+                          className="w-[49%] sm:w-46 justify-between font-normal text-sm"
                         >
                           {date2 ? date2 : t("app.pos.to")}
                           <ChevronDownIcon className="h-4 w-4" />
@@ -1217,7 +1238,7 @@ export default function Pos() {
                       onClick={() => {
                         if (date) downloadReport(date);
                       }}
-                      className="cursor-pointer text-sm px-3 py-2"
+                      className="cursor-pointer text-sm px-3 py-2 hidden md:block  "
                     >
                       {t("app.pos.download_report")}
                     </Button>
@@ -1225,7 +1246,7 @@ export default function Pos() {
                       onClick={() => {
                         if (date) downloadReceipts(date);
                       }}
-                      className="cursor-pointer text-sm px-3 py-2"
+                      className="cursor-pointer text-sm px-3 py-2 hidden md:block  "
                     >
                       {t("app.pos.download_receipts")}
                     </Button>
@@ -1594,13 +1615,13 @@ export default function Pos() {
 
                 {/* Date filters - responsive */}
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <div className="flex flex-col sm:flex-row gap-2 flex-1">
+                  <div className="flex justify-between sm:justify-start sm:gap-2">
                     <Popover open={open} onOpenChange={setOpen}>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           id="date"
-                          className="w-full sm:w-48 justify-between font-normal text-sm"
+                          className="w-[49%] sm:w-46 justify-between font-normal text-sm"
                         >
                           {ordersDate ? ordersDate : t("app.pos.from")}
                           <ChevronDownIcon className="h-4 w-4" />
@@ -1636,7 +1657,7 @@ export default function Pos() {
                         <Button
                           variant="outline"
                           id="date"
-                          className="w-full sm:w-48 justify-between font-normal text-sm"
+                          className="w-[49%] sm:w-46 justify-between font-normal text-sm"
                         >
                           {ordersDate2 ? ordersDate2 : t("app.pos.to")}
                           <ChevronDownIcon className="h-4 w-4" />
@@ -1675,7 +1696,7 @@ export default function Pos() {
                         if (ordersDate && ordersDate2)
                           getOrders(ordersDate, ordersDate2);
                       }}
-                      className="cursor-pointer text-sm px-3 py-2"
+                      className="cursor-pointer text-sm px-3 py-2 w-full"
                     >
                       {t("app.pos.generate_orders")}
                     </Button>
