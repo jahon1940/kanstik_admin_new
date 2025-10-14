@@ -7,7 +7,7 @@ import { getDeviceToken } from "@/lib/token";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
-import { ChevronDownIcon, Info } from "lucide-react";
+import { ChevronDownIcon, Info, Filter } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -15,7 +15,9 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import Link from "next/link";
+import Image from "next/image";
 import { Pagination } from "@/components/ui/pagination";
+import { log } from "util";
 
 // Receipt type
 type Receipt = {
@@ -33,6 +35,32 @@ type Receipt = {
   fiscal_sign: string;
   staff_name: string;
   products?: any[];
+};
+
+// Product type
+type Product = {
+  id: number;
+  title: string;
+  classifier_title: string;
+  price: number;
+  quantity: number;
+  remaining: number;
+};
+
+// Company type
+type Company = {
+  id: number;
+  name: string;
+  phone_number: string;
+  card_numbers: any[];
+  card_number: string;
+};
+
+// PaymentType type
+type PaymentType = {
+  id: number;
+  name: string;
+  image_url: string;
 };
 const ReceiptsContent = () => {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -59,6 +87,31 @@ const ReceiptsContent = () => {
     null
   );
 
+  // Product selection states
+  const [isProductModalOpen, setIsProductModalOpen] = React.useState(false);
+  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(
+    null
+  );
+  const [products, setProducts] = React.useState<Product[]>([]);
+
+  // Company selection states
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = React.useState(false);
+  const [selectedCompany, setSelectedCompany] = React.useState<Company | null>(
+    null
+  );
+  const [companies, setCompanies] = React.useState<Company[]>([]);
+  const [searchQuery, setSearchQuery] = React.useState("");
+
+  // Payment Type selection states
+  const [isPaymentTypeModalOpen, setIsPaymentTypeModalOpen] =
+    React.useState(false);
+  const [selectedPaymentType, setSelectedPaymentType] =
+    React.useState<PaymentType | null>(null);
+  const [paymentTypes, setPaymentTypes] = React.useState<PaymentType[]>([]);
+
+  // Filter modal state
+  const [isFilterModalOpen, setIsFilterModalOpen] = React.useState(false);
+
   const getReceipts = (
     date: string,
     date2: string,
@@ -78,20 +131,31 @@ const ReceiptsContent = () => {
       myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
     }
 
+    // Prepare search data
+    const searchData = {
+      receipt_number: null,
+      from_date: date,
+      to_date: date2,
+      payment_type_id: selectedPaymentType ? selectedPaymentType.id : null,
+      product_id: selectedProduct ? selectedProduct.id : null,
+      card_number: selectedCompany ? selectedCompany.card_number : null,
+      page: page,
+      page_size: pageSize,
+    };
+
     const requestOptions: RequestInit = {
-      method: "GET",
+      method: "POST",
       headers: myHeaders,
+      body: JSON.stringify(searchData),
       redirect: "follow",
     };
 
-    fetch(
-      `${BASE_URL}/v1/admins/pos/${params.id}/receipts?from_date=${date}&to_date=${date2}&page=${page}&page_size=${pageSize}`,
-      requestOptions
-    )
+    fetch(`${BASE_URL}/v1/admins/stocks/7/receipts/search`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log("Receipts API Response:", result);
         console.log("Append mode:", append, "Page:", page);
+        console.log("Search Data:", searchData);
 
         if (!cancelled) {
           if (append && page > 1) {
@@ -154,8 +218,6 @@ const ReceiptsContent = () => {
   };
 
   const getSearchProducts = async (searchData: any) => {
- 
-    
     try {
       setLoading(true);
 
@@ -174,34 +236,144 @@ const ReceiptsContent = () => {
       };
 
       const response = await fetch(
-        "https://kanstik.dev-retailer.hoomo.uz/v1/admins/products/search",
+        `${BASE_URL}/v1/admins/products/search`,
         requestOptions
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Qidirishda xatolik yuz berdi");
+        throw new Error(result.message || t("app.pos.search_error"));
       }
 
-      toast.success("Mahsulotlar muvaffaqiyatli topildi");
-      console.log(result);
-      
+      setProducts(result.results || result || []);
+      return result;
     } catch (error: any) {
-      const msg = error?.message || "Mahsulotlarni qidirishda xatolik";
+      const msg = error?.message || t("app.pos.product_search_error");
       toast.error(msg);
       throw error;
     } finally {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    // getSearchProducts funksiyasini kerakli parametr bilan chaqiring
-    const searchData = {
-      title: "premium",
-     };
-    getSearchProducts(searchData);
-  }, []);
+
+  const handleProductSearch = async () => {
+    if (!searchQuery.trim()) {
+      toast.error(t("app.pos.enter_search_term"));
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const searchData = {
+        title: searchQuery,
+      };
+      await getSearchProducts(searchData);
+    } catch (error) {
+      // Error handled in getSearchProducts
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCompanies = async () => {
+    try {
+      setLoading(true);
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestOptions: RequestInit = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/companies`,
+        requestOptions
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || t("app.pos.companies_load_error"));
+      }
+
+      setCompanies(result.results || result || []);
+      return result;
+    } catch (error: any) {
+      const msg = error?.message || t("app.pos.companies_load_error");
+      toast.error(msg);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPaymentTypes = async () => {
+    try {
+      setLoading(true);
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestOptions: RequestInit = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/payment-types`,
+        requestOptions
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || t("app.pos.payment_types_load_error")
+        );
+      }
+
+      console.log(result);
+
+      setPaymentTypes(result.results || result || []);
+      return result;
+    } catch (error: any) {
+      const msg = error?.message || t("app.pos.payment_types_load_error");
+      toast.error(msg);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFilterApply = () => {
+    if (date && date2) {
+      setReceipts([]);
+      getReceipts(date, date2, 1, 50);
+      setIsFilterModalOpen(false);
+    } else {
+      toast.error(t("app.pos.select_date_range"));
+    }
+  };
+  // useEffect(() => {
+  //   // getSearchProducts funksiyasini kerakli parametr bilan chaqiring
+  //   const searchData = {
+  //     title: "premium",
+  //   };
+  //   getSearchProducts(searchData);
+  // }, []);
 
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<string | undefined>(undefined);
@@ -350,8 +522,21 @@ const ReceiptsContent = () => {
           <h2 className="text-sm md:text-base font-medium  text-black rounded-sm p-2 px-3">
             {t("app.pos.receipts")}
           </h2>
-          {/* Action buttons - responsive */}
-          <div className="flex gap-2 md:hidden">
+        </div>
+
+        {/* Mobile Filter Button */}
+        <div className="md:hidden flex justify-between items-center">
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setIsFilterModalOpen(true)}
+              variant="outline"
+              className="cursor-pointer text-sm px-3 py-2 flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              {t("app.pos.filter")}
+            </Button>
+          </div>
+          <div className="flex gap-2">
             <Button
               onClick={() => {
                 if (date) downloadReport(date);
@@ -371,9 +556,58 @@ const ReceiptsContent = () => {
           </div>
         </div>
 
-        {/* Date filters - responsive */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-start">
+        {/* Desktop Filters - responsive */}
+        <div className="hidden md:flex flex-col sm:flex-row gap-2 sm:gap-3 justify-start">
           <div className="flex gap-2">
+            {/* select company */}
+            <div>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsCompanyModalOpen(true);
+                  if (companies.length === 0) {
+                    getCompanies();
+                  }
+                }}
+                className="w-48 justify-between font-normal text-sm"
+              >
+                {selectedCompany
+                  ? selectedCompany.name
+                  : t("app.pos.select_company")}
+                <ChevronDownIcon className="h-4 w-4" />
+              </Button>
+            </div>
+            {/* select product */}
+            <div>
+              <Button
+                variant="outline"
+                onClick={() => setIsProductModalOpen(true)}
+                className="w-48 justify-between font-normal text-sm"
+              >
+                {selectedProduct
+                  ? selectedProduct.classifier_title
+                  : t("app.pos.select_product")}
+                <ChevronDownIcon className="h-4 w-4" />
+              </Button>
+            </div>
+            {/* select payment Type */}
+            <div>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsPaymentTypeModalOpen(true);
+                  if (paymentTypes.length === 0) {
+                    getPaymentTypes();
+                  }
+                }}
+                className="w-48 justify-between font-normal text-sm"
+              >
+                {selectedPaymentType
+                  ? selectedPaymentType.name
+                  : t("app.pos.select_payment_type")}
+                <ChevronDownIcon className="h-4 w-4" />
+              </Button>
+            </div>
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -462,7 +696,7 @@ const ReceiptsContent = () => {
               onClick={() => {
                 if (date) downloadReport(date);
               }}
-              className="cursor-pointer text-sm px-3 py-2 hidden md:block  "
+              className="cursor-pointer text-sm px-3 py-2 hidden md:block"
             >
               {t("app.pos.download_report")}
             </Button>
@@ -470,7 +704,7 @@ const ReceiptsContent = () => {
               onClick={() => {
                 if (date) downloadReceipts(date);
               }}
-              className="cursor-pointer text-sm px-3 py-2 hidden md:block  "
+              className="cursor-pointer text-sm px-3 py-2 hidden md:block"
             >
               {t("app.pos.download_receipts")}
             </Button>
@@ -860,6 +1094,513 @@ const ReceiptsContent = () => {
                   )} */}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Product Selection Modal */}
+      {isProductModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsProductModalOpen(false);
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
+            {/* Header */}
+            <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {t("app.pos.select_product")}
+              </h2>
+              <button
+                onClick={() => setIsProductModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Search Section */}
+            <div className="p-6 border-b">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  placeholder={t("app.pos.enter_product_name")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      handleProductSearch();
+                    }
+                  }}
+                />
+                <Button
+                  onClick={handleProductSearch}
+                  disabled={loading}
+                  className="px-6 py-2"
+                >
+                  {loading ? t("app.pos.searching") : t("app.pos.search")}
+                </Button>
+              </div>
+            </div>
+
+            {/* Products Table */}
+            <div className="overflow-auto max-h-96">
+              {loading ? (
+                <div className="flex justify-center items-center py-8">
+                  <Loading />
+                </div>
+              ) : products.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  {t("app.pos.no_products_found")}
+                </div>
+              ) : (
+                <table className="w-full">
+                  <thead className="bg-gray-50 sticky top-0">
+                    <tr>
+                      <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                        {t("app.pos.product_name_article")}
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                        {t("app.pos.product_classifier")}
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                        {t("app.pos.remaining_reserve")}
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3">
+                        {t("app.pos.price")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product: Product) => (
+                      <tr
+                        key={product.id}
+                        className="hover:bg-blue-50 cursor-pointer border-b border-gray-200"
+                        onClick={() => {
+                          setSelectedProduct(product);
+                          setIsProductModalOpen(false);
+                          toast.success(
+                            `${product.classifier_title} ${t(
+                              "app.pos.selected"
+                            )}`
+                          );
+                        }}
+                      >
+                        <td className="px-4 py-3 border-r border-gray-300">
+                          <div>
+                            <div className="font-medium text-sm">
+                              {product.title}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {t("app.pos.article")}: {product.id}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-300">
+                          <div className="text-sm">
+                            {product.classifier_title}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-300">
+                          <div className="text-sm">
+                            {t("app.pos.remaining_reserve")}:{" "}
+                            {product.remaining || 0}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {t("app.pos.own")}: {product.quantity || 0}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="font-semibold text-sm">
+                            {product.price?.toLocaleString("ru-RU") || 0}{" "}
+                            {t("app.pos.currency")}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Company Selection Modal */}
+      {isCompanyModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsCompanyModalOpen(false);
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden">
+            {/* Header */}
+            <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {t("app.pos.select_company")}
+              </h2>
+              <button
+                onClick={() => setIsCompanyModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Companies Table */}
+            <div className="overflow-auto max-h-96">
+              {loading ? (
+                <div className="flex justify-center items-center py-8">
+                  <Loading />
+                </div>
+              ) : companies.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  {t("app.pos.no_companies_found")}
+                </div>
+              ) : (
+                <table className="w-full">
+                  <thead className="bg-gray-50 sticky top-0">
+                    <tr>
+                      <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                        {t("app.pos.company_name")}
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                        {t("app.pos.phone_number")}
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3">
+                        {t("app.pos.card_number")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {companies.map((company: Company) => (
+                      <tr
+                        key={company.id}
+                        className="hover:bg-blue-50 cursor-pointer border-b border-gray-200"
+                        onClick={() => {
+                          setSelectedCompany(company);
+                          setIsCompanyModalOpen(false);
+                          toast.success(
+                            `${company.name} ${t("app.pos.selected")}`
+                          );
+                        }}
+                      >
+                        <td className="px-4 py-3 border-r border-gray-300">
+                          <div className="font-medium text-sm">
+                            {company.name}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-300">
+                          <div className="text-sm">
+                            {company.phone_number || "-"}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="text-sm">
+                            {company?.card_numbers[0]?.card_number || "-"}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Type Selection Modal */}
+      {isPaymentTypeModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsPaymentTypeModalOpen(false);
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+            {/* Header */}
+            <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {t("app.pos.select_payment_type")}
+              </h2>
+              <button
+                onClick={() => setIsPaymentTypeModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Payment Types Table */}
+            <div className="overflow-auto max-h-96">
+              {loading ? (
+                <div className="flex justify-center items-center py-8">
+                  <Loading />
+                </div>
+              ) : paymentTypes.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  {t("app.pos.no_payment_types_found")}
+                </div>
+              ) : (
+                <table className="w-full">
+                  <thead className="bg-gray-50 sticky top-0">
+                    <tr>
+                      <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                        {t("app.pos.payment_type_image")}
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3">
+                        {t("app.pos.payment_type_name")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paymentTypes.map((paymentType: PaymentType) => (
+                      <tr
+                        key={paymentType.id}
+                        className="hover:bg-blue-50 cursor-pointer border-b border-gray-200"
+                        onClick={() => {
+                          setSelectedPaymentType(paymentType);
+                          setIsPaymentTypeModalOpen(false);
+                          toast.success(
+                            `${paymentType.name} ${t("app.pos.selected")}`
+                          );
+                        }}
+                      >
+                        <td className="px-4 py-3 border-r border-gray-300">
+                          <div className="flex items-center">
+                            {paymentType.image_url ? (
+                              <Image
+                                src={
+                                  paymentType.image_url
+                                    ? `${BASE_URL}${paymentType.image_url}`
+                                    : "/images/nophoto.png" // yoki default rasm
+                                }
+                                width={28}
+                                height={28}
+                                alt={paymentType.name || "image"}
+                                className="w-8 h-8 object-contain"
+                              />
+                            ) : (
+                              <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
+                                <Image
+                                  src={
+                                    paymentType.image_url
+                                      ? `${BASE_URL}${paymentType.image_url}`
+                                      : "/images/nophoto.png" // yoki default rasm
+                                  }
+                                  width={28}
+                                  height={28}
+                                  alt={paymentType.name || "image"}
+                                  className="w-8 h-8 object-contain"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="font-medium text-sm">
+                            {paymentType.name}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Filter Modal - Mobile Only */}
+      {isFilterModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsFilterModalOpen(false);
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden mx-4">
+            {/* Header */}
+            <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {t("app.pos.filter_receipts")}
+              </h2>
+              <button
+                onClick={() => setIsFilterModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Filter Content */}
+            <div className="p-6 overflow-auto max-h-[calc(90vh-140px)]">
+              <div className="space-y-6">
+                {/* Date Range */}
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">
+                    {t("app.pos.date_range")}
+                  </h3>
+                  <div className="flex gap-3">
+                    <Popover open={open} onOpenChange={setOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-[48%] sm:w-full justify-between font-normal text-sm"
+                        >
+                          {date ? date : t("app.pos.from")}
+                          <ChevronDownIcon className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto overflow-hidden p-0"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={date ? new Date(date) : undefined}
+                          captionLayout="dropdown"
+                          onSelect={(selectedDate) => {
+                            if (selectedDate) {
+                              const formatted = `${selectedDate.getFullYear()}-${String(
+                                selectedDate.getMonth() + 1
+                              ).padStart(2, "0")}-${String(
+                                selectedDate.getDate()
+                              ).padStart(2, "0")}`;
+
+                              setDate(formatted);
+                              setOpen(false);
+                            }
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    <Popover open={open2} onOpenChange={setOpen2}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-[48%] sm:w-full justify-between font-normal text-sm"
+                        >
+                          {date2 ? date2 : t("app.pos.to")}
+                          <ChevronDownIcon className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto overflow-hidden p-0"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={date2 ? new Date(date2) : undefined}
+                          captionLayout="dropdown"
+                          onSelect={(selectedDate) => {
+                            if (selectedDate) {
+                              const formatted = `${selectedDate.getFullYear()}-${String(
+                                selectedDate.getMonth() + 1
+                              ).padStart(2, "0")}-${String(
+                                selectedDate.getDate()
+                              ).padStart(2, "0")}`;
+
+                              setDate2(formatted);
+                              setOpen2(false);
+                            }
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                {/* Company Selection */}
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">
+                    {t("app.pos.company")}
+                  </h3>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsCompanyModalOpen(true);
+                      if (companies.length === 0) {
+                        getCompanies();
+                      }
+                    }}
+                    className="w-full justify-between font-normal text-sm"
+                  >
+                    {selectedCompany
+                      ? selectedCompany.name
+                      : t("app.pos.select_company")}
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Product Selection */}
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">
+                    {t("app.pos.product")}
+                  </h3>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsProductModalOpen(true)}
+                    className="w-full justify-between font-normal text-sm"
+                  >
+                    {selectedProduct
+                      ? selectedProduct.classifier_title
+                      : t("app.pos.select_product")}
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Payment Type Selection */}
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">
+                    {t("app.pos.payment_type")}
+                  </h3>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsPaymentTypeModalOpen(true);
+                      if (paymentTypes.length === 0) {
+                        getPaymentTypes();
+                      }
+                    }}
+                    className="w-full justify-between font-normal text-sm"
+                  >
+                    {selectedPaymentType
+                      ? selectedPaymentType.name
+                      : t("app.pos.select_payment_type")}
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gray-50 px-6 py-4 border-t flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setIsFilterModalOpen(false)}
+                className="px-6"
+              >
+                {t("app.pos.cancel")}
+              </Button>
+              <Button onClick={handleFilterApply} className="px-6">
+                {t("app.pos.generate_receipts")}
+              </Button>
             </div>
           </div>
         </div>
