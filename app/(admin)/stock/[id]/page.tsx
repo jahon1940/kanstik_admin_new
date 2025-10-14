@@ -335,6 +335,7 @@ export default function StockPage() {
             <table className="w-full  text-sm">
               <thead className="sticky -top-[1px] z-10 bg-bgColor">
                 <tr>
+                  <th className="text-left font-semibold px-2 py-3 w-12">№</th>
                   <th className="text-left font-semibold px-4 py-3  w-[60%]">
                     {t("app.company.name")}
                   </th>
@@ -346,28 +347,31 @@ export default function StockPage() {
               <tbody className="divide-y">
                 {loading ? (
                   <tr>
-                    <td colSpan={2}>
+                    <td colSpan={3}>
                       <Loading />
                     </td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td className="px-4 py-6 text-red-600" colSpan={2}>
+                    <td className="px-4 py-6 text-red-600" colSpan={3}>
                       {error}
                     </td>
                   </tr>
                 ) : !data?.poses?.length ? (
                   <tr>
-                    <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                    <td className="px-4 py-6 text-muted-foreground" colSpan={3}>
                       {t("app.company.not_found")}
                     </td>
                   </tr>
                 ) : (
-                  data.poses.map((org) => (
+                  data.poses.map((org, index) => (
                     <tr
                       key={org.id}
                       className="hover:bg-accent/50 cursor-pointer"
                     >
+                      <td className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                        {index + 1}
+                      </td>
                       <td>
                         <Link
                           className="px-4 py-3 block"

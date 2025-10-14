@@ -19,7 +19,7 @@ export default function CompanyPage() {
   const [items, setItems] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-   const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const params = useParams();
 
@@ -64,9 +64,6 @@ export default function CompanyPage() {
     return items.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, query]);
 
-
-
-
   const router = useRouter();
 
   return (
@@ -108,6 +105,7 @@ export default function CompanyPage() {
           <table className="w-full text-sm  ">
             <thead className="sticky -top-[1px] z-10 bg-bgColor ">
               <tr>
+                <th className="text-left font-semibold px-2 py-3 w-12">№</th>
                 <th className="text-left font-semibold px-4 py-3 w-[60%]">
                   Nomi
                 </th>
@@ -119,28 +117,31 @@ export default function CompanyPage() {
             <tbody className="divide-y">
               {loading ? (
                 <tr>
-                  <td colSpan={2}>
+                  <td colSpan={3}>
                     <Loading />
                   </td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td className="px-4 py-6 text-red-600" colSpan={2}>
+                  <td className="px-4 py-6 text-red-600" colSpan={3}>
                     {error}
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                  <td className="px-4 py-6 text-muted-foreground" colSpan={3}>
                     {t("toast.no_data")}
                   </td>
                 </tr>
               ) : (
-                filtered.map((org) => (
+                filtered.map((org, index) => (
                   <tr
                     key={org.id}
                     className="hover:bg-accent/50 cursor-pointer"
                   >
+                    <td className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                      {index + 1}
+                    </td>
                     <td>
                       <Link
                         className="px-4 py-3 block"

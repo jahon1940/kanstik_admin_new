@@ -58,8 +58,6 @@ export default function CompaniesPage() {
     return items.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, query]);
 
-
-  
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
@@ -101,6 +99,9 @@ export default function CompaniesPage() {
             <table className="w-full text-sm relative border-separate border-spacing-y-2">
               <thead className="sticky -top-[1px] z-10 bg-bgColor">
                 <tr>
+                  <th className="text-left font-semibold px-2 py-3 border-b w-12">
+                    №
+                  </th>
                   <th className="text-left font-semibold px-4 py-3 border-b w-[60%]">
                     {t("app.company.name")}
                   </th>
@@ -113,7 +114,7 @@ export default function CompaniesPage() {
                 {loading ? (
                   <tr>
                     <td
-                      colSpan={2}
+                      colSpan={3}
                       className="border border-border rounded-lg px-4 py-6"
                     >
                       <Loading />
@@ -123,7 +124,7 @@ export default function CompaniesPage() {
                   <tr>
                     <td
                       className="px-4 py-6 text-red-600 border border-border rounded-lg"
-                      colSpan={2}
+                      colSpan={3}
                     >
                       {error}
                     </td>
@@ -132,18 +133,23 @@ export default function CompaniesPage() {
                   <tr>
                     <td
                       className="px-4 py-6 text-muted-foreground border border-border rounded-lg"
-                      colSpan={2}
+                      colSpan={3}
                     >
                       {t("app.company.not_found")}
                     </td>
                   </tr>
                 ) : (
-                  filtered.map((org) => (
+                  filtered.map((org, index) => (
                     <tr
                       key={org.id}
                       className="hover:bg-accent/50 cursor-pointer"
                     >
                       <td className="border border-border border-r-0 rounded-l-lg">
+                        <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                          {index + 1}
+                        </div>
+                      </td>
+                      <td className="border border-border border-r-0">
                         <Link
                           className="block px-4 py-3"
                           href={`/company/${org.id}`}

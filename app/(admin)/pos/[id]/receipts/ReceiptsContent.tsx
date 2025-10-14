@@ -727,6 +727,9 @@ const ReceiptsContent = () => {
           <table className="w-full border border-gray-300 text-sm">
             <thead className="sticky top-[0px] z-10 bg-bgColor">
               <tr>
+                <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+                  №
+                </th>
                 <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                   Операция
                 </th>
@@ -754,7 +757,7 @@ const ReceiptsContent = () => {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {receipts?.map((org: any) => (
+              {receipts?.map((org: any, index: number) => (
                 <tr
                   key={org?.id}
                   className="hover:bg-accent/50 cursor-pointer  border-gray-300"
@@ -763,6 +766,12 @@ const ReceiptsContent = () => {
                     setIsModalOpen(true);
                   }}
                 >
+                  <td className="px-2 py-2 w-12 border-r border-gray-300 text-center text-sm text-gray-600">
+                    {(receiptsPagination.currentPage - 1) *
+                      receiptsPagination.pageSize +
+                      index +
+                      1}
+                  </td>
                   <td className="px-4 py-2 border-r border-gray-300">
                     <h2 className="text-green-500">Продажа</h2>{" "}
                     {org?.qr_code_url && (
@@ -1162,6 +1171,9 @@ const ReceiptsContent = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50 sticky top-0">
                     <tr>
+                      <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+                        №
+                      </th>
                       <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
                         {t("app.pos.product_name_article")}
                       </th>
@@ -1177,7 +1189,7 @@ const ReceiptsContent = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((product: Product) => (
+                    {products.map((product: Product, index: number) => (
                       <tr
                         key={product.id}
                         className="hover:bg-blue-50 cursor-pointer border-b border-gray-200"
@@ -1191,6 +1203,9 @@ const ReceiptsContent = () => {
                           );
                         }}
                       >
+                        <td className="px-2 py-3 w-12 border-r border-gray-300 text-center text-sm text-gray-600">
+                          {index + 1}
+                        </td>
                         <td className="px-4 py-3 border-r border-gray-300">
                           <div>
                             <div className="font-medium text-sm">
@@ -1269,6 +1284,9 @@ const ReceiptsContent = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50 sticky top-0">
                     <tr>
+                      <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+                        №
+                      </th>
                       <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
                         {t("app.pos.company_name")}
                       </th>
@@ -1281,7 +1299,7 @@ const ReceiptsContent = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {companies.map((company: Company) => (
+                    {companies.map((company: Company, index: number) => (
                       <tr
                         key={company.id}
                         className="hover:bg-blue-50 cursor-pointer border-b border-gray-200"
@@ -1293,6 +1311,9 @@ const ReceiptsContent = () => {
                           );
                         }}
                       >
+                        <td className="px-2 py-3 w-12 border-r border-gray-300 text-center text-sm text-gray-600">
+                          {index + 1}
+                        </td>
                         <td className="px-4 py-3 border-r border-gray-300">
                           <div className="font-medium text-sm">
                             {company.name}
@@ -1356,6 +1377,9 @@ const ReceiptsContent = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50 sticky top-0">
                     <tr>
+                      <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+                        №
+                      </th>
                       <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
                         {t("app.pos.payment_type_image")}
                       </th>
@@ -1365,34 +1389,25 @@ const ReceiptsContent = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {paymentTypes.map((paymentType: PaymentType) => (
-                      <tr
-                        key={paymentType.id}
-                        className="hover:bg-blue-50 cursor-pointer border-b border-gray-200"
-                        onClick={() => {
-                          setSelectedPaymentType(paymentType);
-                          setIsPaymentTypeModalOpen(false);
-                          toast.success(
-                            `${paymentType.name} ${t("app.pos.selected")}`
-                          );
-                        }}
-                      >
-                        <td className="px-4 py-3 border-r border-gray-300">
-                          <div className="flex items-center">
-                            {paymentType.image_url ? (
-                              <Image
-                                src={
-                                  paymentType.image_url
-                                    ? `${BASE_URL}${paymentType.image_url}`
-                                    : "/images/nophoto.png" // yoki default rasm
-                                }
-                                width={28}
-                                height={28}
-                                alt={paymentType.name || "image"}
-                                className="w-8 h-8 object-contain"
-                              />
-                            ) : (
-                              <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
+                    {paymentTypes.map(
+                      (paymentType: PaymentType, index: number) => (
+                        <tr
+                          key={paymentType.id}
+                          className="hover:bg-blue-50 cursor-pointer border-b border-gray-200"
+                          onClick={() => {
+                            setSelectedPaymentType(paymentType);
+                            setIsPaymentTypeModalOpen(false);
+                            toast.success(
+                              `${paymentType.name} ${t("app.pos.selected")}`
+                            );
+                          }}
+                        >
+                          <td className="px-2 py-3 w-12 border-r border-gray-300 text-center text-sm text-gray-600">
+                            {index + 1}
+                          </td>
+                          <td className="px-4 py-3 border-r border-gray-300">
+                            <div className="flex items-center">
+                              {paymentType.image_url ? (
                                 <Image
                                   src={
                                     paymentType.image_url
@@ -1404,17 +1419,31 @@ const ReceiptsContent = () => {
                                   alt={paymentType.name || "image"}
                                   className="w-8 h-8 object-contain"
                                 />
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-sm">
-                            {paymentType.name}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                              ) : (
+                                <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
+                                  <Image
+                                    src={
+                                      paymentType.image_url
+                                        ? `${BASE_URL}${paymentType.image_url}`
+                                        : "/images/nophoto.png" // yoki default rasm
+                                    }
+                                    width={28}
+                                    height={28}
+                                    alt={paymentType.name || "image"}
+                                    className="w-8 h-8 object-contain"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="font-medium text-sm">
+                              {paymentType.name}
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    )}
                   </tbody>
                 </table>
               )}

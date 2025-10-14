@@ -135,6 +135,9 @@ export default function OrderPage() {
             <table className="w-full mb-3 text-sm ">
               <thead className="sticky -top-[1px] z-10 bg-bgColor ">
                 <tr>
+                  <th className="text-left font-semibold px-2 py-3 border-b w-12">
+                    №
+                  </th>
                   <th className="text-left font-semibold px-4 py-3 border-b ">
                     Название / Артикул
                   </th>
@@ -155,28 +158,31 @@ export default function OrderPage() {
               <tbody className="divide-y text-xs">
                 {loading ? (
                   <tr>
-                    <td colSpan={2}>
+                    <td colSpan={6}>
                       <Loading />
                     </td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td className="px-4 py-6 text-red-600" colSpan={2}>
+                    <td className="px-4 py-6 text-red-600" colSpan={6}>
                       {error}
                     </td>
                   </tr>
                 ) : orders?.products?.length === 0 ? (
                   <tr>
-                    <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                    <td className="px-4 py-6 text-muted-foreground" colSpan={6}>
                       {t("toast.no_data")}
                     </td>
                   </tr>
                 ) : (
-                  orders?.products?.map((org) => (
+                  orders?.products?.map((org, index) => (
                     <tr
                       key={org.id}
                       className="hover:bg-accent/50 cursor-pointer"
                     >
+                      <td className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                        {index + 1}
+                      </td>
                       <td className="px-4 py-3 max-w-80 ">
                         <div className="flex gap-2 items-center">
                           <span>

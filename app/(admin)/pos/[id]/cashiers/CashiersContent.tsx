@@ -20,179 +20,176 @@ import {
 import { Eye, EyeOff, X } from "lucide-react";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 const CashiersContent = () => {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-      const { t } = useTranslation();
-    
-      const [loading, setLoading] = useState(false);
-      const [error, setError] = useState<string | null>(null);
-      const [cashiers, setCashiers] = useState<any>(null);
-      const [allManagers, setAllManagers] = useState<any>(null);
-    
-      const params = useParams();
-    
-    
-      
-    
-      const [isAddManagerModalOpen, setIsAddManagerModalOpen] =
-        React.useState(false);
-      const [selectedCashier, setSelectedCashier] = React.useState<string>("");
-      const [selectedRole, setSelectedRole] = React.useState<string>("");
-      const [username, setUsername] = React.useState<string>("");
-      const [password, setPassword] = React.useState<string>("");
-      const [showPassword, setShowPassword] = React.useState<boolean>(false);
-    
-      const getCashiers = () => {
-        let cancelled = false;
-    
-        setLoading(true);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const { t } = useTranslation();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [cashiers, setCashiers] = useState<any>(null);
+  const [allManagers, setAllManagers] = useState<any>(null);
+
+  const params = useParams();
+
+  const [isAddManagerModalOpen, setIsAddManagerModalOpen] =
+    React.useState(false);
+  const [selectedCashier, setSelectedCashier] = React.useState<string>("");
+  const [selectedRole, setSelectedRole] = React.useState<string>("");
+  const [username, setUsername] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
+
+  const getCashiers = () => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`${BASE_URL}/v1/admins/pos/${params.id}/managers`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setCashiers(result ?? null);
+        setLoading(false);
         setError(null);
-    
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-    
-        if (getDeviceToken()) {
-          myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-        }
-    
-        const requestOptions: RequestInit = {
-          method: "GET",
-          headers: myHeaders,
-          redirect: "follow",
-        };
-    
-        fetch(`${BASE_URL}/v1/admins/pos/${params.id}/managers`, requestOptions)
-          .then((response) => response.json())
-          .then((result) => {
-            if (!cancelled) setCashiers(result ?? null);
-            setLoading(false);
-            setError(null);
-          })
-          .catch((e) => {
-            const msg =
-              e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-            if (!cancelled) setError(msg);
-            toast.error(msg);
-          });
-    
-        return () => {
-          cancelled = true;
-        };
-      };
-    
-      const getAllManagers = () => {
-        let cancelled = false;
-    
-        setLoading(true);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  const getAllManagers = () => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`${BASE_URL}/v1/admins/managers?page=1&page_size=150`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setAllManagers(result.results ?? null);
+        setLoading(false);
         setError(null);
-    
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-    
-        if (getDeviceToken()) {
-          myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-        }
-    
-        const requestOptions: RequestInit = {
-          method: "GET",
-          headers: myHeaders,
-          redirect: "follow",
-        };
-    
-        fetch(`${BASE_URL}/v1/admins/managers?page=1&page_size=150`, requestOptions)
-          .then((response) => response.json())
-          .then((result) => {
-            if (!cancelled) setAllManagers(result.results ?? null);
-            setLoading(false);
-            setError(null);
-          })
-          .catch((e) => {
-            const msg =
-              e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-            if (!cancelled) setError(msg);
-            toast.error(msg);
-          });
-    
-        return () => {
-          cancelled = true;
-        };
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  useEffect(() => {
+    getCashiers();
+    getAllManagers();
+  }, []);
+
+  const handleAddManager = async () => {
+    // Validatsiya
+    if (!selectedCashier) {
+      toast.error(t("app.pos.select_cashier_error"));
+      return;
+    }
+    if (!selectedRole) {
+      toast.error(t("app.pos.select_role_error"));
+      return;
+    }
+    if (!username.trim()) {
+      toast.error(t("app.pos.username_required"));
+      return;
+    }
+    if (!password.trim()) {
+      toast.error(t("app.pos.password_required"));
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestData = {
+        manager_id: parseInt(selectedCashier),
+        username: username.trim(),
+        password: password.trim(),
+        role: selectedRole === "cashier" ? "casher" : selectedRole,
       };
-    
-      useEffect(() => {
+
+      const requestOptions: RequestInit = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify(requestData),
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/pos/${params.id}/set-managers`,
+        requestOptions
+      );
+
+      if (response.ok || response.status === 204) {
+        toast.success(t("app.pos.manager_added_success"));
+        setIsAddManagerModalOpen(false);
+        // Form-ni tozalash
+        setSelectedCashier("");
+        setSelectedRole("");
+        setUsername("");
+        setPassword("");
+        // Managerlar ro'yxatini yangilash
         getCashiers();
-        getAllManagers()
-      }, []);
-    
-       const handleAddManager = async () => {
-          // Validatsiya
-          if (!selectedCashier) {
-            toast.error(t("app.pos.select_cashier_error"));
-            return;
-          }
-          if (!selectedRole) {
-            toast.error(t("app.pos.select_role_error"));
-            return;
-          }
-          if (!username.trim()) {
-            toast.error(t("app.pos.username_required"));
-            return;
-          }
-          if (!password.trim()) {
-            toast.error(t("app.pos.password_required"));
-            return;
-          }
-      
-          try {
-            setLoading(true);
-      
-            const myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-      
-            if (getDeviceToken()) {
-              myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-            }
-      
-            const requestData = {
-              manager_id: parseInt(selectedCashier),
-              username: username.trim(),
-              password: password.trim(),
-              role: selectedRole === "cashier" ? "casher" : selectedRole,
-            };
-      
-            const requestOptions: RequestInit = {
-              method: "PUT",
-              headers: myHeaders,
-              body: JSON.stringify(requestData),
-              redirect: "follow",
-            };
-      
-            const response = await fetch(
-              `${BASE_URL}/v1/admins/pos/${params.id}/set-managers`,
-              requestOptions
-            );
-      
-            if (response.ok || response.status === 204) {
-              toast.success(t("app.pos.manager_added_success"));
-              setIsAddManagerModalOpen(false);
-              // Form-ni tozalash
-              setSelectedCashier("");
-              setSelectedRole("");
-              setUsername("");
-              setPassword("");
-              // Managerlar ro'yxatini yangilash
-              getCashiers();
-            } else {
-              const errorData = await response.json().catch(() => ({}));
-              const errorMessage =
-                errorData.message || t("app.pos.manager_add_error");
-              toast.error(errorMessage);
-            }
-          } catch (error: any) {
-            const msg = error?.message || t("app.pos.manager_add_error");
-            toast.error(msg);
-          } finally {
-            setLoading(false);
-          }
-        };
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage =
+          errorData.message || t("app.pos.manager_add_error");
+        toast.error(errorMessage);
+      }
+    } catch (error: any) {
+      const msg = error?.message || t("app.pos.manager_add_error");
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="w-full">
       <h1 className="text-md mb-3 bg-bgColor text-black rounded-sm p-2 px-3">
@@ -208,6 +205,7 @@ const CashiersContent = () => {
       <table className="w-full  text-sm">
         <thead className="sticky -top-[1px] z-10 bg-bgColor">
           <tr>
+            <th className="text-left font-semibold px-2 py-3 w-12">№</th>
             <th className="text-left font-semibold px-4 py-3  w-[60%]">
               {t("app.company.name")}
             </th>
@@ -219,25 +217,28 @@ const CashiersContent = () => {
         <tbody className="divide-y">
           {loading ? (
             <tr>
-              <td colSpan={2}>
+              <td colSpan={3}>
                 <Loading />
               </td>
             </tr>
           ) : error ? (
             <tr>
-              <td className="px-4 py-6 text-red-600" colSpan={2}>
+              <td className="px-4 py-6 text-red-600" colSpan={3}>
                 {error}
               </td>
             </tr>
           ) : !cashiers?.results.length ? (
             <tr>
-              <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+              <td className="px-4 py-6 text-muted-foreground" colSpan={3}>
                 {t("app.company.not_found")}
               </td>
             </tr>
           ) : (
-            cashiers?.results.map((org: any) => (
+            cashiers?.results.map((org: any, index: number) => (
               <tr key={org.id} className="hover:bg-accent/50 cursor-pointer ">
+                <td className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                  {index + 1}
+                </td>
                 <td className="px-4 py-3 ">{org.name}</td>
                 <td className="py-1">
                   <span

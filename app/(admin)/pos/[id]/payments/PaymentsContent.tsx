@@ -18,276 +18,272 @@ import {
 import Image from "next/image";
 import { useAlertDialog } from "@/contexts/AlertDialogContext";
 const PaymentsContent = () => {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-    const { t } = useTranslation();
-    const { showAlert } = useAlertDialog();
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const { t } = useTranslation();
+  const { showAlert } = useAlertDialog();
 
-    const [paymentTypes, setPaymentTypes] = useState<any>(null);
-    const [posPaymentTypes, setPosPaymentTypes] = useState<any>(null);
-    const [selectType, setSelectType] = useState<number | null>(null);
+  const [paymentTypes, setPaymentTypes] = useState<any>(null);
+  const [posPaymentTypes, setPosPaymentTypes] = useState<any>(null);
+  const [selectType, setSelectType] = useState<number | null>(null);
 
-    // Modal state for image upload
-    const [isImageModalOpen, setIsImageModalOpen] = React.useState(false);
-    const [selectedImage, setSelectedImage] = React.useState<string | null>(
-      null
-    );
-    const [selectedImageFile, setSelectedImageFile] =
-      React.useState<File | null>(null);
-    const [selectedPaymentType, setSelectedPaymentType] =
-      React.useState<any>(null);
+  // Modal state for image upload
+  const [isImageModalOpen, setIsImageModalOpen] = React.useState(false);
+  const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
+  const [selectedImageFile, setSelectedImageFile] = React.useState<File | null>(
+    null
+  );
+  const [selectedPaymentType, setSelectedPaymentType] =
+    React.useState<any>(null);
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    const params = useParams();
- 
+  const params = useParams();
 
-   
+  const getPosPaymentTypes = () => {
+    let cancelled = false;
 
-    const getPosPaymentTypes = () => {
-      let cancelled = false;
+    setLoading(true);
+    setError(null);
 
-      setLoading(true);
-      setError(null);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
 
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-
-      const requestOptions: RequestInit = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/payment-types`,
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          if (!cancelled) setPosPaymentTypes(result.results ?? null);
-          setLoading(false);
-          setError(null);
-        })
-        .catch((e) => {
-          const msg =
-            e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-          if (!cancelled) setError(msg);
-          toast.error(msg);
-        });
-
-      return () => {
-        cancelled = true;
-      };
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
     };
 
-    const getPaymentTypes = () => {
-      let cancelled = false;
-
-      setLoading(true);
-      setError(null);
-
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-
-      const requestOptions: RequestInit = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      fetch(`${BASE_URL}/v1/admins/payment-types`, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          if (!cancelled) setPaymentTypes(result.results ?? null);
-          setLoading(false);
-          setError(null);
-        })
-        .catch((e) => {
-          const msg =
-            e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-          if (!cancelled) setError(msg);
-          toast.error(msg);
-        });
-
-      return () => {
-        cancelled = true;
-      };
-    };
-
-    const set_PaymentTypes = () => {
-      let cancelled = false;
-
-      setLoading(true);
-      setError(null);
-
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-      const raw = JSON.stringify({
-        payment_type_id: selectType,
+    fetch(
+      `${BASE_URL}/v1/admins/pos/${params.id}/payment-types`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setPosPaymentTypes(result.results ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
       });
 
-      const requestOptions: RequestInit = {
-        method: "PUT",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
+    return () => {
+      cancelled = true;
+    };
+  };
 
-      fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/set-payment-types`,
-        requestOptions
-      )
-        .then((response) => {
-          if (response.status == 204) {
-            setLoading(false);
-            setError(null);
-            getPosPaymentTypes();
-          }
-          // return response.json();
-        })
-        .then((result) => {
-          // if (!cancelled) setPosPaymentTypes(result.results ?? null);
-          // setLoading(false);
-          // setError(null);
-        })
-        .catch((e) => {
-          const msg =
-            e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-          if (!cancelled) setError(msg);
-          toast.error(msg);
-        });
+  const getPaymentTypes = () => {
+    let cancelled = false;
 
-      return () => {
-        cancelled = true;
-      };
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
     };
 
-    const deletePaymentType = (id: number) => {
-      let cancelled = false;
-
-      setLoading(true);
-      setError(null);
-
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-      // const raw = JSON.stringify({
-      //   payment_type_id: selectType,
-      // });
-
-      const requestOptions: RequestInit = {
-        method: "PUT",
-        headers: myHeaders,
-        body: null,
-        redirect: "follow",
-      };
-
-      fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/unset-payment-types/${id}`,
-        requestOptions
-      )
-        .then((response) => {
-          if (response.status == 204) {
-            setLoading(false);
-            setError(null);
-            getPosPaymentTypes();
-          }
-          // return response.json();
-        })
-        .then((result) => {
-          // if (!cancelled) setPosPaymentTypes(result.results ?? null);
-          // setLoading(false);
-          // setError(null);
-        })
-        .catch((e) => {
-          const msg =
-            e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-          if (!cancelled) setError(msg);
-          toast.error(msg);
-        });
-
-      return () => {
-        cancelled = true;
-      };
-    };
-
-    useEffect(() => {
-      getPosPaymentTypes();
-      getPaymentTypes();
-    }, []);
-
-    const set_TypesImage = (base64: string) => {
-      let cancelled = false;
-
-      setLoading(true);
-      setError(null);
-
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-      const raw = JSON.stringify({
-        image: base64,
+    fetch(`${BASE_URL}/v1/admins/payment-types`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setPaymentTypes(result.results ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
       });
 
-      const requestOptions: RequestInit = {
-        method: "PUT",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-
-      fetch(
-        `${BASE_URL}/v1/admins/payment-types/${selectedPaymentType.id}`,
-        requestOptions
-      )
-        .then((response) => {
-          if (response.status == 204) {
-            setLoading(false);
-            setError(null);
-            toast.success("Изображение успешно загружено!");
-            getPosPaymentTypes();
-            setIsImageModalOpen(false);
-            setSelectedImage(null);
-            setSelectedImageFile(null);
-            setSelectedPaymentType(null);
-          }
-          // return response.json();
-        })
-        .then((result) => {
-          // if (!cancelled) setPosPaymentTypes(result.results ?? null);
-          // setLoading(false);
-          // setError(null);
-        })
-        .catch((e) => {
-          const msg =
-            e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-          if (!cancelled) setError(msg);
-          toast.error(msg);
-        });
-
-      return () => {
-        cancelled = true;
-      };
+    return () => {
+      cancelled = true;
     };
+  };
+
+  const set_PaymentTypes = () => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+    const raw = JSON.stringify({
+      payment_type_id: selectType,
+    });
+
+    const requestOptions: RequestInit = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      `${BASE_URL}/v1/admins/pos/${params.id}/set-payment-types`,
+      requestOptions
+    )
+      .then((response) => {
+        if (response.status == 204) {
+          setLoading(false);
+          setError(null);
+          getPosPaymentTypes();
+        }
+        // return response.json();
+      })
+      .then((result) => {
+        // if (!cancelled) setPosPaymentTypes(result.results ?? null);
+        // setLoading(false);
+        // setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  const deletePaymentType = (id: number) => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+    // const raw = JSON.stringify({
+    //   payment_type_id: selectType,
+    // });
+
+    const requestOptions: RequestInit = {
+      method: "PUT",
+      headers: myHeaders,
+      body: null,
+      redirect: "follow",
+    };
+
+    fetch(
+      `${BASE_URL}/v1/admins/pos/${params.id}/unset-payment-types/${id}`,
+      requestOptions
+    )
+      .then((response) => {
+        if (response.status == 204) {
+          setLoading(false);
+          setError(null);
+          getPosPaymentTypes();
+        }
+        // return response.json();
+      })
+      .then((result) => {
+        // if (!cancelled) setPosPaymentTypes(result.results ?? null);
+        // setLoading(false);
+        // setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  useEffect(() => {
+    getPosPaymentTypes();
+    getPaymentTypes();
+  }, []);
+
+  const set_TypesImage = (base64: string) => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+    const raw = JSON.stringify({
+      image: base64,
+    });
+
+    const requestOptions: RequestInit = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      `${BASE_URL}/v1/admins/payment-types/${selectedPaymentType.id}`,
+      requestOptions
+    )
+      .then((response) => {
+        if (response.status == 204) {
+          setLoading(false);
+          setError(null);
+          toast.success("Изображение успешно загружено!");
+          getPosPaymentTypes();
+          setIsImageModalOpen(false);
+          setSelectedImage(null);
+          setSelectedImageFile(null);
+          setSelectedPaymentType(null);
+        }
+        // return response.json();
+      })
+      .then((result) => {
+        // if (!cancelled) setPosPaymentTypes(result.results ?? null);
+        // setLoading(false);
+        // setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
   return (
     <div className="w-full mt-0">
       <div className="space-y-4">
@@ -348,6 +344,7 @@ const PaymentsContent = () => {
         <table className="w-full  text-sm">
           <thead className="sticky -top-[1px] z-10 bg-bgColor">
             <tr>
+              <th className="text-left font-semibold px-2 py-3 w-12">№</th>
               <th className="text-left font-semibold px-4 py-3  w-[60%]">
                 {t("app.company.name")}
               </th>
@@ -359,25 +356,28 @@ const PaymentsContent = () => {
           <tbody className="divide-y">
             {loading ? (
               <tr>
-                <td colSpan={2}>
+                <td colSpan={3}>
                   <Loading />
                 </td>
               </tr>
             ) : error ? (
               <tr>
-                <td className="px-4 py-6 text-red-600" colSpan={2}>
+                <td className="px-4 py-6 text-red-600" colSpan={3}>
                   {error}
                 </td>
               </tr>
             ) : !posPaymentTypes?.length ? (
               <tr>
-                <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                <td className="px-4 py-6 text-muted-foreground" colSpan={3}>
                   {t("app.company.not_found")}
                 </td>
               </tr>
             ) : (
-              posPaymentTypes?.map((org: any) => (
+              posPaymentTypes?.map((org: any, index: number) => (
                 <tr key={org.id} className="hover:bg-accent/50 ">
+                  <td className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                    {index + 1}
+                  </td>
                   <td className="px-4 py-3 flex items-center gap-2">
                     <span className="border border-primary rounded-sm p-1">
                       <Image

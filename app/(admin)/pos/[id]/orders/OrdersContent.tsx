@@ -17,79 +17,79 @@ import { Calendar } from "@/components/ui/calendar";
 import Link from "next/link";
 
 const OrdersContent = () => {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-    const { t } = useTranslation();
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const { t } = useTranslation();
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    const params = useParams();
+  const params = useParams();
 
-    const [ordersSite, setOrdersSite] = useState<any>(null);
+  const [ordersSite, setOrdersSite] = useState<any>(null);
 
-    const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
-    const [open2, setOpen2] = React.useState(false);
-    const [date2, setDate2] = React.useState<string | undefined>(undefined);
-    const [ordersDate, setOrdersDate] = React.useState<string | undefined>(
-      undefined
-    );
-    const [ordersDate2, setOrdersDate2] = React.useState<string | undefined>(
-      undefined
-    );
+  const [open2, setOpen2] = React.useState(false);
+  const [date2, setDate2] = React.useState<string | undefined>(undefined);
+  const [ordersDate, setOrdersDate] = React.useState<string | undefined>(
+    undefined
+  );
+  const [ordersDate2, setOrdersDate2] = React.useState<string | undefined>(
+    undefined
+  );
 
-    const getOrders = (date: string, date2: string) => {
-      let cancelled = false;
+  const getOrders = (date: string, date2: string) => {
+    let cancelled = false;
 
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
 
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
 
-      const requestOptions: RequestInit = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/orders?from_date=${date}&to_date=${date2}&page=1&page_size=200`,
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          if (!cancelled) setOrdersSite(result.results ?? null);
-          setLoading(false);
-          setError(null);
-        })
-        .catch((e) => {
-          const msg =
-            e?.response?.data?.message || e?.message || "Yuklashda xatolik";
-          if (!cancelled) setError(msg);
-          toast.error(msg);
-        });
-
-      return () => {
-        cancelled = true;
-      };
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
     };
 
-    const formatDate = (isoString: string) => {
-      const d = new Date(isoString);
+    fetch(
+      `${BASE_URL}/v1/admins/pos/${params.id}/orders?from_date=${date}&to_date=${date2}&page=1&page_size=200`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (!cancelled) setOrdersSite(result.results ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+      });
 
-      const day = String(d.getDate()).padStart(2, "0");
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const year = d.getFullYear();
-      const hours = String(d.getHours()).padStart(2, "0");
-      const minutes = String(d.getMinutes()).padStart(2, "0");
-
-      return `${day}.${month}.${year}, ${hours}:${minutes}`;
+    return () => {
+      cancelled = true;
     };
+  };
+
+  const formatDate = (isoString: string) => {
+    const d = new Date(isoString);
+
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+
+    return `${day}.${month}.${year}, ${hours}:${minutes}`;
+  };
 
   return (
     <div className="w-full mt-0">
@@ -202,6 +202,7 @@ const OrdersContent = () => {
           <table className="w-full  text-sm">
             <thead className="sticky -top-[1px] z-10 bg-bgColor">
               <tr>
+                <th className="text-left font-semibold px-2 py-3 w-12">№</th>
                 <th className="text-left font-semibold px-4 py-3 ">
                   ID заказы
                 </th>
@@ -213,8 +214,11 @@ const OrdersContent = () => {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {ordersSite?.map((org: any) => (
+              {ordersSite?.map((org: any, index: number) => (
                 <tr key={org?.id} className="hover:bg-accent/50 cursor-pointer">
+                  <td className="px-2 py-2 w-12 text-center text-sm text-gray-600">
+                    {index + 1}
+                  </td>
                   <td className="px-4 py-2">
                     <Link href={`/order/${org.id}`}>
                       <h2 className="text-green-500">#{org.id}</h2>
