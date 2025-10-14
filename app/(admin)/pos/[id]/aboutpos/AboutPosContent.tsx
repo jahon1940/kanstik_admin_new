@@ -79,6 +79,9 @@ const AboutPosContent = () => {
     getOrganization();
   }, []);
 
+
+  
+
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);
 

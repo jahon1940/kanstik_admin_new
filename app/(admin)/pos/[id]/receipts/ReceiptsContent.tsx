@@ -1,7 +1,7 @@
 "use client";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getDeviceToken } from "@/lib/token";
 import { useParams } from "next/navigation";
@@ -153,10 +153,55 @@ const ReceiptsContent = () => {
     };
   };
 
-  // useEffect(() => {
-  //   getCashiers();
-  //   getAllManagers()
-  // }, []);
+  const getSearchProducts = async (searchData: any) => {
+ 
+    
+    try {
+      setLoading(true);
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestOptions: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(searchData),
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        "https://kanstik.dev-retailer.hoomo.uz/v1/admins/products/search",
+        requestOptions
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Qidirishda xatolik yuz berdi");
+      }
+
+      toast.success("Mahsulotlar muvaffaqiyatli topildi");
+      console.log(result);
+      
+    } catch (error: any) {
+      const msg = error?.message || "Mahsulotlarni qidirishda xatolik";
+      toast.error(msg);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    // getSearchProducts funksiyasini kerakli parametr bilan chaqiring
+    const searchData = {
+      title: "premium",
+     };
+    getSearchProducts(searchData);
+  }, []);
 
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<string | undefined>(undefined);

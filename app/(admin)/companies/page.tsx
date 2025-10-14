@@ -58,6 +58,8 @@ export default function CompaniesPage() {
     return items.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, query]);
 
+
+  
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
