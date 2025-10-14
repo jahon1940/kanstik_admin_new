@@ -4,13 +4,14 @@ import { useTranslation } from "react-i18next";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { ChevronLeft } from "lucide-react";
-import CashiersContent from "./CashiersContent";
 
-export default function CashiersPage() {
-  const router = useRouter();
-  const { t } = useTranslation();
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name");
+import DiscountContent from "./DiscountContent";
+
+export default function DiscountPage() {
+   const router = useRouter();
+    const { t } = useTranslation();
+    const searchParams = useSearchParams();
+    const name = searchParams.get("name");
   return (
     <div className="space-y-3">
       <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg shadow-black/10 dark:shadow-black/30">
@@ -29,8 +30,8 @@ export default function CashiersPage() {
       </div>
       <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30">
         <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
-          {/* cashiers */}
-          <CashiersContent />
+          {/* Discounts Tab */}
+          <DiscountContent />
         </div>
       </div>
     </div>

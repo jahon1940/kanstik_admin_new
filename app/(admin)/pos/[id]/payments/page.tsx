@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { ChevronLeft } from "lucide-react";
-import CashiersContent from "./CashiersContent";
+import PaymentsContent from "./PaymentsContent";
 
-export default function CashiersPage() {
+export default function PaymentsPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const searchParams = useSearchParams();
@@ -29,8 +29,8 @@ export default function CashiersPage() {
       </div>
       <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30">
         <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
-          {/* cashiers */}
-          <CashiersContent />
+          {/* Payments Tab */}
+          <PaymentsContent />
         </div>
       </div>
     </div>

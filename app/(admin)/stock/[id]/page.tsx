@@ -287,7 +287,7 @@ export default function StockPage() {
             <h1 className="text-xl  pb-1 mb-1">
               {t("app.stock.account_title")}
             </h1>
-            <table className="text-sm">
+            <table className="text-sm border-separate border-spacing-x-2">
               <tbody>
                 <tr>
                   <td className="py-1">{t("app.stock.organization")}:</td>
@@ -371,7 +371,10 @@ export default function StockPage() {
                       <td>
                         <Link
                           className="px-4 py-3 block"
-                          href={`/pos/${org.id}`}
+                          href={{
+                            pathname: `/pos/${org.id}`,
+                            query: { name: org.name },
+                          }}
                         >
                           {org.name}
                         </Link>
