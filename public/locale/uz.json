@@ -36,7 +36,11 @@
       "admin": "админ"
     },
     "clients": { "title": "Mijozlar" },
-    "reports": { "title": "Hisobotlar" },
+    "reports": {
+      "title": "Hisobotlar",
+      "title2": "O'rtacha tekshirish hisoboti",
+      "generate_orders": "Yaratish"
+    },
     "webapp": { "title": "Veb-sayt va ilova" },
     "stock": {
       "account_title": "Do'kon hisobi",
@@ -146,8 +150,8 @@
       "payment_type": "To'lov turi",
       "cancel": "Bekor qilish",
       "select_date_range": "Sana oralig'ini tanlang",
-      "sale":"Sotuv",
-      "refund" : "Qaytarish"
+      "sale": "Sotuv",
+      "refund": "Qaytarish"
     },
     "pagination": {
       "show_more": "Ko'rsatish",
@@ -155,6 +159,20 @@
       "next": "Keyingi"
     },
     "logged_out": "Profilingizdan chiqdingiz"
+  },
+  "client": {
+    "info": {
+      "title": "Mijoz haqida ma'lumot",
+      "phone": "Telefon",
+      "username": "username"
+    },
+    "cards": {
+      "title": "Kartalar",
+      "number": "Karta raqami",
+      "bonus": "Bonus",
+      "currency": "so'm"
+    },
+    "not_found": "Mijoz topilmadi"
   },
   "lang": {
     "uz": "O'zbekcha",

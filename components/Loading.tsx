@@ -7,7 +7,7 @@ type LoadingProps = {
 
 export default function Loading({ label = "", size = 48 }: LoadingProps) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50">
+    <div className="inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-10 min-h-[50vh]">
       <div className="flex flex-col items-center justify-center gap-3 text-muted-foreground">
         <span
           className="inline-block animate-spin rounded-full border-2 border-foreground/30 border-t-foreground"

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/Loading";
 
@@ -65,6 +65,7 @@ export default function StockPage() {
 
   const params = useParams();
   const router = useRouter();
+  const pathname = usePathname();
 
   const getOrganization = () => {
     let cancelled = false;
@@ -85,7 +86,7 @@ export default function StockPage() {
       redirect: "follow",
     };
 
-    fetch(`${BASE_URL}/v1/admins/stocks/${params.id}`, requestOptions)
+    fetch(`${BASE_URL}/v1/admins/stocks/${params.stockId}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (!cancelled) setData(result ?? null);
@@ -122,7 +123,7 @@ export default function StockPage() {
       redirect: "follow",
     };
 
-    fetch(`${BASE_URL}/v1/admins/counts/${params.id}`, requestOptions)
+    fetch(`${BASE_URL}/v1/admins/counts/${params.stockId}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (!cancelled) setCounts(result ?? null);
@@ -167,7 +168,7 @@ export default function StockPage() {
 
       const requestData = {
         name: formData.name,
-        stock_id: Number(params.id),
+        stock_id: Number(params.stockId),
         gnk_id: formData.gnkId,
         enable_no_fiscal_sale: formData.enableNoFiscalSale,
         enable_delay: formData.enableDelay,
@@ -378,17 +379,17 @@ export default function StockPage() {
                         <Link
                           className="px-4 py-3 block"
                           href={{
-                            pathname: `/pos/${org.id}`,
+                            pathname: `${pathname}/pos/${org.id}`,
                             query: { name: org.name },
                           }}
                         >
-                          {org.name}
+                          {org.name} 
                         </Link>
                       </td>
                       <td className="border-r border-gray-300">
                         <Link
                           className="px-4 py-3 block"
-                          href={`/pos/${org.id}`}
+                          href={`${pathname}/pos/${org.id}`}
                         >
                           <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
                             {t("app.company.active")}

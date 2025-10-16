@@ -87,7 +87,7 @@ const ReceiptsContent = () => {
     };
 
     fetch(
-      `${BASE_URL}/v1/admins/pos/${params.id}/receipts?from_date=${date}&to_date=${date2}&page=${page}&page_size=${pageSize}`,
+      `${BASE_URL}/v1/admins/pos/${params.posId}/receipts?from_date=${date}&to_date=${date2}&page=${page}&page_size=${pageSize}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -181,7 +181,7 @@ const ReceiptsContent = () => {
       }
 
       const response = await fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/reports/download-excel/${date}`,
+        `${BASE_URL}/v1/admins/pos/${params.posId}/reports/download-excel/${date}`,
         {
           method: "POST",
           headers: myHeaders,
@@ -242,7 +242,7 @@ const ReceiptsContent = () => {
       }
 
       const response = await fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/receipts/download-excel/${date}`,
+        `${BASE_URL}/v1/admins/pos/${params.posId}/receipts/download-excel/${date}`,
         {
           method: "POST",
           headers: myHeaders,
@@ -301,7 +301,6 @@ const ReceiptsContent = () => {
   };
 
   console.log(selectedReceipt);
-  
 
   return (
     <div className="w-full mt-0">
@@ -437,146 +436,148 @@ const ReceiptsContent = () => {
           </div>
         </div>
 
-        {loading ? (
-          <Loading />
-        ) : error ? (
-          <div>
-            <div className="px-4 py-6 text-red-600">{error}</div>
-          </div>
-        ) : receipts?.length == 0 ? (
-          <div>
-            <div className="px-4 py-6 text-muted-foreground">
-              {t("toast.no_data")}
+        <div className="relative" >
+          {loading ? (
+            <Loading />
+          ) : error ? (
+            <div>
+              <div className="px-4 py-6 text-red-600">{error}</div>
             </div>
-          </div>
-        ) : (
-          <table className="w-full border border-gray-300 text-sm">
-            <thead className="sticky top-[-20px] z-10 bg-bgColor">
-              <tr>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  №
-                </th>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  Операция
-                </th>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  Номер чека
-                </th>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  Дата и время
-                </th>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  Тип оплаты
-                </th>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  Наличные
-                </th>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  Картой
-                </th>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  Сумма
-                </th>
-                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
-                  Статус 1С
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {receipts?.map((org: any, index: number) => (
-                <tr
-                  key={org?.id}
-                  className="hover:bg-accent/50 cursor-pointer  border-gray-300"
-                  onClick={() => {
-                    setSelectedReceipt(org);
-                    setIsModalOpen(true);
-                  }}
-                >
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    <h2>
-                      {(receiptsPagination.currentPage - 1) *
-                        receiptsPagination.pageSize +
-                        index +
-                        1}
-                    </h2>
-                  </td>
-                  <td className="px-4 py-2 border-r border-gray-300">
-                    {org.receipt_type == "sale" ? (
-                      <h2 className="text-green-500 mb-1">
-                        {" "}
-                        {t(`app.pos.sale`)}
-                      </h2>
-                    ) : (
-                      <h2 className="text-red-500 mb-1">
-                        {t(`app.pos.refund`)}
-                      </h2>
-                    )}
-
-                    {org?.qr_code_url && (
-                      <Link
-                        onClick={(e) => {
-                          e.stopPropagation(); // parent onClick ishlashini to‘xtatadi
-                        }}
-                        className="bg-primary text-white rounded-sm text-[12px] p-1 px-3"
-                        target="_blank"
-                        href={org.qr_code_url}
-                      >
-                        QR код
-                      </Link>
-                    )}
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    <h2>{org?.receipt_seq}</h2>
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    <h2> {formatDate(org?.close_time)}</h2>
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    {" "}
-                    <h2>
-                      {org?.payments?.map((type: any) => {
-                        return type.payment_type.name + " ";
-                      })}
-                    </h2>
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    <h2>
-                      {Number(
-                        org?.received_cash.toString().slice(0, -2)
-                      ).toLocaleString("ru-RU")}{" "}
-                      сум
-                    </h2>
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    <h2>
-                      {" "}
-                      {Number(
-                        org?.received_card.toString().slice(0, -2)
-                      ).toLocaleString("ru-RU")}{" "}
-                      сум
-                    </h2>
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    <h2>
-                      {(
-                        Number(org?.received_cash.toString().slice(0, -2)) +
-                        Number(org?.received_card.toString().slice(0, -2))
-                      ).toLocaleString("ru-RU")}{" "}
-                      сум
-                    </h2>
-                  </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    {org?.sent_to_1c ? (
-                      <span className="text-green-500">Отправлено</span>
-                    ) : (
-                      <span className="text-red-500">Не отправлено</span>
-                    )}
-                  </td>
+          ) : receipts?.length == 0 ? (
+            <div>
+              <div className="px-4 py-6 text-muted-foreground">
+                {t("toast.no_data")}
+              </div>
+            </div>
+          ) : (
+            <table className="w-full border border-gray-300 text-sm">
+              <thead className="sticky top-[-20px] z-10 bg-bgColor">
+                <tr>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    №
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    Операция
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    Номер чека
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    Дата и время
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    Тип оплаты
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    Наличные
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    Картой
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    Сумма
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                    Статус 1С
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody className="divide-y">
+                {receipts?.map((org: any, index: number) => (
+                  <tr
+                    key={org?.id}
+                    className="hover:bg-accent/50 cursor-pointer  border-gray-300"
+                    onClick={() => {
+                      setSelectedReceipt(org);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      <h2>
+                        {(receiptsPagination.currentPage - 1) *
+                          receiptsPagination.pageSize +
+                          index +
+                          1}
+                      </h2>
+                    </td>
+                    <td className="px-4 py-2 border-r border-gray-300">
+                      {org.receipt_type == "sale" ? (
+                        <h2 className="text-green-500 mb-1">
+                          {" "}
+                          {t(`app.pos.sale`)}
+                        </h2>
+                      ) : (
+                        <h2 className="text-red-500 mb-1">
+                          {t(`app.pos.refund`)}
+                        </h2>
+                      )}
+
+                      {org?.qr_code_url && (
+                        <Link
+                          onClick={(e) => {
+                            e.stopPropagation(); // parent onClick ishlashini to‘xtatadi
+                          }}
+                          className="bg-primary text-white rounded-sm text-[12px] p-1 px-3"
+                          target="_blank"
+                          href={org.qr_code_url}
+                        >
+                          QR код
+                        </Link>
+                      )}
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      <h2>{org?.receipt_seq}</h2>
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      <h2> {formatDate(org?.close_time)}</h2>
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      {" "}
+                      <h2>
+                        {org?.payments?.map((type: any) => {
+                          return type.payment_type.name + " ";
+                        })}
+                      </h2>
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      <h2>
+                        {Number(
+                          org?.received_cash.toString().slice(0, -2)
+                        ).toLocaleString("ru-RU")}{" "}
+                        сум
+                      </h2>
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      <h2>
+                        {" "}
+                        {Number(
+                          org?.received_card.toString().slice(0, -2)
+                        ).toLocaleString("ru-RU")}{" "}
+                        сум
+                      </h2>
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      <h2>
+                        {(
+                          Number(org?.received_cash.toString().slice(0, -2)) +
+                          Number(org?.received_card.toString().slice(0, -2))
+                        ).toLocaleString("ru-RU")}{" "}
+                        сум
+                      </h2>
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      {org?.sent_to_1c ? (
+                        <span className="text-green-500">Отправлено</span>
+                      ) : (
+                        <span className="text-red-500">Не отправлено</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
 
         {/* Pagination */}
         {receipts?.length > 0 && (
@@ -722,7 +723,8 @@ const ReceiptsContent = () => {
                                 </div>
                                 <div className="text-xs text-gray-600">
                                   {item.quantity}.0 шт. х{" "}
-                                  {item.product.price?.toLocaleString("ru-RU")}
+                                  {item.price /
+                                    item.quantity.toLocaleString("ru-RU")}
                                 </div>
                               </div>
                               <div className="text-right ml-2">

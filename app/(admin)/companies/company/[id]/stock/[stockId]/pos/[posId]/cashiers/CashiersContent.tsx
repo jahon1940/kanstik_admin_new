@@ -57,7 +57,7 @@ const CashiersContent = () => {
       redirect: "follow",
     };
 
-    fetch(`${BASE_URL}/v1/admins/pos/${params.id}/managers`, requestOptions)
+    fetch(`${BASE_URL}/v1/admins/pos/${params.posId}/managers`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (!cancelled) setCashiers(result ?? null);
@@ -163,7 +163,7 @@ const CashiersContent = () => {
       };
 
       const response = await fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/set-managers`,
+        `${BASE_URL}/v1/admins/pos/${params.posId}/set-managers`,
         requestOptions
       );
 

@@ -9,6 +9,7 @@ import Loading from "@/components/Loading";
 
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePathname } from "next/navigation";
 
 type Organization = { id: number; name: string };
 
@@ -19,6 +20,8 @@ export default function CompaniesPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { t } = useLanguage();
+
+  const pathname = usePathname();
 
   const getOrganization = () => {
     let cancelled = false;
@@ -152,7 +155,7 @@ export default function CompaniesPage() {
                       <td className="border border-border border-r-0">
                         <Link
                           className="block px-4 py-3"
-                          href={`/company/${org.id}`}
+                          href={`${pathname}/company/${org.id}`}
                         >
                           {org.name}
                         </Link>
@@ -160,7 +163,7 @@ export default function CompaniesPage() {
                       <td className="border border-border border-l-0 rounded-r-lg">
                         <Link
                           className="block px-4 py-3"
-                          href={`/company/${org.id}`}
+                          href={`${pathname}/company/${org.id}`}
                         >
                           <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
                             {t("app.company.active")}
@@ -192,7 +195,7 @@ export default function CompaniesPage() {
               filtered.map((org) => (
                 <Link
                   key={org.id}
-                  href={`/company/${org.id}`}
+                  href={`${pathname}/company/${org.id}`}
                   className="block border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center justify-between">

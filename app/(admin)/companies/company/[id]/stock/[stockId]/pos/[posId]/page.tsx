@@ -119,7 +119,7 @@ export default function Pos() {
             <div className="flex flex-col gap-3">
               <Link
                 href={{
-                  pathname: `/pos/${params.id}/aboutpos`,
+                  pathname: `/pos/${params.posId}/aboutpos`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -129,7 +129,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.id}/cashiers`,
+                  pathname: `/pos/${params.posId}/cashiers`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -139,7 +139,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.id}/receipts`,
+                  pathname: `/pos/${params.posId}/receipts`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -149,7 +149,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.id}/payments`,
+                  pathname: `/pos/${params.posId}/payments`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -159,7 +159,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.id}/orders`,
+                  pathname: `/pos/${params.posId}/orders`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -169,7 +169,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.id}/discount`,
+                  pathname: `/pos/${params.posId}/discount`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"

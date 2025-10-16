@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, Search } from "lucide-react";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 // import { api } from "@/lib/api";
 import Loading from "@/components/Loading";
@@ -22,6 +22,7 @@ export default function CompanyPage() {
   const { t } = useTranslation();
 
   const params = useParams();
+  const pathname = usePathname();
 
   const getOrganization = () => {
     let cancelled = false;
@@ -147,7 +148,7 @@ export default function CompanyPage() {
                     <td className="border-r border-gray-300">
                       <Link
                         className="px-4 py-3 block"
-                        href={`/stock/${org.id}`}
+                        href={`${pathname}/stock/${org.id}`}
                       >
                         {org.name}
                       </Link>
@@ -155,7 +156,7 @@ export default function CompanyPage() {
                     <td className="border-r border-gray-300">
                       <Link
                         className="px-4 py-3 block"
-                        href={`/stock/${org.id}`}
+                        href={`${pathname}/stock/${org.id}`}
                       >
                         <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
                           Aktiv

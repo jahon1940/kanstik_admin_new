@@ -1,22 +1,241 @@
 "use client";
+import Loading from "@/components/Loading";
+import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getDeviceToken } from "@/lib/token";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+
+import { ChevronDownIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import Link from "next/link";
 
 export default function ReportsPage() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const { t } = useTranslation();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const params = useParams();
+
+  const [ordersSite, setOrdersSite] = useState<any>(null);
+
+  const [open, setOpen] = React.useState(false);
+
+  const [open2, setOpen2] = React.useState(false);
+  const [date2, setDate2] = React.useState<string | undefined>(undefined);
+  const [ordersDate, setOrdersDate] = React.useState<string | undefined>(
+    undefined
+  );
+  const [ordersDate2, setOrdersDate2] = React.useState<string | undefined>(
+    undefined
+  );
+
+  const getOrders = (date: string, date2: string) => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `${BASE_URL}/v1/admins/receipts/info?from_date=${date}&to_date=${date2}&page=1&page_size=200`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        
+        if (!cancelled) setOrdersSite(result.results ?? null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+        if (!cancelled) setError(msg);
+        toast.error(msg);
+        setLoading(false)
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  };
+
+  const formatDate = (isoString: string) => {
+    const d = new Date(isoString);
+
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+
+    return `${day}.${month}.${year}, ${hours}:${minutes}`;
+  };
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
       <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg shadow-black/10 dark:shadow-black/30">
         <h1 className="text-lg md:text-xl font-semibold">
-          {t("app.reports.title")}
+          {t("app.reports.title2")}
         </h1>
       </div>
 
-      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30 p-4 md:p-6">
-        <div className="text-center py-8 md:py-12">
-          <p className="text-muted-foreground text-sm md:text-base">
-            Reports content
-          </p>
+      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30 p-4 md:p-6 overflow-auto h-[calc(100vh-12rem)] md:h-[calc(100vh-6rem)] ">
+        <div className="space-y-4">
+          {/* Date filters - responsive */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <div className="flex justify-between sm:justify-start sm:gap-2">
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    id="date"
+                    className="w-[49%] sm:w-46 justify-between font-normal text-sm"
+                  >
+                    {ordersDate ? ordersDate : t("app.pos.from")}
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={ordersDate ? new Date(ordersDate) : undefined}
+                    captionLayout="dropdown"
+                    onSelect={(selectedDate) => {
+                      if (selectedDate) {
+                        const formatted = `${selectedDate.getFullYear()}-${String(
+                          selectedDate.getMonth() + 1
+                        ).padStart(2, "0")}-${String(
+                          selectedDate.getDate()
+                        ).padStart(2, "0")}`;
+                        setOrdersDate(formatted);
+                        setOpen(false);
+                      }
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <Popover open={open2} onOpenChange={setOpen2}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    id="date"
+                    className="w-[49%] sm:w-46 justify-between font-normal text-sm"
+                  >
+                    {ordersDate2 ? ordersDate2 : t("app.pos.to")}
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={ordersDate ? new Date(ordersDate) : undefined}
+                    captionLayout="dropdown"
+                    onSelect={(selectedDate) => {
+                      if (selectedDate) {
+                        const formatted = `${selectedDate.getFullYear()}-${String(
+                          selectedDate.getMonth() + 1
+                        ).padStart(2, "0")}-${String(
+                          selectedDate.getDate()
+                        ).padStart(2, "0")}`;
+                        setOrdersDate2(formatted);
+                        setOpen2(false);
+                      }
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Generate button - responsive */}
+            <div className="flex">
+              <Button
+                onClick={() => {
+                  if (ordersDate && ordersDate2)
+                    getOrders(ordersDate, ordersDate2);
+                }}
+                className="cursor-pointer text-sm px-3 py-2 w-full"
+              >
+                {t("app.reports.generate_orders")}
+              </Button>
+            </div>
+          </div>
+
+          {loading ? (
+            <Loading />
+          ) : error ? (
+            <tr>
+              <td className="px-4 py-6 text-red-600" colSpan={2}>
+                {error}
+              </td>
+            </tr>
+          ) : ordersSite?.length == 0 ? (
+            <tr>
+              <td className="px-4 py-6 text-muted-foreground" colSpan={2}>
+                {t("toast.no_data")}
+              </td>
+            </tr>
+          ) : (
+            <table className="w-full  text-sm">
+             
+              <tbody className="divide-y">
+                {ordersSite?.map((org: any, index: number) => (
+                  <tr
+                    key={org?.id}
+                    className="hover:bg-accent/50 cursor-pointer"
+                  >
+                    <td className="px-2 py-2 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-2 border-r border-gray-300">
+                      <Link href={`/order/${org.id}`}>
+                        <h2 className="text-green-500">#{org.id}</h2>
+                      </Link>
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      <Link href={`/order/${org.id}`}>
+                        <h2> {formatDate(org?.created_at)}</h2>
+                      </Link>
+                    </td>
+                    <td className="px-4 py-4 border-r border-gray-300">
+                      <Link href={`/order/${org.id}`}>
+                        <h2>{org?.price?.toLocaleString("ru-RU")} сум </h2>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

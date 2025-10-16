@@ -45,7 +45,7 @@ const DiscountContent = () => {
         };
 
         const response = await fetch(
-          `${BASE_URL}/v1/admins/pos/${params.id}/discount`,
+          `${BASE_URL}/v1/admins/pos/${params.posId}/discount`,
           requestOptions
         );
 

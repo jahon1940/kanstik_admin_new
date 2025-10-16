@@ -58,7 +58,7 @@ const OrdersContent = () => {
     };
 
     fetch(
-      `${BASE_URL}/v1/admins/pos/${params.id}/orders?from_date=${date}&to_date=${date2}&page=1&page_size=200`,
+      `${BASE_URL}/v1/admins/pos/${params.posId}/orders?from_date=${date}&to_date=${date2}&page=1&page_size=200`,
       requestOptions
     )
       .then((response) => response.json())

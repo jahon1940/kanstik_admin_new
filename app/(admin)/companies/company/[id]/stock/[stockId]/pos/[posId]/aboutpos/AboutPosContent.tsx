@@ -56,7 +56,7 @@ const AboutPosContent = () => {
       redirect: "follow",
     };
 
-    fetch(`${BASE_URL}/v1/admins/pos/${params.id}`, requestOptions)
+    fetch(`${BASE_URL}/v1/admins/pos/${params.posId}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (!cancelled) setData(result ?? null);

@@ -36,7 +36,11 @@
       "admin": "админ"
     },
     "clients": { "title": "Клиенты" },
-    "reports": { "title": "Отчеты" },
+    "reports": {
+      "title": "Отчеты",
+      "title2": "Отчет средний чек",
+      "generate_orders": "Сформировать"
+    },
     "webapp": { "title": "Сайт и приложение" },
     "stock": {
       "account_title": "Аккаунт магазина",
@@ -155,6 +159,20 @@
       "next": "Вперёд"
     },
     "logged_out": "Вы вышли из аккаунта"
+  },
+  "client": {
+    "info": {
+      "title": "Информация о клиенте",
+      "phone": "Телефон",
+      "username": "username"
+    },
+    "cards": {
+      "title": "Карты",
+      "number": "Номер карты",
+      "bonus": "Бонус",
+      "currency": "сум"
+    },
+    "not_found": "Клиент не найден"
   },
   "lang": {
     "uz": "Узбекский",

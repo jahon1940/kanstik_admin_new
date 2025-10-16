@@ -60,7 +60,7 @@ const PaymentsContent = () => {
     };
 
     fetch(
-      `${BASE_URL}/v1/admins/pos/${params.id}/payment-types`,
+      `${BASE_URL}/v1/admins/pos/${params.posId}/payment-types`,
       requestOptions
     )
       .then((response) => response.json())
@@ -143,7 +143,7 @@ const PaymentsContent = () => {
     };
 
     fetch(
-      `${BASE_URL}/v1/admins/pos/${params.id}/set-payment-types`,
+      `${BASE_URL}/v1/admins/pos/${params.posId}/set-payment-types`,
       requestOptions
     )
       .then((response) => {
@@ -195,7 +195,7 @@ const PaymentsContent = () => {
     };
 
     fetch(
-      `${BASE_URL}/v1/admins/pos/${params.id}/unset-payment-types/${id}`,
+      `${BASE_URL}/v1/admins/pos/${params.posId}/unset-payment-types/${id}`,
       requestOptions
     )
       .then((response) => {
