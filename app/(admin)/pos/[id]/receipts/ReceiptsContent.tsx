@@ -22,6 +22,7 @@ type Receipt = {
   id: number;
   receipt_seq: string;
   received_cash: number;
+  received_card: number;
   payments: Array<{
     payment_type: {
       name: string;
@@ -33,6 +34,7 @@ type Receipt = {
   fiscal_sign: string;
   staff_name: string;
   products?: any[];
+  terminal_id: string;
 };
 const ReceiptsContent = () => {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -298,6 +300,9 @@ const ReceiptsContent = () => {
     return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
 
+  console.log(selectedReceipt);
+  
+
   return (
     <div className="w-full mt-0">
       <div className="space-y-4">
@@ -449,6 +454,9 @@ const ReceiptsContent = () => {
             <thead className="sticky top-[0px] z-10 bg-bgColor">
               <tr>
                 <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  №
+                </th>
+                <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                   Операция
                 </th>
                 <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
@@ -475,7 +483,7 @@ const ReceiptsContent = () => {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {receipts?.map((org: any) => (
+              {receipts?.map((org: any, index: number) => (
                 <tr
                   key={org?.id}
                   className="hover:bg-accent/50 cursor-pointer  border-gray-300"
@@ -484,8 +492,26 @@ const ReceiptsContent = () => {
                     setIsModalOpen(true);
                   }}
                 >
+                  <td className="px-4 py-4 border-r border-gray-300">
+                    <h2>
+                      {(receiptsPagination.currentPage - 1) *
+                        receiptsPagination.pageSize +
+                        index +
+                        1}
+                    </h2>
+                  </td>
                   <td className="px-4 py-2 border-r border-gray-300">
-                    <h2 className="text-green-500">Продажа</h2>{" "}
+                    {org.receipt_type == "sale" ? (
+                      <h2 className="text-green-500 mb-1">
+                        {" "}
+                        {t(`app.pos.sale`)}
+                      </h2>
+                    ) : (
+                      <h2 className="text-red-500 mb-1">
+                        {t(`app.pos.refund`)}
+                      </h2>
+                    )}
+
                     {org?.qr_code_url && (
                       <Link
                         onClick={(e) => {
@@ -514,43 +540,29 @@ const ReceiptsContent = () => {
                     </h2>
                   </td>
                   <td className="px-4 py-4 border-r border-gray-300">
-                    {/* <h2>
-                            {org?.payments.map((item) => {
-                              if (item.payment_type.name === "Наличные") {
-                                return item.price.toLocaleString("ru-RU");
-                              } else {
-                                return 0;
-                              }
-                            })}{" "}
-                            сум
-                          </h2> */}
-                    <h2>{org?.received_cash.toLocaleString("ru-RU")} сум</h2>
+                    <h2>
+                      {Number(
+                        org?.received_cash.toString().slice(0, -2)
+                      ).toLocaleString("ru-RU")}{" "}
+                      сум
+                    </h2>
                   </td>
                   <td className="px-4 py-4 border-r border-gray-300">
-                    {/* <h2>
-                            {org?.payments.map((item) => {
-                              if (
-                                item.payment_type.name === "HUMO" ||
-                                item.payment_type.name === "UZCARD"
-                              ) {
-                                return item.price.toLocaleString("ru-RU");
-                              } else {
-                                return 0;
-                              }
-                            })}{" "}
-                            сум
-                          </h2> */}
-                    <h2>{org?.received_card.toLocaleString("ru-RU")} сум</h2>
+                    <h2>
+                      {" "}
+                      {Number(
+                        org?.received_card.toString().slice(0, -2)
+                      ).toLocaleString("ru-RU")}{" "}
+                      сум
+                    </h2>
                   </td>
                   <td className="px-4 py-4 border-r border-gray-300">
                     <h2>
                       {(
-                        Number(org?.received_cash) + Number(org?.received_card)
+                        Number(org?.received_cash.toString().slice(0, -2)) +
+                        Number(org?.received_card.toString().slice(0, -2))
                       ).toLocaleString("ru-RU")}{" "}
                       сум
-                      {/* {org?.received_cash +
-                              org?.received_card.toLocaleString("ru-RU")}
-                            сум */}
                     </h2>
                   </td>
                   <td className="px-4 py-4 border-r border-gray-300">
@@ -623,7 +635,7 @@ const ReceiptsContent = () => {
             {/* Header */}
             <div className="bg-gray-50 px-4 py-1  flex justify-between items-center">
               <h2 className="font-semibold flex items-center gap-2 text-green-600 text-sm">
-                <Info /> {selectedReceipt?.receipt_seq}
+                <Info /> {selectedReceipt?.id}
               </h2>
               {/* <button
                 onClick={() => setIsModalOpen(false)}
@@ -699,47 +711,40 @@ const ReceiptsContent = () => {
                     <div className="space-y-2">
                       {selectedReceipt?.products?.map((item: any, index) => {
                         return (
-                          <div
-                            key={index}
-                            className="flex justify-between items-start"
-                          >
-                            <div className="flex-1">
-                              <div className="font-medium">
-                                {item.product.classifier_title}
+                          <div>
+                            <div
+                              key={index}
+                              className="flex justify-between items-start"
+                            >
+                              <div className="flex-1">
+                                <div className="font-medium">
+                                  {item.product.classifier_title}
+                                </div>
+                                <div className="text-xs text-gray-600">
+                                  {item.quantity}.0 шт. х{" "}
+                                  {item.product.price?.toLocaleString("ru-RU")}
+                                </div>
                               </div>
-                              <div className="text-xs text-gray-600">
-                                {item.product.quantity}.0 шт. х{" "}
-                                {selectedReceipt.received_cash?.toLocaleString(
-                                  "ru-RU"
-                                )}
+                              <div className="text-right ml-2">
+                                <div className="font-semibold">
+                                  {item.price?.toLocaleString("ru-RU")}
+                                </div>
                               </div>
                             </div>
-                            <div className="text-right ml-2">
-                              <div className="font-semibold">
-                                {selectedReceipt.received_cash?.toLocaleString(
-                                  "ru-RU"
-                                )}
+                            {/* Tax Info */}
+                            <div className=" pt-3 mb-4">
+                              <div className="flex justify-between text-xs">
+                                <span>НДС: ({item.vat_percent})</span>
+                                <span>{item.vat}</span>
+                              </div>
+                              <div className="flex justify-between text-xs">
+                                <span>ИКПУ:</span>
+                                <span>{item.class_code}</span>
                               </div>
                             </div>
                           </div>
                         );
                       })}
-                    </div>
-                  </div>
-
-                  {/* Tax Info */}
-                  <div className=" pt-3 mb-4">
-                    <div className="flex justify-between text-xs">
-                      <span>НДС: (12)</span>
-                      <span>
-                        {Math.round(
-                          (selectedReceipt.received_cash || 0) * 0.12
-                        ).toLocaleString("ru-RU")}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                      <span>ИКПУ:</span>
-                      <span>03407001001000000</span>
                     </div>
                   </div>
 
@@ -749,30 +754,56 @@ const ReceiptsContent = () => {
                       <div className="flex justify-between font-semibold">
                         <span>Сумма:</span>
                         <span>
-                          {selectedReceipt.received_cash?.toLocaleString(
-                            "ru-RU"
-                          )}
+                          {(
+                            Number(
+                              selectedReceipt?.received_cash
+                                .toString()
+                                .slice(0, -2)
+                            ) +
+                            Number(
+                              selectedReceipt?.received_card
+                                .toString()
+                                .slice(0, -2)
+                            )
+                          ).toLocaleString("ru-RU")}{" "}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Оплачено:</span>
                         <span>
-                          {selectedReceipt.received_cash?.toLocaleString(
-                            "ru-RU"
-                          )}
+                          {(
+                            Number(
+                              selectedReceipt?.received_cash
+                                .toString()
+                                .slice(0, -2)
+                            ) +
+                            Number(
+                              selectedReceipt?.received_card
+                                .toString()
+                                .slice(0, -2)
+                            )
+                          ).toLocaleString("ru-RU")}{" "}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Наличные:</span>
                         <span>
-                          {selectedReceipt.received_cash?.toLocaleString(
-                            "ru-RU"
-                          )}
+                          {Number(
+                            selectedReceipt?.received_cash
+                              .toString()
+                              .slice(0, -2)
+                          ).toLocaleString("ru-RU")}{" "}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Картой:</span>
-                        <span>0</span>
+                        <span>
+                          {Number(
+                            selectedReceipt?.received_card
+                              .toString()
+                              .slice(0, -2)
+                          ).toLocaleString("ru-RU")}{" "}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Бон. картой:</span>
@@ -785,7 +816,8 @@ const ReceiptsContent = () => {
                   <div className=" pt-3 mb-4">
                     <div className="text-center text-xs space-y-1">
                       <div className="flex justify-between">
-                        <span>ФМ:</span> <span>LG420230640562</span>
+                        <span>ФМ:</span>{" "}
+                        <span>{selectedReceipt?.terminal_id}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>ФП:</span> <span>414675046328</span>
@@ -795,24 +827,11 @@ const ReceiptsContent = () => {
                         <span>{selectedReceipt.receipt_seq}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>S/N:</span> <span>LG420230640562</span>
+                        <span>S/N:</span>{" "}
+                        <span>{selectedReceipt?.terminal_id}</span>
                       </div>
                     </div>
                   </div>
-
-                  {/* QR Code Link */}
-                  {/* {selectedReceipt.qr_code_url && (
-                    <div className=" pt-3 mb-4 text-center">
-                      <a
-                        href={selectedReceipt.qr_code_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline text-xs"
-                      >
-                        Просмотреть QR код
-                      </a>
-                    </div>
-                  )} */}
                 </div>
               )}
             </div>
