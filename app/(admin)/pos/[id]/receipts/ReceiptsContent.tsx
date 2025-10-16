@@ -451,7 +451,7 @@ const ReceiptsContent = () => {
           </div>
         ) : (
           <table className="w-full border border-gray-300 text-sm">
-            <thead className="sticky top-[0px] z-10 bg-bgColor">
+            <thead className="sticky top-[-20px] z-10 bg-bgColor">
               <tr>
                 <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
                   №
@@ -631,7 +631,7 @@ const ReceiptsContent = () => {
             }
           }}
         >
-          <div className="bg-bgColor rounded-lg shadow-2xl max-w-md w-full h-full  overflow-auto">
+          <div className="bg-bgColor rounded-lg shadow-2xl  max-w-[80%] sm:max-w-md w-full h-full  overflow-auto">
             {/* Header */}
             <div className="bg-gray-50 px-4 py-1  flex justify-between items-center">
               <h2 className="font-semibold flex items-center gap-2 text-green-600 text-sm">
