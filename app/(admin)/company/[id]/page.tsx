@@ -105,11 +105,13 @@ export default function CompanyPage() {
           <table className="w-full text-sm  ">
             <thead className="sticky -top-[1px] z-10 bg-bgColor ">
               <tr>
-                <th className="text-left font-semibold px-2 py-3 w-12">№</th>
-                <th className="text-left font-semibold px-4 py-3 w-[60%]">
+                <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+                  №
+                </th>
+                <th className="text-left font-semibold px-4 py-3 w-[60%] border-r border-gray-300">
                   Nomi
                 </th>
-                <th className="text-left font-semibold px-4 py-3 w-[40%]">
+                <th className="text-left font-semibold px-4 py-3 w-[40%] border-r border-gray-300">
                   Holati
                 </th>
               </tr>
@@ -139,10 +141,10 @@ export default function CompanyPage() {
                     key={org.id}
                     className="hover:bg-accent/50 cursor-pointer"
                   >
-                    <td className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                    <td className="px-2 py-3 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
                       {index + 1}
                     </td>
-                    <td>
+                    <td className="border-r border-gray-300">
                       <Link
                         className="px-4 py-3 block"
                         href={`/stock/${org.id}`}
@@ -150,7 +152,7 @@ export default function CompanyPage() {
                         {org.name}
                       </Link>
                     </td>
-                    <td>
+                    <td className="border-r border-gray-300">
                       <Link
                         className="px-4 py-3 block"
                         href={`/stock/${org.id}`}

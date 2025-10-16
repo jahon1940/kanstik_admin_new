@@ -135,22 +135,22 @@ export default function OrderPage() {
             <table className="w-full mb-3 text-sm ">
               <thead className="sticky -top-[1px] z-10 bg-bgColor ">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12">
+                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300">
                     №
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b ">
+                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
                     Название / Артикул
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b ">
+                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
                     Бренд
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b ">
+                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
                     Количество
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b ">
+                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
                     Цена
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b ">
+                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
                     Сумма
                   </th>
                 </tr>
@@ -180,10 +180,10 @@ export default function OrderPage() {
                       key={org.id}
                       className="hover:bg-accent/50 cursor-pointer"
                     >
-                      <td className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                      <td className="px-2 py-3 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
                         {index + 1}
                       </td>
-                      <td className="px-4 py-3 max-w-80 ">
+                      <td className="px-4 py-3 max-w-80 border-r border-gray-300">
                         <div className="flex gap-2 items-center">
                           <span>
                             <Image
@@ -206,13 +206,17 @@ export default function OrderPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3">{org?.product?.brand?.name}</td>
-                      <td className="px-4 py-3">{org?.quantity} штук</td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 border-r border-gray-300">
+                        {org?.product?.brand?.name}
+                      </td>
+                      <td className="px-4 py-3 border-r border-gray-300">
+                        {org?.quantity} штук
+                      </td>
+                      <td className="px-4 py-3 border-r border-gray-300">
                         {" "}
                         {org?.product?.price?.toLocaleString("ru-RU")} сум
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 border-r border-gray-300">
                         {org?.price?.toLocaleString("ru-RU")} сум
                       </td>
                     </tr>

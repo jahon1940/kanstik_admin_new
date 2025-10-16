@@ -205,11 +205,13 @@ const CashiersContent = () => {
       <table className="w-full  text-sm">
         <thead className="sticky -top-[1px] z-10 bg-bgColor">
           <tr>
-            <th className="text-left font-semibold px-2 py-3 w-12">№</th>
-            <th className="text-left font-semibold px-4 py-3  w-[60%]">
+            <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+              №
+            </th>
+            <th className="text-left font-semibold px-4 py-3  w-[60%] border-r border-gray-300">
               {t("app.company.name")}
             </th>
-            <th className="text-left font-semibold px-4 py-3  w-[40%]">
+            <th className="text-left font-semibold px-4 py-3  w-[40%] border-r border-gray-300">
               {t("app.company.role")}
             </th>
           </tr>
@@ -236,11 +238,13 @@ const CashiersContent = () => {
           ) : (
             cashiers?.results.map((org: any, index: number) => (
               <tr key={org.id} className="hover:bg-accent/50 cursor-pointer ">
-                <td className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                <td className="px-2 py-3 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
                   {index + 1}
                 </td>
-                <td className="px-4 py-3 ">{org.name}</td>
-                <td className="py-1">
+                <td className="px-4 py-3 border-r border-gray-300">
+                  {org.name}
+                </td>
+                <td className="py-1 border-r border-gray-300">
                   <span
                     className={cn(
                       "inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300",
