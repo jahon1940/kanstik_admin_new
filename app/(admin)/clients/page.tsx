@@ -101,13 +101,13 @@ export default function ClientsPage() {
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg shadow-black/10 dark:shadow-black/30">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <h1 className="text-lg md:text-xl font-semibold">
           {t("app.company.title")}
         </h1>
       </div>
 
-      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30">
+      <div className="rounded-lg bg-card shadow-lg">
         {/* Qidiruv paneli - responsive */}
         <div className="p-3 md:p-4">
           <form
@@ -137,15 +137,15 @@ export default function ClientsPage() {
           {/* Desktop table */}
           <div className="hidden md:block">
             <table className="w-full text-sm relative border-separate border-spacing-y-2">
-              <thead className="sticky -top-[1px] z-10 bg-bgColor">
+              <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300">
+                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                     №
                   </th>
-                  <th className="text-left font-semibold px-4 py-2 border-b w-[60%] border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
                     {t("app.company.name")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-2 border-b w-[40%] border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b w-[40%] border-r border-gray-300 border border-l-0 rounded-r-lg">
                     {t("app.stock.phone")}
                   </th>
                 </tr>
@@ -189,9 +189,9 @@ export default function ClientsPage() {
                           {(currentPage - 1) * 50 + index + 1}
                         </div>
                       </td>
-                      <td className="border border-border border-r-0">
+                      <td className="border border-border">
                         <Link
-                          className="block px-4 py-2"
+                          className="block px-4 py-3"
                           href={{
                             pathname: `${pathname}/client/${org.id}`,
                             query: { name: org.name },
@@ -211,7 +211,7 @@ export default function ClientsPage() {
                       </td>
                       <td className="border border-border border-l-0 rounded-r-lg">
                         <Link
-                          className="block px-4 py-2"
+                          className="block px-4 py-3"
                           href={{
                             pathname: `${pathname}/client/${org.id}`,
                             query: { name: org.name },

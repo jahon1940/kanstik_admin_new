@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import Loading from "@/components/Loading";
 
 import { getDeviceToken } from "@/lib/token";
-import Link from "next/link";
+
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // Pose (kassa) type
 type Pose = {
@@ -271,7 +272,7 @@ export default function StockPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
@@ -284,46 +285,57 @@ export default function StockPage() {
       <div className="">
         <div className="flex flex-col md:flex-row gap-4 items-start">
           {/* Chap panel */}
-          <div className="w-full flex-shrink-0 md:w-[450px]  rounded-2xl p-4 bg-secondary">
-            <h1 className="text-xl  pb-1 mb-1">
-              {t("app.stock.account_title")}
-            </h1>
-            <table className="text-sm border-separate border-spacing-x-2">
-              <tbody>
-                <tr>
-                  <td className="py-1">{t("app.stock.organization")}:</td>
-                  <td>
-                    <h1>{data?.organization}</h1>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-1">{t("app.stock.name")}:</td>
-                  <td>{data?.name}</td>
-                </tr>
-                <tr>
-                  <td className="py-1">{t("app.stock.phone")}:</td>
-                  <td>{data?.phone_number}</td>
-                </tr>
-                <tr>
-                  <td className="py-1">{t("app.stock.address")}:</td>
-                  <td>{data?.address}</td>
-                </tr>
-                <tr>
-                  <td className="py-1">{t("app.stock.region")}:</td>
-                  <td>{data?.region}</td>
-                </tr>
-                <tr>
-                  <td className="py-1 w-[40%]">
-                    {t("app.stock.products_by_stocks")}:
-                  </td>
-                  <td>{counts?.product_in_warehouses}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div>
+            <div className="w-full flex-shrink-0 md:w-[450px]  rounded-2xl p-4 bg-secondary shadow-lg shadow-black/10 dark:shadow-black/30 mb-6">
+              <h1 className="text-xl  pb-1 mb-1">
+                {t("app.stock.account_title")}
+              </h1>
+              <table className="text-sm border-separate border-spacing-x-2">
+                <tbody>
+                  <tr>
+                    <td className="py-1">{t("app.stock.organization")}:</td>
+                    <td>
+                      <h1>{data?.organization}</h1>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-1">{t("app.stock.name")}:</td>
+                    <td>{data?.name}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-1">{t("app.stock.phone")}:</td>
+                    <td>{data?.phone_number}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-1">{t("app.stock.address")}:</td>
+                    <td>{data?.address}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-1">{t("app.stock.region")}:</td>
+                    <td>{data?.region}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-1 w-[40%]">
+                      {t("app.stock.products_by_stocks")}:
+                    </td>
+                    <td>{counts?.product_in_warehouses}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <Link
+              href={{
+                pathname: `${pathname}/receipts`,
+                query: { name: data?.name },
+              }}
+              className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90 w-full block"
+            >
+              {t("app.stock.all_receipts")}
+            </Link>
           </div>
 
           {/* O‘ng panel */}
-          <div className="flex-1  rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full">
+          <div className="flex-1  rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full shadow-lg shadow-black/10 dark:shadow-black/30">
             <h1 className="text-xl mb-3">
               {t("app.stock.cashiers")} ({data?.name}){" "}
             </h1>
@@ -333,36 +345,42 @@ export default function StockPage() {
             >
               {t("app.stock.add_cashier")}
             </button>
-            <table className="w-full  text-sm">
-              <thead className="sticky -top-[1px] z-10 bg-bgColor">
+            <table className="w-full text-sm relative border-separate border-spacing-y-2">
+              <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                     №
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  w-[60%] border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
                     {t("app.company.name")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  w-[40%] border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b w-[40%] border-r border-gray-300 border border-l-0 rounded-r-lg">
                     {t("app.company.status")}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={3}>
+                    <td colSpan={3} className=" rounded-lg px-4 py-6">
                       <Loading />
                     </td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td className="px-4 py-6 text-red-600" colSpan={3}>
+                    <td
+                      className="px-4 py-6 text-red-600  rounded-lg"
+                      colSpan={3}
+                    >
                       {error}
                     </td>
                   </tr>
                 ) : !data?.poses?.length ? (
                   <tr>
-                    <td className="px-4 py-6 text-muted-foreground" colSpan={3}>
+                    <td
+                      className="px-4 py-6 text-muted-foreground border border-border rounded-lg"
+                      colSpan={3}
+                    >
                       {t("app.company.not_found")}
                     </td>
                   </tr>
@@ -372,23 +390,25 @@ export default function StockPage() {
                       key={org.id}
                       className="hover:bg-accent/50 cursor-pointer"
                     >
-                      <td className="px-2 py-3 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
-                        {index + 1}
+                      <td className="border border-border border-r-0 rounded-l-lg">
+                        <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                          {index + 1}
+                        </div>
                       </td>
-                      <td className="border-r border-gray-300">
+                      <td className="border border-border">
                         <Link
-                          className="px-4 py-3 block"
+                          className="block px-4 py-3"
                           href={{
                             pathname: `${pathname}/pos/${org.id}`,
                             query: { name: org.name },
                           }}
                         >
-                          {org.name} 
+                          {org.name}
                         </Link>
                       </td>
-                      <td className="border-r border-gray-300">
+                      <td className="border border-border border-l-0 rounded-r-lg">
                         <Link
-                          className="px-4 py-3 block"
+                          className="block px-4 py-3"
                           href={`${pathname}/pos/${org.id}`}
                         >
                           <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">

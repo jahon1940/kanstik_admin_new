@@ -341,46 +341,57 @@ const PaymentsContent = () => {
           </Button>
         </div>
 
-        <table className="w-full  text-sm">
-          <thead className="sticky -top-[1px] z-10 bg-bgColor">
+        <table className="w-full text-sm relative border-separate border-spacing-y-2">
+          <thead className="sticky top-[0px] z-10 bg-bgColor">
             <tr>
-              <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+              <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                 №
               </th>
-              <th className="text-left font-semibold px-4 py-3  w-[60%] border-r border-gray-300">
+              <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
                 {t("app.company.name")}
               </th>
-              <th className="text-left font-semibold px-4 py-3  w-[40%] border-r border-gray-300">
+              <th className="text-left font-semibold px-4 py-3 border-b w-[40%] border-r border-gray-300 border border-l-0 rounded-r-lg">
                 {t("app.company.status")}
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody>
             {loading ? (
               <tr>
-                <td colSpan={3}>
+                <td
+                  colSpan={3}
+                  className="border border-border rounded-lg px-4 py-6"
+                >
                   <Loading />
                 </td>
               </tr>
             ) : error ? (
               <tr>
-                <td className="px-4 py-6 text-red-600" colSpan={3}>
+                <td
+                  className="px-4 py-6 text-red-600 border border-border rounded-lg"
+                  colSpan={3}
+                >
                   {error}
                 </td>
               </tr>
             ) : !posPaymentTypes?.length ? (
               <tr>
-                <td className="px-4 py-6 text-muted-foreground" colSpan={3}>
+                <td
+                  className="px-4 py-6 text-muted-foreground border border-border rounded-lg"
+                  colSpan={3}
+                >
                   {t("app.company.not_found")}
                 </td>
               </tr>
             ) : (
               posPaymentTypes?.map((org: any, index: number) => (
-                <tr key={org.id} className="hover:bg-accent/50 ">
-                  <td className="px-2 py-3 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
-                    {index + 1}
+                <tr key={org.id} className="hover:bg-accent/50">
+                  <td className="border border-border border-r-0 rounded-l-lg">
+                    <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                      {index + 1}
+                    </div>
                   </td>
-                  <td className="px-4 py-3 flex items-center gap-2 border-r border-gray-300">
+                  <td className="border border-border px-4 py-3 flex items-center gap-2">
                     <span className="border border-primary rounded-sm p-1">
                       <Image
                         src={
@@ -396,7 +407,7 @@ const PaymentsContent = () => {
                     </span>
                     {org.name}
                   </td>
-                  <td className="px-4 py-3 border-r border-gray-300">
+                  <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
                     <div className="flex gap-2">
                       <span
                         onClick={() => {

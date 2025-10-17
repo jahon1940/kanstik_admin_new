@@ -44,6 +44,7 @@
     "webapp": { "title": "Veb-sayt va ilova" },
     "stock": {
       "account_title": "Do'kon hisobi",
+      "account_receipts": "Do'kon cheklari",
       "organization": "Tashkilot",
       "name": "Nomi",
       "phone": "Telefon",
@@ -52,6 +53,7 @@
       "products_by_stocks": "Omborlar bo'yicha mahsulotlar",
       "cashiers": "Kassalar",
       "add_cashier": "Kassa qo'shish",
+      "all_receipts": "Hamma cheklar",
       "cash_register_data": "Kassa ma'lumotlari",
       "cash_register_name": "Kassa nomi",
       "app_version": "Dastur versiyasi",

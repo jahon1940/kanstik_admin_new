@@ -28,7 +28,7 @@ export default function Pos() {
   return (
     <Tabs defaultValue="info" className="space-y-3">
       {/* Header - responsive */}
-      <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-3 md:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg shadow-black/10 dark:shadow-black/30 justify-between">
+      <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-3 md:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)] justify-between">
         <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
           <button
             type="button"
@@ -85,7 +85,7 @@ export default function Pos() {
         </div>
       </div>
       {/* Main content - responsive */}
-      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30">
+      <div className="rounded-lg bg-card shadow-lg">
         <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 ">
           {/* content - only visible on desktop/larger screens */}
           <div className="hidden md:block w-full">

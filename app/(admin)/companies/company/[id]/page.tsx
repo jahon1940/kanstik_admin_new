@@ -69,7 +69,7 @@ export default function CompanyPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
@@ -79,7 +79,7 @@ export default function CompanyPage() {
         </button>
         <h1 className="text-xl font-semibold">Kompaniya</h1>
       </div>
-      <div className="rounded-lg  bg-card">
+      <div className="rounded-lg bg-card shadow-lg">
         {/* Qidiruv paneli */}
         <div className="p-4">
           <form
@@ -103,36 +103,45 @@ export default function CompanyPage() {
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
         <div className="overflow-auto h-[calc(100vh-11rem)] px-4">
-          <table className="w-full text-sm  ">
-            <thead className="sticky -top-[1px] z-10 bg-bgColor ">
+          <table className="w-full text-sm relative border-separate border-spacing-y-2">
+            <thead className="sticky top-[0px] z-10 bg-bgColor">
               <tr>
-                <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+                <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                   №
                 </th>
-                <th className="text-left font-semibold px-4 py-3 w-[60%] border-r border-gray-300">
+                <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
                   Nomi
                 </th>
-                <th className="text-left font-semibold px-4 py-3 w-[40%] border-r border-gray-300">
+                <th className="text-left font-semibold px-4 py-3 border-b w-[40%] border-r border-gray-300 border border-l-0 rounded-r-lg">
                   Holati
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={3}>
+                  <td
+                    colSpan={3}
+                    className="border border-border rounded-lg px-4 py-6"
+                  >
                     <Loading />
                   </td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td className="px-4 py-6 text-red-600" colSpan={3}>
+                  <td
+                    className="px-4 py-6 text-red-600 border border-border rounded-lg"
+                    colSpan={3}
+                  >
                     {error}
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-muted-foreground" colSpan={3}>
+                  <td
+                    className="px-4 py-6 text-muted-foreground border border-border rounded-lg"
+                    colSpan={3}
+                  >
                     {t("toast.no_data")}
                   </td>
                 </tr>
@@ -142,20 +151,22 @@ export default function CompanyPage() {
                     key={org.id}
                     className="hover:bg-accent/50 cursor-pointer"
                   >
-                    <td className="px-2 py-3 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
-                      {index + 1}
+                    <td className="border border-border border-r-0 rounded-l-lg">
+                      <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                        {index + 1}
+                      </div>
                     </td>
-                    <td className="border-r border-gray-300">
+                    <td className="border border-border">
                       <Link
-                        className="px-4 py-3 block"
+                        className="block px-4 py-3"
                         href={`${pathname}/stock/${org.id}`}
                       >
                         {org.name}
                       </Link>
                     </td>
-                    <td className="border-r border-gray-300">
+                    <td className="border border-border border-l-0 rounded-r-lg">
                       <Link
-                        className="px-4 py-3 block"
+                        className="block px-4 py-3"
                         href={`${pathname}/stock/${org.id}`}
                       >
                         <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">

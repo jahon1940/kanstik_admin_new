@@ -14,7 +14,7 @@ export default function ReceiptsPage() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg shadow-black/10 dark:shadow-black/30">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg">
         <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
           <button
             type="button"
@@ -28,7 +28,7 @@ export default function ReceiptsPage() {
           </h1>
         </div>
       </div>
-      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30">
+      <div className="rounded-lg bg-card shadow-lg">
         <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
           {/* Receipts Tab */}
           <ReceiptsContent />

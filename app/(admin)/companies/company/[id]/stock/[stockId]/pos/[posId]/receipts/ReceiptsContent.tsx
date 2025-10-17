@@ -436,7 +436,7 @@ const ReceiptsContent = () => {
           </div>
         </div>
 
-        <div className="relative" >
+        <div className="relative">
           {loading ? (
             <Loading />
           ) : error ? (
@@ -450,49 +450,49 @@ const ReceiptsContent = () => {
               </div>
             </div>
           ) : (
-            <table className="w-full border border-gray-300 text-sm">
-              <thead className="sticky top-[-20px] z-10 bg-bgColor">
+            <table className="w-full text-sm relative border-separate border-spacing-y-2">
+              <thead className="sticky -top-[16px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 rounded-l-lg">
                     №
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Операция
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Номер чека
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Дата и время
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Тип оплаты
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Наличные
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Картой
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Сумма
                   </th>
-                  <th className="text-left font-semibold px-4 py-3  border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
                     Статус 1С
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody>
                 {receipts?.map((org: any, index: number) => (
                   <tr
                     key={org?.id}
-                    className="hover:bg-accent/50 cursor-pointer  border-gray-300"
+                    className="hover:bg-accent/50 cursor-pointer"
                     onClick={() => {
                       setSelectedReceipt(org);
                       setIsModalOpen(true);
                     }}
                   >
-                    <td className="px-4 py-4 border-r border-gray-300">
+                    <td className="border border-border border-r-0 rounded-l-lg px-4 py-4">
                       <h2>
                         {(receiptsPagination.currentPage - 1) *
                           receiptsPagination.pageSize +
@@ -500,7 +500,7 @@ const ReceiptsContent = () => {
                           1}
                       </h2>
                     </td>
-                    <td className="px-4 py-2 border-r border-gray-300">
+                    <td className="border border-border px-4 py-2">
                       {org.receipt_type == "sale" ? (
                         <h2 className="text-green-500 mb-1">
                           {" "}
@@ -525,13 +525,13 @@ const ReceiptsContent = () => {
                         </Link>
                       )}
                     </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
+                    <td className="border border-border px-4 py-4">
                       <h2>{org?.receipt_seq}</h2>
                     </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
+                    <td className="border border-border px-4 py-4">
                       <h2> {formatDate(org?.close_time)}</h2>
                     </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
+                    <td className="border border-border px-4 py-4">
                       {" "}
                       <h2>
                         {org?.payments?.map((type: any) => {
@@ -539,7 +539,7 @@ const ReceiptsContent = () => {
                         })}
                       </h2>
                     </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
+                    <td className="border border-border px-4 py-4">
                       <h2>
                         {Number(
                           org?.received_cash.toString().slice(0, -2)
@@ -547,7 +547,7 @@ const ReceiptsContent = () => {
                         сум
                       </h2>
                     </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
+                    <td className="border border-border px-4 py-4">
                       <h2>
                         {" "}
                         {Number(
@@ -556,7 +556,7 @@ const ReceiptsContent = () => {
                         сум
                       </h2>
                     </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
+                    <td className="border border-border px-4 py-4">
                       <h2>
                         {(
                           Number(org?.received_cash.toString().slice(0, -2)) +
@@ -565,7 +565,7 @@ const ReceiptsContent = () => {
                         сум
                       </h2>
                     </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
+                    <td className="border border-border border-l-0 rounded-r-lg px-4 py-4">
                       {org?.sent_to_1c ? (
                         <span className="text-green-500">Отправлено</span>
                       ) : (

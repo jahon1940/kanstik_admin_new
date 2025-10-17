@@ -44,6 +44,7 @@
     "webapp": { "title": "Сайт и приложение" },
     "stock": {
       "account_title": "Аккаунт магазина",
+      "account_receipts": "Чеки магазина",
       "organization": "Организация",
       "name": "Название",
       "phone": "Телефон",
@@ -52,6 +53,7 @@
       "products_by_stocks": "Продукты по складам",
       "cashiers": "Кассы",
       "add_cashier": "Добавить кассу",
+      "all_receipts": "Все чеки",
       "cash_register_data": "Данные кассы",
       "cash_register_name": "Название кассы",
       "app_version": "Версия программы",

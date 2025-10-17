@@ -104,7 +104,7 @@ export default function OrderPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16 shadow-lg">
         <button
           type="button"
           onClick={() => router.back()}
@@ -121,7 +121,7 @@ export default function OrderPage() {
               orders?.head_company?.phone_number}
         </h1>
       </div>
-      <div className="rounded-lg border bg-card h-[calc(100vh-6rem)] ">
+      <div className="rounded-lg bg-card shadow-lg h-[calc(100vh-6rem)]">
         {/* Jadval: sticky sarlavha, 2 ustun */}
 
         {loading ? (
@@ -132,45 +132,54 @@ export default function OrderPage() {
           <h2>{t("toast.no_data")}</h2>
         ) : (
           <div className="overflow-auto h-full px-4 relative">
-            <table className="w-full mb-3 text-sm ">
-              <thead className="sticky -top-[1px] z-10 bg-bgColor ">
+            <table className="w-full mb-3 text-sm relative border-separate border-spacing-y-2">
+              <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300">
+                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                     №
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Название / Артикул
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Бренд
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Количество
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     Цена
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
                     Сумма
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y text-xs">
+              <tbody className="text-xs">
                 {loading ? (
                   <tr>
-                    <td colSpan={6}>
+                    <td
+                      colSpan={6}
+                      className="border border-border rounded-lg px-4 py-6"
+                    >
                       <Loading />
                     </td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td className="px-4 py-6 text-red-600" colSpan={6}>
+                    <td
+                      className="px-4 py-6 text-red-600 border border-border rounded-lg"
+                      colSpan={6}
+                    >
                       {error}
                     </td>
                   </tr>
                 ) : orders?.products?.length === 0 ? (
                   <tr>
-                    <td className="px-4 py-6 text-muted-foreground" colSpan={6}>
+                    <td
+                      className="px-4 py-6 text-muted-foreground border border-border rounded-lg"
+                      colSpan={6}
+                    >
                       {t("toast.no_data")}
                     </td>
                   </tr>
@@ -180,10 +189,12 @@ export default function OrderPage() {
                       key={org.id}
                       className="hover:bg-accent/50 cursor-pointer"
                     >
-                      <td className="px-2 py-3 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
-                        {index + 1}
+                      <td className="border border-border border-r-0 rounded-l-lg">
+                        <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                          {index + 1}
+                        </div>
                       </td>
-                      <td className="px-4 py-3 max-w-80 border-r border-gray-300">
+                      <td className="border border-border px-4 py-3 max-w-80">
                         <div className="flex gap-2 items-center">
                           <span>
                             <Image
@@ -206,17 +217,17 @@ export default function OrderPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="border border-border px-4 py-3">
                         {org?.product?.brand?.name}
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="border border-border px-4 py-3">
                         {org?.quantity} штук
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="border border-border px-4 py-3">
                         {" "}
                         {org?.product?.price?.toLocaleString("ru-RU")} сум
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
                         {org?.price?.toLocaleString("ru-RU")} сум
                       </td>
                     </tr>

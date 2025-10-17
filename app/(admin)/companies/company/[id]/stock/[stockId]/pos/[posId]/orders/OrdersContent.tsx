@@ -199,43 +199,44 @@ const OrdersContent = () => {
             </td>
           </tr>
         ) : (
-          <table className="w-full  text-sm">
-            <thead className="sticky -top-[1px] z-10 bg-bgColor">
+          <table className="w-full text-sm relative border-separate border-spacing-y-2">
+            <thead className="sticky top-[0px] z-10 bg-bgColor">
               <tr>
-                <th className="text-left font-semibold px-2 py-3 w-12 border-r border-gray-300">
+                <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                   №
                 </th>
-                <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                   ID заказы
                 </th>
-                <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                   Дата и время
                 </th>
-
-                <th className="text-left font-semibold px-4 py-3 border-r border-gray-300">
+                <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
                   Сумма
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {ordersSite?.map((org: any, index: number) => (
                 <tr key={org?.id} className="hover:bg-accent/50 cursor-pointer">
-                  <td className="px-2 py-2 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
-                    {index + 1}
+                  <td className="border border-border border-r-0 rounded-l-lg">
+                    <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                      {index + 1}
+                    </div>
                   </td>
-                  <td className="px-4 py-2 border-r border-gray-300">
-                    <Link href={`/order/${org.id}`}>
+                  <td className="border border-border">
+                    <Link href={`/order/${org.id}`} className="block px-4 py-3">
                       <h2 className="text-green-500">#{org.id}</h2>
                     </Link>
                   </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    <Link href={`/order/${org.id}`}>
-                      <h2> {formatDate(org?.created_at)}</h2>
+                  <td className="border border-border">
+                    <Link href={`/order/${org.id}`} className="block px-4 py-3">
+                      <h2>{formatDate(org?.created_at)}</h2>
                     </Link>
                   </td>
-                  <td className="px-4 py-4 border-r border-gray-300">
-                    <Link href={`/order/${org.id}`}>
-                      <h2>{org?.price?.toLocaleString("ru-RU")} сум </h2>
+                  <td className="border border-border border-l-0 rounded-r-lg">
+                    <Link href={`/order/${org.id}`} className="block px-4 py-3">
+                      <h2>{org?.price?.toLocaleString("ru-RU")} сум</h2>
                     </Link>
                   </td>
                 </tr>

@@ -69,7 +69,7 @@ export default function ClientPage() {
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
@@ -80,7 +80,7 @@ export default function ClientPage() {
         <h1 className="text-xl font-semibold">{name}</h1>
       </div>
 
-      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30">
+      <div className="rounded-lg bg-card shadow-lg">
         {/* Client ma'lumotlari container - responsive height */}
         <div className="overflow-auto h-[calc(100vh-12rem)] md:h-[calc(100vh-6rem)] px-3 md:px-4 pb-4">
           {loading ? (
@@ -129,7 +129,7 @@ export default function ClientPage() {
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                   {t("client.cards.title")}
                 </h2>
-                {clientData.card_numbers.map((item:any) => {
+                {clientData.card_numbers.map((item: any) => {
                   return (
                     <div className="space-y-2 bg-bgColor p-2 rounded shadow">
                       <div className="flex items-center gap-4">
@@ -152,7 +152,6 @@ export default function ClientPage() {
                     </div>
                   );
                 })}
-               
               </div>
             </div>
           ) : (

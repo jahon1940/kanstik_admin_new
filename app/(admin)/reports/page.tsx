@@ -64,7 +64,7 @@ export default function ReportsPage() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        
+
         if (!cancelled) setOrdersSite(result.results ?? null);
         setLoading(false);
         setError(null);
@@ -74,7 +74,7 @@ export default function ReportsPage() {
           e?.response?.data?.message || e?.message || "Yuklashda xatolik";
         if (!cancelled) setError(msg);
         toast.error(msg);
-        setLoading(false)
+        setLoading(false);
       });
 
     return () => {
@@ -96,13 +96,13 @@ export default function ReportsPage() {
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg shadow-black/10 dark:shadow-black/30">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <h1 className="text-lg md:text-xl font-semibold">
           {t("app.reports.title2")}
         </h1>
       </div>
 
-      <div className="rounded-lg bg-card shadow-xl shadow-black/10 dark:shadow-black/30 p-4 md:p-6 overflow-auto h-[calc(100vh-12rem)] md:h-[calc(100vh-6rem)] ">
+      <div className="rounded-lg bg-card shadow-lg p-4 md:p-6 overflow-auto h-[calc(100vh-12rem)] md:h-[calc(100vh-6rem)]">
         <div className="space-y-4">
           {/* Date filters - responsive */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
@@ -206,7 +206,6 @@ export default function ReportsPage() {
             </tr>
           ) : (
             <table className="w-full  text-sm">
-             
               <tbody className="divide-y">
                 {ordersSite?.map((org: any, index: number) => (
                   <tr
