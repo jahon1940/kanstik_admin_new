@@ -100,15 +100,15 @@ export default function CompaniesPage() {
           {/* Desktop table */}
           <div className="hidden md:block">
             <table className="w-full text-sm relative border-separate border-spacing-y-2">
-              <thead className="sticky -top-[1px] z-10 bg-bgColor">
+              <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300">
+                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border  rounded-l-lg">
                     №
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0 ">
                     {t("app.company.name")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b w-[40%] border-r border-gray-300">
+                  <th className="text-left font-semibold px-4 py-3 border-b w-[40%] border-r border-gray-300 border border-l-0 rounded-r-lg">
                     {t("app.company.status")}
                   </th>
                 </tr>
@@ -152,7 +152,7 @@ export default function CompaniesPage() {
                           {index + 1}
                         </div>
                       </td>
-                      <td className="border border-border border-r-0">
+                      <td className="border border-border">
                         <Link
                           className="block px-4 py-3"
                           href={`${pathname}/company/${org.id}`}
