@@ -7,7 +7,7 @@ import { getDeviceToken } from "@/lib/token";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
-import { ChevronDownIcon, Info, Filter, ChevronLeft } from "lucide-react";
+import { ChevronDownIcon, Info, Filter, ChevronLeft, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -638,19 +638,18 @@ export default function StockReceiptsPage() {
                   <h2 className="text-sm md:text-base font-medium  text-black rounded-sm p-2 px-3">
                     {t("app.pos.receipts")}
                   </h2>
-                </div>
-
-                {/* Mobile Filter Button */}
-                <div className="md:hidden flex justify-between items-center">
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => setIsFilterModalOpen(true)}
-                      variant="outline"
-                      className="cursor-pointer text-sm px-3 py-2 flex items-center gap-2"
-                    >
-                      <Filter className="h-4 w-4" />
-                      {t("app.pos.filter")}
-                    </Button>
+                  {/* Mobile Filter Button */}
+                  <div className="md:hidden flex justify-between items-center">
+                    <div className="flex gap-2 ">
+                      <Button
+                        onClick={() => setIsFilterModalOpen(true)}
+                        variant="outline"
+                        className="cursor-pointer text-[12px] px-3 py-2 flex items-center gap-2 "
+                      >
+                        <Filter className="h-4 w-4 " />
+                        {t("app.pos.filter")}
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
@@ -1252,9 +1251,9 @@ export default function StockReceiptsPage() {
                   <div className="bg-white rounded-lg shadow-2xl max-w-[90%] w-full h-[95vh] overflow-hidden relative">
                     <button
                       onClick={() => setIsProductModalOpen(false)}
-                      className="absolute right-4 top-3 text-gray-500 hover:text-gray-700 text-2xl cursor-pointer float-end"
+                      className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
                     >
-                      ×
+                      <X className="h-4 w-4 " />
                     </button>
                     {/* Search Section */}
                     <div className="p-6 border-b">
@@ -1421,15 +1420,15 @@ export default function StockReceiptsPage() {
                 >
                   <div className="bg-white rounded-lg shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden">
                     {/* Header */}
-                    <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+                    <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center relative ">
                       <h2 className="text-lg font-semibold text-gray-900">
                         {t("app.pos.select_company")}
                       </h2>
                       <button
                         onClick={() => setIsCompanyModalOpen(false)}
-                        className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+                        className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
                       >
-                        ×
+                        <X className="h-4 w-4 " />
                       </button>
                     </div>
 
@@ -1517,7 +1516,7 @@ export default function StockReceiptsPage() {
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+                  <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden relative">
                     {/* Header */}
                     <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
                       <h2 className="text-lg font-semibold text-gray-900">
@@ -1525,9 +1524,9 @@ export default function StockReceiptsPage() {
                       </h2>
                       <button
                         onClick={() => setIsPaymentTypeModalOpen(false)}
-                        className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+                        className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
                       >
-                        ×
+                        <X className="h-4 w-4 " />
                       </button>
                     </div>
 
