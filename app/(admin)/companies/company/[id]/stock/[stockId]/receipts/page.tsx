@@ -37,6 +37,7 @@ type Receipt = {
   staff_name: string;
   products?: any[];
   terminal_id: string;
+  error_1c?: string;
 };
 
 // Product type
@@ -93,6 +94,9 @@ export default function StockReceiptsPage() {
   const [selectedReceipt, setSelectedReceipt] = React.useState<Receipt | null>(
     null
   );
+
+  // Error modal state
+  const [isErrorModalOpen, setIsErrorModalOpen] = React.useState(false);
 
   // Product selection states
   const [isProductModalOpen, setIsProductModalOpen] = React.useState(false);
@@ -1024,7 +1028,18 @@ export default function StockReceiptsPage() {
                   <div className="bg-bgColor rounded-lg shadow-2xl max-w-md w-full h-full  overflow-auto">
                     {/* Header */}
                     <div className="bg-gray-50 px-4 py-1  flex justify-between items-center">
-                      <h2 className="font-semibold flex items-center gap-2 text-green-600 text-sm">
+                      <h2
+                        className={`font-semibold flex items-center gap-2 text-sm ${
+                          selectedReceipt?.sent_to_1c
+                            ? "text-green-600"
+                            : "text-red-600 cursor-pointer"
+                        }`}
+                        onClick={() => {
+                          if (!selectedReceipt?.sent_to_1c) {
+                            setIsErrorModalOpen(true);
+                          }
+                        }}
+                      >
                         <Info /> {selectedReceipt?.receipt_seq}
                       </h2>
                       {/* <button
@@ -1233,6 +1248,56 @@ export default function StockReceiptsPage() {
                           </div>
                         </div>
                       )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Modal */}
+              {isErrorModalOpen && (
+                <div
+                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                  onClick={(e) => {
+                    if (e.target === e.currentTarget) {
+                      setIsErrorModalOpen(false);
+                    }
+                  }}
+                >
+                  <div className="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4">
+                    {/* Header */}
+                    <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+                      <h2 className="text-lg font-semibold text-red-600">
+                        Ошибка синхронизации
+                      </h2>
+                      <button
+                        onClick={() => setIsErrorModalOpen(false)}
+                        className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+                      >
+                        ×
+                      </button>
+                    </div>
+
+                    {/* Error Content */}
+                    <div className="p-6">
+                      <div className="text-center">
+                        <div className="text-red-500 mb-4">
+                          <Info className="w-12 h-12 mx-auto" />
+                        </div>
+                        <p className="text-gray-700 text-sm leading-relaxed">
+                          {selectedReceipt?.error_1c ||
+                            "Произошла ошибка при синхронизации с 1С"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="bg-gray-50 px-6 py-4 border-t">
+                      <button
+                        onClick={() => setIsErrorModalOpen(false)}
+                        className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors"
+                      >
+                        Закрыть
+                      </button>
                     </div>
                   </div>
                 </div>

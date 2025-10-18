@@ -7,7 +7,7 @@ import { getDeviceToken } from "@/lib/token";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
-import { ChevronDownIcon, Info } from "lucide-react";
+import { ChevronDownIcon, Info, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -35,6 +35,7 @@ type Receipt = {
   staff_name: string;
   products?: any[];
   terminal_id: string;
+  error_1c?: string;
 };
 const ReceiptsContent = () => {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -60,6 +61,9 @@ const ReceiptsContent = () => {
   const [selectedReceipt, setSelectedReceipt] = React.useState<Receipt | null>(
     null
   );
+
+  // Error modal state
+  const [isErrorModalOpen, setIsErrorModalOpen] = React.useState(false);
 
   const getReceipts = (
     date: string,
@@ -299,8 +303,6 @@ const ReceiptsContent = () => {
 
     return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
-
-  console.log(selectedReceipt);
 
   return (
     <div className="w-full mt-0">
@@ -629,13 +631,25 @@ const ReceiptsContent = () => {
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setIsModalOpen(false);
+              setSelectedReceipt(null);
             }
           }}
         >
           <div className="bg-bgColor rounded-lg shadow-2xl  max-w-[80%] sm:max-w-md w-full h-full  overflow-auto">
             {/* Header */}
             <div className="bg-gray-50 px-4 py-1  flex justify-between items-center">
-              <h2 className="font-semibold flex items-center gap-2 text-green-600 text-sm">
+              <h2
+                className={`font-semibold flex items-center gap-2 text-sm ${
+                  selectedReceipt?.sent_to_1c
+                    ? "text-green-600"
+                    : "text-red-600 cursor-pointer"
+                }`}
+                onClick={() => {
+                  if (!selectedReceipt?.sent_to_1c) {
+                    setIsErrorModalOpen(true);
+                  }
+                }}
+              >
                 <Info /> {selectedReceipt?.id}
               </h2>
               {/* <button
@@ -836,6 +850,56 @@ const ReceiptsContent = () => {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {isErrorModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsErrorModalOpen(false);
+            }
+          }}
+        >
+          <div className="bg-white shadow-2xl max-w-md rounded-2xl overflow-hidden">
+            {/* Header */}
+            <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center relative">
+              <h2 className="text-lg font-semibold text-red-600">
+                Ошибка синхронизации
+              </h2>
+              <button
+                onClick={() => setIsErrorModalOpen(false)}
+                className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
+              >
+                <X className="h-4 w-4 " />
+              </button>
+            </div>
+
+            {/* Error Content */}
+            <div className="p-6">
+              <div className="text-center">
+                <div className="text-red-500 mb-4">
+                  <Info className="w-12 h-12 mx-auto" />
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  {selectedReceipt?.error_1c ||
+                    "Произошла ошибка при синхронизации с 1С"}
+                </p>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gray-50 px-6 py-4 border-t">
+              <button
+                onClick={() => setIsErrorModalOpen(false)}
+                className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors"
+              >
+                Закрыть
+              </button>
             </div>
           </div>
         </div>
