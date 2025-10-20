@@ -6,7 +6,6 @@ import { Search } from "lucide-react";
 import { toast } from "sonner";
 // import { api } from "@/lib/api";
 import Loading from "@/components/Loading";
-
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePathname } from "next/navigation";
@@ -20,7 +19,6 @@ export default function CompaniesPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { t } = useLanguage();
-
   const pathname = usePathname();
 
   const getOrganization = () => {
