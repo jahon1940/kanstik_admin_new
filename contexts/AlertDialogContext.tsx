@@ -11,6 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useTranslation } from "react-i18next";
 
 interface AlertDialogOptions {
   title: string;
@@ -47,6 +48,7 @@ interface AlertDialogProviderProps {
 export const AlertDialogProvider: React.FC<AlertDialogProviderProps> = ({
   children,
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState<AlertDialogOptions | null>(null);
 
@@ -84,7 +86,7 @@ export const AlertDialogProvider: React.FC<AlertDialogProviderProps> = ({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancel}>
-              {options?.cancelText || "Отмена"}
+              {options?.cancelText || t("alert.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirm}
@@ -94,7 +96,7 @@ export const AlertDialogProvider: React.FC<AlertDialogProviderProps> = ({
                   : ""
               }
             >
-              {options?.confirmText || "Подтвердить"}
+              {options?.confirmText || t("alert.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

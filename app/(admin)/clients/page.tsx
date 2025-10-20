@@ -81,7 +81,7 @@ export default function ClientsPage() {
     }
   };
 
-  // Sahifa yuklanganda birinchi marta ma'lumotlarni olish
+  // Load data when page loads for the first ttlarni olish
   useEffect(() => {
     fetchClients();
   }, []);
@@ -204,7 +204,7 @@ export default function ClientsPage() {
                             </span>
                           ) : (
                             <span className="text-[10px] text-red-500">
-                              Аккаунт несоздан
+                              {t("client.account_not_created")}
                             </span>
                           )}
                         </Link>
@@ -217,9 +217,11 @@ export default function ClientsPage() {
                             query: { name: org.name },
                           }}
                         >
-                          <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                            {org.phone_number}
-                          </span>
+                          {org.phone_number && (
+                            <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                              {org.phone_number}
+                            </span>
+                          )}
                         </Link>
                       </td>
                     </tr>

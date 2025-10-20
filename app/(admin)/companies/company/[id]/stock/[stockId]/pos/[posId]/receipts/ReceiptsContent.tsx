@@ -149,7 +149,7 @@ const ReceiptsContent = () => {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -169,9 +169,13 @@ const ReceiptsContent = () => {
 
   const [open2, setOpen2] = React.useState(false);
   const [date2, setDate2] = React.useState<string | undefined>(undefined);
+
+  // Mobile calendar states
+  const [mobileCalendarOpen, setMobileCalendarOpen] = React.useState(false);
+  const [mobileCalendarOpen2, setMobileCalendarOpen2] = React.useState(false);
   const downloadReport = async (date: string) => {
     if (!date) {
-      toast.error("Iltimos, sanani tanlang");
+      toast.error(t("app.pos.please_select_date"));
       return;
     }
 
@@ -222,9 +226,9 @@ const ReceiptsContent = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success("Hisobot muvaffaqiyatli yuklab olindi");
+      toast.success(t("app.pos.report_downloaded_success"));
     } catch (error: any) {
-      const msg = error?.message || "Hisobotni yuklab olishda xatolik";
+      const msg = error?.message || t("app.pos.report_download_error");
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -232,7 +236,7 @@ const ReceiptsContent = () => {
   };
   const downloadReceipts = async (date: string) => {
     if (!date) {
-      toast.error("Iltimos, sanani tanlang");
+      toast.error(t("app.pos.please_select_date"));
       return;
     }
 
@@ -283,9 +287,9 @@ const ReceiptsContent = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success("Cheklar muvaffaqiyatli yuklab olindi");
+      toast.success(t("app.pos.receipts_downloaded_success"));
     } catch (error: any) {
-      const msg = error?.message || "Cheklarni yuklab olishda xatolik";
+      const msg = error?.message || t("app.pos.receipts_download_error");
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -305,7 +309,7 @@ const ReceiptsContent = () => {
   };
 
   return (
-    <div className="w-full mt-0">
+    <div className="w-full mt-0 ">
       <div className="space-y-4">
         <div className="bg-bgColor flex justify-between">
           <h2 className="text-sm md:text-base font-medium  text-black rounded-sm p-2 px-3">
@@ -335,75 +339,106 @@ const ReceiptsContent = () => {
         {/* Date filters - responsive */}
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-start">
           <div className="flex gap-2">
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  id="date"
-                  className="w-[49%] sm:w-46 justify-between font-normal text-sm"
+            {/* Desktop Calendar */}
+            <div className="hidden md:contents">
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    id="date"
+                    className="w-[49%] sm:w-46 justify-between font-normal text-sm"
+                  >
+                    {date ? date : t("app.pos.from")}
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0 z-[9999]"
+                  align="center"
+                  side="bottom"
+                  sideOffset={5}
+                  avoidCollisions={true}
+                  collisionPadding={10}
                 >
-                  {date ? date : t("app.pos.from")}
-                  <ChevronDownIcon className="h-4 w-4" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-auto overflow-hidden p-0"
-                align="start"
-              >
-                <Calendar
-                  mode="single"
-                  selected={date ? new Date(date) : undefined}
-                  captionLayout="dropdown"
-                  onSelect={(selectedDate) => {
-                    if (selectedDate) {
-                      const formatted = `${selectedDate.getFullYear()}-${String(
-                        selectedDate.getMonth() + 1
-                      ).padStart(2, "0")}-${String(
-                        selectedDate.getDate()
-                      ).padStart(2, "0")}`;
+                  <Calendar
+                    mode="single"
+                    selected={date ? new Date(date) : undefined}
+                    captionLayout="dropdown"
+                    onSelect={(selectedDate) => {
+                      if (selectedDate) {
+                        const formatted = `${selectedDate.getFullYear()}-${String(
+                          selectedDate.getMonth() + 1
+                        ).padStart(2, "0")}-${String(
+                          selectedDate.getDate()
+                        ).padStart(2, "0")}`;
 
-                      setDate(formatted);
-                      setOpen(false);
-                    }
-                  }}
-                />
-              </PopoverContent>
-            </Popover>
+                        setDate(formatted);
+                        setOpen(false);
+                      }
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
 
-            <Popover open={open2} onOpenChange={setOpen2}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  id="date"
-                  className="w-[49%] sm:w-46 justify-between font-normal text-sm"
+              <Popover open={open2} onOpenChange={setOpen2}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    id="date"
+                    className="w-[49%] sm:w-46 justify-between font-normal text-sm"
+                  >
+                    {date2 ? date2 : t("app.pos.to")}
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0 z-[9999]"
+                  align="center"
+                  side="bottom"
+                  sideOffset={5}
+                  avoidCollisions={true}
+                  collisionPadding={10}
                 >
-                  {date2 ? date2 : t("app.pos.to")}
-                  <ChevronDownIcon className="h-4 w-4" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-auto overflow-hidden p-0"
-                align="start"
-              >
-                <Calendar
-                  mode="single"
-                  selected={date2 ? new Date(date2) : undefined}
-                  captionLayout="dropdown"
-                  onSelect={(selectedDate) => {
-                    if (selectedDate) {
-                      const formatted = `${selectedDate.getFullYear()}-${String(
-                        selectedDate.getMonth() + 1
-                      ).padStart(2, "0")}-${String(
-                        selectedDate.getDate()
-                      ).padStart(2, "0")}`;
+                  <Calendar
+                    mode="single"
+                    selected={date2 ? new Date(date2) : undefined}
+                    captionLayout="dropdown"
+                    onSelect={(selectedDate) => {
+                      if (selectedDate) {
+                        const formatted = `${selectedDate.getFullYear()}-${String(
+                          selectedDate.getMonth() + 1
+                        ).padStart(2, "0")}-${String(
+                          selectedDate.getDate()
+                        ).padStart(2, "0")}`;
 
-                      setDate2(formatted);
-                      setOpen2(false);
-                    }
-                  }}
-                />
-              </PopoverContent>
-            </Popover>
+                        setDate2(formatted);
+                        setOpen2(false);
+                      }
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Mobile Calendar Buttons */}
+            <div className="md:hidden flex gap-2 w-full">
+              <Button
+                variant="outline"
+                onClick={() => setMobileCalendarOpen(true)}
+                className="w-[49%] justify-between font-normal text-sm"
+              >
+                {date ? date : t("app.pos.from")}
+                <ChevronDownIcon className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setMobileCalendarOpen2(true)}
+                className="w-[49%] justify-between font-normal text-sm"
+              >
+                {date2 ? date2 : t("app.pos.to")}
+                <ChevronDownIcon className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Action buttons - responsive */}
@@ -452,35 +487,35 @@ const ReceiptsContent = () => {
               </div>
             </div>
           ) : (
-            <table className="w-full text-sm relative border-separate border-spacing-y-2">
+            <table className="w-full text-sm relative border-separate border-spacing-y-2 ">
               <thead className="sticky -top-[16px] z-10 bg-bgColor">
                 <tr>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 rounded-l-lg">
                     №
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Операция
+                    {t("app.pos.operation")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Номер чека
+                    {t("app.pos.receipt_number")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Дата и время
+                    {t("app.pos.date_time")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Тип оплаты
+                    {t("app.pos.payment_type")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Наличные
+                    {t("app.pos.cash")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Картой
+                    {t("app.pos.card")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Сумма
+                    {t("app.pos.amount")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
-                    Статус 1С
+                    {t("app.pos.status_1c")}
                   </th>
                 </tr>
               </thead>
@@ -523,7 +558,7 @@ const ReceiptsContent = () => {
                           target="_blank"
                           href={org.qr_code_url}
                         >
-                          QR код
+                          {t("app.pos.qr_code")}
                         </Link>
                       )}
                     </td>
@@ -546,7 +581,7 @@ const ReceiptsContent = () => {
                         {Number(
                           org?.received_cash.toString().slice(0, -2)
                         ).toLocaleString("ru-RU")}{" "}
-                        сум
+                        {t("app.pos.sum")}
                       </h2>
                     </td>
                     <td className="border border-border px-4 py-4">
@@ -555,7 +590,7 @@ const ReceiptsContent = () => {
                         {Number(
                           org?.received_card.toString().slice(0, -2)
                         ).toLocaleString("ru-RU")}{" "}
-                        сум
+                        {t("app.pos.sum")}
                       </h2>
                     </td>
                     <td className="border border-border px-4 py-4">
@@ -564,14 +599,18 @@ const ReceiptsContent = () => {
                           Number(org?.received_cash.toString().slice(0, -2)) +
                           Number(org?.received_card.toString().slice(0, -2))
                         ).toLocaleString("ru-RU")}{" "}
-                        сум
+                        {t("app.pos.sum")}
                       </h2>
                     </td>
                     <td className="border border-border border-l-0 rounded-r-lg px-4 py-4">
                       {org?.sent_to_1c ? (
-                        <span className="text-green-500">Отправлено</span>
+                        <span className="text-green-500">
+                          {t("app.pos.sent")}
+                        </span>
                       ) : (
-                        <span className="text-red-500">Не отправлено</span>
+                        <span className="text-red-500">
+                          {t("app.pos.not_sent")}
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -668,8 +707,8 @@ const ReceiptsContent = () => {
                   }`}
                 >
                   {selectedReceipt?.sent_to_1c
-                    ? " Отправлен на сервер Синхронизирован с 1С"
-                    : "Не синхронизирован"}
+                    ? t("app.pos.sent_to_1c")
+                    : t("app.pos.not_synchronized")}
                 </span>
               </div>
             </div>
@@ -696,24 +735,24 @@ const ReceiptsContent = () => {
                 <div className="p-4 font-mono text-sm">
                   {/* Store Header */}
                   <div className="text-center mb-4  pb-3">
-                    <div className="text-lg font-bold">Продажа</div>
+                    <div className="text-lg font-bold">{t("app.pos.sale")}</div>
                     <div className="text-xs text-gray-600">Kanstik</div>
                   </div>
 
                   {/* Receipt Info */}
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between">
-                      <span>Дата и время:</span>
+                      <span>{t("app.pos.date_time")}:</span>
                       <span className="font-semibold">
                         {formatDate(selectedReceipt.close_time)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>ИНН/ПИНФЛ:</span>
+                      <span>{t("app.pos.inn_pinfl")}:</span>
                       <span>{selectedReceipt.fiscal_sign}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Кассир:</span>
+                      <span>{t("app.pos.cashier")}:</span>
                       <span className="text-right max-w-[200px]">
                         {selectedReceipt.staff_name}
                       </span>
@@ -722,7 +761,9 @@ const ReceiptsContent = () => {
 
                   {/* Items Section */}
                   <div className=" pt-3 mb-4">
-                    <div className="text-center font-semibold mb-2">Товары</div>
+                    <div className="text-center font-semibold mb-2">
+                      {t("app.pos.products")}
+                    </div>
                     <div className="space-y-2">
                       {selectedReceipt?.products?.map((item: any, index) => {
                         return (
@@ -736,7 +777,7 @@ const ReceiptsContent = () => {
                                   {item.product.classifier_title}
                                 </div>
                                 <div className="text-xs text-gray-600">
-                                  {item.quantity}.0 шт. х{" "}
+                                  {item.quantity}.0 {t("app.pos.pcs")} х{" "}
                                   {item.price /
                                     item.quantity.toLocaleString("ru-RU")}
                                 </div>
@@ -750,11 +791,13 @@ const ReceiptsContent = () => {
                             {/* Tax Info */}
                             <div className=" pt-3 mb-4">
                               <div className="flex justify-between text-xs">
-                                <span>НДС: ({item.vat_percent})</span>
+                                <span>
+                                  {t("app.pos.vat")}: ({item.vat_percent})
+                                </span>
                                 <span>{item.vat}</span>
                               </div>
                               <div className="flex justify-between text-xs">
-                                <span>ИКПУ:</span>
+                                <span>{t("app.pos.ikpu")}:</span>
                                 <span>{item.class_code}</span>
                               </div>
                             </div>
@@ -768,7 +811,7 @@ const ReceiptsContent = () => {
                   <div className=" pt-3 mb-4">
                     <div className="space-y-1">
                       <div className="flex justify-between font-semibold">
-                        <span>Сумма:</span>
+                        <span>{t("app.pos.amount")}:</span>
                         <span>
                           {(
                             Number(
@@ -785,7 +828,7 @@ const ReceiptsContent = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Оплачено:</span>
+                        <span>{t("app.pos.paid")}:</span>
                         <span>
                           {(
                             Number(
@@ -802,7 +845,7 @@ const ReceiptsContent = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Наличные:</span>
+                        <span>{t("app.pos.cash")}:</span>
                         <span>
                           {Number(
                             selectedReceipt?.received_cash
@@ -812,7 +855,7 @@ const ReceiptsContent = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Картой:</span>
+                        <span>{t("app.pos.card")}:</span>
                         <span>
                           {Number(
                             selectedReceipt?.received_card
@@ -822,7 +865,7 @@ const ReceiptsContent = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Бон. картой:</span>
+                        <span>{t("app.pos.bonus_card")}:</span>
                         <span>0</span>
                       </div>
                     </div>
@@ -832,14 +875,15 @@ const ReceiptsContent = () => {
                   <div className=" pt-3 mb-4">
                     <div className="text-center text-xs space-y-1">
                       <div className="flex justify-between">
-                        <span>ФМ:</span>{" "}
+                        <span>{t("app.pos.fm")}:</span>{" "}
                         <span>{selectedReceipt?.terminal_id}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>ФП:</span> <span>414675046328</span>
+                        <span>{t("app.pos.fp")}:</span>{" "}
+                        <span>414675046328</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Чек №:</span>{" "}
+                        <span>{t("app.pos.receipt_number")} №:</span>{" "}
                         <span>{selectedReceipt.receipt_seq}</span>
                       </div>
                       <div className="flex justify-between">
@@ -869,7 +913,7 @@ const ReceiptsContent = () => {
             {/* Header */}
             <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center relative">
               <h2 className="text-lg font-semibold text-red-600">
-                Ошибка синхронизации
+                {t("app.pos.sync_error")}
               </h2>
               <button
                 onClick={() => setIsErrorModalOpen(false)}
@@ -886,8 +930,7 @@ const ReceiptsContent = () => {
                   <Info className="w-12 h-12 mx-auto" />
                 </div>
                 <p className="text-gray-700 text-sm leading-relaxed">
-                  {selectedReceipt?.error_1c ||
-                    "Произошла ошибка при синхронизации с 1С"}
+                  {selectedReceipt?.error_1c || t("app.pos.sync_error_message")}
                 </p>
               </div>
             </div>
@@ -898,9 +941,81 @@ const ReceiptsContent = () => {
                 onClick={() => setIsErrorModalOpen(false)}
                 className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors"
               >
-                Закрыть
+                {t("app.pos.close")}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Calendar Modal for From Date */}
+      {mobileCalendarOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-lg shadow-2xl max-w-sm w-full mx-4 p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">{t("app.pos.from")}</h3>
+              <button
+                onClick={() => setMobileCalendarOpen(false)}
+                className="text-gray-500 hover:text-gray-700 text-xl"
+              >
+                ×
+              </button>
+            </div>
+            <Calendar
+              mode="single"
+              selected={date ? new Date(date) : undefined}
+              captionLayout="dropdown"
+              className="w-full mobile-calendar-modal"
+              onSelect={(selectedDate) => {
+                if (selectedDate) {
+                  const formatted = `${selectedDate.getFullYear()}-${String(
+                    selectedDate.getMonth() + 1
+                  ).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(
+                    2,
+                    "0"
+                  )}`;
+
+                  setDate(formatted);
+                  setMobileCalendarOpen(false);
+                }
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Calendar Modal for To Date */}
+      {mobileCalendarOpen2 && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-lg shadow-2xl max-w-sm w-full mx-4 p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">{t("app.pos.to")}</h3>
+              <button
+                onClick={() => setMobileCalendarOpen2(false)}
+                className="text-gray-500 hover:text-gray-700 text-xl"
+              >
+                ×
+              </button>
+            </div>
+            <Calendar
+              mode="single"
+              selected={date2 ? new Date(date2) : undefined}
+              captionLayout="dropdown"
+              className="w-full mobile-calendar-modal"
+              onSelect={(selectedDate) => {
+                if (selectedDate) {
+                  const formatted = `${selectedDate.getFullYear()}-${String(
+                    selectedDate.getMonth() + 1
+                  ).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(
+                    2,
+                    "0"
+                  )}`;
+
+                  setDate2(formatted);
+                  setMobileCalendarOpen2(false);
+                }
+              }}
+            />
           </div>
         </div>
       )}

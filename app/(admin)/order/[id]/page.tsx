@@ -75,7 +75,7 @@ export default function OrderPage() {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -113,7 +113,7 @@ export default function OrderPage() {
           <ChevronLeft className="h-4 w-4" />
         </button>
         <h1 className="text-xl font-semibold">
-          Заказ #{params.id}{" "}
+          {t("order.title")} #{params.id}{" "}
           {orders?.head_company &&
             "| " +
               orders?.head_company?.full_name +
@@ -139,19 +139,19 @@ export default function OrderPage() {
                     №
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Название / Артикул
+                    {t("order.name_article")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Бренд
+                    {t("order.brand")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Количество
+                    {t("order.quantity")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                    Цена
+                    {t("order.price")}
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
-                    Сумма
+                    {t("order.amount")}
                   </th>
                 </tr>
               </thead>
@@ -211,7 +211,7 @@ export default function OrderPage() {
                           </span>
                           <div>
                             <span className="text-[10px] text-muted">
-                              Артикул: {org?.product?.vendor_code}
+                              {t("order.article")}: {org?.product?.vendor_code}
                             </span>
                             <h2>{org?.name}</h2>
                           </div>
@@ -221,14 +221,15 @@ export default function OrderPage() {
                         {org?.product?.brand?.name}
                       </td>
                       <td className="border border-border px-4 py-3">
-                        {org?.quantity} штук
+                        {org?.quantity} {t("order.pcs")}
                       </td>
                       <td className="border border-border px-4 py-3">
                         {" "}
-                        {org?.product?.price?.toLocaleString("ru-RU")} сум
+                        {org?.product?.price?.toLocaleString("ru-RU")}{" "}
+                        {t("order.sum")}
                       </td>
                       <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
-                        {org?.price?.toLocaleString("ru-RU")} сум
+                        {org?.price?.toLocaleString("ru-RU")} {t("order.sum")}
                       </td>
                     </tr>
                   ))
@@ -238,21 +239,32 @@ export default function OrderPage() {
             {orders?.products && (
               <div className="flex justify-between text-xs bg-bgColor rounded-xl p-3 mb-4 sticky bottom-0 w-full left-0 z-40 ">
                 <div className="flex flex-col gap-2 ">
-                  <h2>Дата: {formatDate(orders.created_at)} </h2>
-                  <h2>Статус: {orders.status}</h2>
-                  <h2>Магазин получение: {orders.stock.name}</h2>
-                </div>
-                <div className="flex flex-col gap-2 ">
-                  <h2>Сумма: {orders?.price?.toLocaleString("ru-RU")} сум</h2>
                   <h2>
-                    Тип оплаты:{" "}
-                    {orders.payment_type == "byCash" ? "Наличными" : "Картой"}{" "}
+                    {t("order.date")}: {formatDate(orders.created_at)}{" "}
                   </h2>
                   <h2>
-                    Тип получение:{" "}
+                    {t("order.status")}: {orders.status}
+                  </h2>
+                  <h2>
+                    {t("order.pickup_store")}: {orders.stock.name}
+                  </h2>
+                </div>
+                <div className="flex flex-col gap-2 ">
+                  <h2>
+                    {t("order.amount")}:{" "}
+                    {orders?.price?.toLocaleString("ru-RU")} {t("order.sum")}
+                  </h2>
+                  <h2>
+                    {t("order.payment_type")}:{" "}
+                    {orders.payment_type == "byCash"
+                      ? t("order.cash")
+                      : t("order.card")}{" "}
+                  </h2>
+                  <h2>
+                    {t("order.delivery_type")}:{" "}
                     {orders.delivery_type == "pickup"
-                      ? "Самовывоз"
-                      : "Доставка"}{" "}
+                      ? t("order.pickup")
+                      : t("order.delivery")}{" "}
                   </h2>
                 </div>
               </div>

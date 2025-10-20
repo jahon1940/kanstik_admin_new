@@ -71,7 +71,7 @@ const PaymentsContent = () => {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -109,7 +109,7 @@ const PaymentsContent = () => {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -161,7 +161,7 @@ const PaymentsContent = () => {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -213,7 +213,7 @@ const PaymentsContent = () => {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -259,7 +259,7 @@ const PaymentsContent = () => {
         if (response.status == 204) {
           setLoading(false);
           setError(null);
-          toast.success("Изображение успешно загружено!");
+          toast.success(t("payments.image_uploaded_success"));
           getPosPaymentTypes();
           setIsImageModalOpen(false);
           setSelectedImage(null);
@@ -275,7 +275,7 @@ const PaymentsContent = () => {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -299,11 +299,11 @@ const PaymentsContent = () => {
             }}
           >
             <SelectTrigger className="w-full sm:w-[280px]">
-              <SelectValue placeholder="Выберите Платеж" />
+              <SelectValue placeholder={t("payments.select_payment")} />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Выберите</SelectLabel>
+                <SelectLabel>{t("payments.select")}</SelectLabel>
                 {paymentTypes?.map((item: any) => {
                   return (
                     <SelectItem key={item.id} value={item.id}>
@@ -319,11 +319,10 @@ const PaymentsContent = () => {
             onClick={() => {
               if (selectType) {
                 showAlert({
-                  title: "Подтверждение",
-                  description:
-                    "Вы уверены, что хотите добавить этот способ оплаты?",
-                  confirmText: "Да, добавить",
-                  cancelText: "Отмена",
+                  title: t("payments.confirmation"),
+                  description: t("payments.add_payment_confirmation"),
+                  confirmText: t("payments.yes_add"),
+                  cancelText: t("alert.cancel"),
                   onConfirm: () => {
                     set_PaymentTypes();
                   },
@@ -332,7 +331,7 @@ const PaymentsContent = () => {
                   },
                 });
               } else {
-                toast.error("выберите тип оплаты");
+                toast.error(t("payments.select_payment_type"));
               }
             }}
             className="cursor-pointer text-sm px-3 py-2"
@@ -426,16 +425,17 @@ const PaymentsContent = () => {
                       <span
                         onClick={() => {
                           showAlert({
-                            title: "Подтверждение",
-                            description:
-                              "Вы уверены, что хотите добавить этот способ оплаты?",
-                            confirmText: "Да, добавить",
-                            cancelText: "Отмена",
+                            title: t("payments.confirmation"),
+                            description: t(
+                              "payments.delete_payment_confirmation"
+                            ),
+                            confirmText: t("payments.yes_delete"),
+                            cancelText: t("alert.cancel"),
                             onConfirm: () => {
                               deletePaymentType(org.id);
                             },
                             onCancel: () => {
-                              console.log("Payment addition cancelled");
+                              console.log("Payment deletion cancelled");
                             },
                           });
                         }}
@@ -473,7 +473,8 @@ const PaymentsContent = () => {
             {/* Header */}
             <div className="bg-gray-50 px-6 py-4  flex justify-between items-center">
               <h2 className="text-lg font-semibold text-gray-800">
-                Обновить фото для {selectedPaymentType?.name || "CLICK"}
+                {t("payments.update_photo_for")}{" "}
+                {selectedPaymentType?.name || "CLICK"}
               </h2>
               <button
                 onClick={() => {
@@ -551,7 +552,7 @@ const PaymentsContent = () => {
                       </svg>
                     </div>
                     <p className="text-gray-500 text-sm">
-                      Нажмите для выбора изображения
+                      {t("payments.click_to_select_image")}
                     </p>
                   </div>
                 )}
@@ -570,12 +571,12 @@ const PaymentsContent = () => {
                     };
                     reader.readAsDataURL(selectedImageFile);
                   } else {
-                    toast.error("Пожалуйста, выберите изображение");
+                    toast.error(t("payments.please_select_image"));
                   }
                 }}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium transition-colors"
               >
-                Обновить фото
+                {t("payments.update_photo")}
               </button>
             </div>
           </div>

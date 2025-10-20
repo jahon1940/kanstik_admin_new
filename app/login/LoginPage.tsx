@@ -67,15 +67,15 @@ export default function LoginPage() {
         const server = axiosError.response?.data;
         console.error("Login error:", server || err);
 
-        let message = "Xatolik";
+        let message = t("toast.error_occurred");
         if (typeof server === "string") message = server;
         else if (server?.message) message = server.message;
         else if (server?.error) message = server.error;
 
         toast.error(message);
       } else {
-        console.error("Noma'lum xato:", err);
-        toast.error("Noma'lum xato");
+        console.error("Unknown error:", err);
+        toast.error(t("toast.error_occurred"));
       }
     } finally {
       setLoading(false);
@@ -107,10 +107,10 @@ export default function LoginPage() {
           {/* Welcome Message */}
           <div className="text-center mb-6 md:mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-              Добро пожаловать!
+              {t("login.welcome")}
             </h1>
             <p className="text-gray-500 text-base md:text-lg">
-              Давайте вернемся к вашим делам!
+              {t("login.subtitle")}
             </p>
           </div>
 
@@ -122,7 +122,7 @@ export default function LoginPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Логин
+                {t("login.username")}
               </label>
               <input
                 id="email"
@@ -130,7 +130,7 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                placeholder="Логин..."
+                placeholder={t("login.username_placeholder")}
                 className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-base"
               />
             </div>
@@ -141,7 +141,7 @@ export default function LoginPage() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Пароль
+                {t("login.password")}
               </label>
               <div className="relative">
                 <input
@@ -169,7 +169,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-primary text-white py-2.5 md:py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer text-base"
             >
-              {loading ? "Вход в систему..." : "Вход"}
+              {loading ? t("login.logging_in") : t("login.login")}
             </button>
 
             {/* Divider */}
@@ -239,7 +239,7 @@ export default function LoginPage() {
           }}
         >
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 md:mb-8 text-left">
-            Управляйте продажами стильно!
+            {t("login.manage_sales")}
           </h2>
           <Image
             width={400}

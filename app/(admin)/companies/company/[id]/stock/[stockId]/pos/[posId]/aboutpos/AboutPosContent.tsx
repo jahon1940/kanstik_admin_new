@@ -65,7 +65,7 @@ const AboutPosContent = () => {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -78,9 +78,6 @@ const AboutPosContent = () => {
   useEffect(() => {
     getOrganization();
   }, []);
-
-
-  
 
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);

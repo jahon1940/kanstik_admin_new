@@ -69,7 +69,7 @@ const OrdersContent = () => {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -206,13 +206,13 @@ const OrdersContent = () => {
                   №
                 </th>
                 <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                  ID заказы
+                  {t("order.title")} ID
                 </th>
                 <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                  Дата и время
+                  {t("app.pos.date_time")}
                 </th>
                 <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
-                  Сумма
+                  {t("app.pos.amount")}
                 </th>
               </tr>
             </thead>
@@ -236,7 +236,9 @@ const OrdersContent = () => {
                   </td>
                   <td className="border border-border border-l-0 rounded-r-lg">
                     <Link href={`/order/${org.id}`} className="block px-4 py-3">
-                      <h2>{org?.price?.toLocaleString("ru-RU")} сум</h2>
+                      <h2>
+                        {org?.price?.toLocaleString("ru-RU")} {t("app.pos.sum")}
+                      </h2>
                     </Link>
                   </td>
                 </tr>

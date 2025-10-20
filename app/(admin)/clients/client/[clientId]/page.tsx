@@ -81,7 +81,7 @@ export default function ClientPage() {
       </div>
 
       <div className="rounded-lg bg-card shadow-lg">
-        {/* Client ma'lumotlari container - responsive height */}
+        {/* Client information container - responsive height */}
         <div className="overflow-auto h-[calc(100vh-12rem)] md:h-[calc(100vh-6rem)] px-3 md:px-4 pb-4">
           {loading ? (
             <div className="flex justify-center items-center h-full">
@@ -91,7 +91,7 @@ export default function ClientPage() {
             <div className="p-4 text-red-600 text-center">{error}</div>
           ) : clientData ? (
             <div className="space-y-6 pt-4">
-              {/* Информация о клиенте */}
+              {/* Client Information */}
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                   {t("client.info.title")}
@@ -124,7 +124,7 @@ export default function ClientPage() {
                 </div>
               </div>
 
-              {/* Карты */}
+              {/* Cards */}
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                   {t("client.cards.title")}
@@ -146,7 +146,7 @@ export default function ClientPage() {
                           {t("client.cards.bonus")}
                         </span>
                         <span className="text-gray-900 dark:text-gray-100 font-medium">
-                          {item.bonus} сум
+                          {item.bonus} {t("client.cards.currency")}
                         </span>
                       </div>
                     </div>

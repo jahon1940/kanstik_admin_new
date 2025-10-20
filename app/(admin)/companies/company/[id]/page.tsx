@@ -46,7 +46,7 @@ export default function CompanyPage() {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -77,7 +77,7 @@ export default function CompanyPage() {
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <h1 className="text-xl font-semibold">Kompaniya</h1>
+        <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
       </div>
       <div className="rounded-lg bg-card shadow-lg">
         {/* Qidiruv paneli */}
@@ -85,15 +85,15 @@ export default function CompanyPage() {
           <form
             className="flex items-center gap-3"
             role="search"
-            aria-label="Qidiruv"
+            aria-label={t("app.search")}
           >
             <div className="flex items-center gap-2 rounded-md border px-3 py-2 bg-background w-full">
               <Search size={16} className="text-muted-foreground" />
               <input
                 type="search"
-                placeholder="Qidirish..."
+                placeholder={t("app.search")}
                 className="w-full bg-transparent outline-none"
-                aria-label="Qidirish"
+                aria-label={t("app.search")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
@@ -110,10 +110,10 @@ export default function CompanyPage() {
                   №
                 </th>
                 <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
-                  Nomi
+                  {t("app.company.name")}
                 </th>
                 <th className="text-left font-semibold px-4 py-3 border-b w-[40%] border-r border-gray-300 border border-l-0 rounded-r-lg">
-                  Holati
+                  {t("app.company.status")}
                 </th>
               </tr>
             </thead>
@@ -170,7 +170,7 @@ export default function CompanyPage() {
                         href={`${pathname}/stock/${org.id}`}
                       >
                         <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                          Aktiv
+                          {t("app.company.active")}
                         </span>
                       </Link>
                     </td>

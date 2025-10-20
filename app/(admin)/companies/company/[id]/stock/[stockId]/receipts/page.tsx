@@ -108,7 +108,7 @@ export default function StockReceiptsPage() {
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
-    pageSize: 50,
+    pageSize: 20,
     hasNext: false,
     hasPrevious: false,
   });
@@ -119,10 +119,20 @@ export default function StockReceiptsPage() {
     null
   );
   const [companies, setCompanies] = React.useState<Company[]>([]);
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [searchTimer, setSearchTimer] = React.useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [companiesPagination, setCompaniesPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    pageSize: 20,
+    hasNext: false,
+    hasPrevious: false,
+  });
+  const [companySearchQuery, setCompanySearchQuery] = React.useState("");
+  const [companySearchTimer, setCompanySearchTimer] =
+    React.useState<NodeJS.Timeout | null>(null);
+  const [productSearchQuery, setProductSearchQuery] = React.useState("");
+  const [productSearchTimer, setProductSearchTimer] =
+    React.useState<NodeJS.Timeout | null>(null);
 
   // Payment Type selection states
   const [isPaymentTypeModalOpen, setIsPaymentTypeModalOpen] =
@@ -134,12 +144,16 @@ export default function StockReceiptsPage() {
   // Filter modal state
   const [isFilterModalOpen, setIsFilterModalOpen] = React.useState(false);
 
+  // Receipt search state
+  const [receiptSearchNumber, setReceiptSearchNumber] = React.useState("");
+
   const getReceipts = (
-    date: string,
-    date2: string,
+    date: string = "",
+    date2: string = "",
     page: number = 1,
     pageSize: number = 50,
-    append: boolean = false
+    append: boolean = false,
+    receiptNumber: string = ""
   ) => {
     let cancelled = false;
 
@@ -155,17 +169,15 @@ export default function StockReceiptsPage() {
 
     // Prepare search data
     const searchData = {
-      receipt_number: null,
-      from_date: date,
-      to_date: date2,
+      receipt_number: receiptNumber || null,
+      from_date: date || null,
+      to_date: date2 || null,
       payment_type_id: selectedPaymentType ? selectedPaymentType.id : null,
       product_id: selectedProduct ? selectedProduct.id : null,
       card_number: selectedCompany ? selectedCompany.card_number : null,
       page: page,
       page_size: pageSize,
     };
-
-    console.log(searchData);
 
     const requestOptions: RequestInit = {
       method: "POST",
@@ -233,7 +245,7 @@ export default function StockReceiptsPage() {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
       });
@@ -246,7 +258,6 @@ export default function StockReceiptsPage() {
   const getSearchProducts = async (
     searchData: any,
     page: number = 1,
-    pageSize: number = 50,
     append: boolean = false
   ) => {
     try {
@@ -259,21 +270,15 @@ export default function StockReceiptsPage() {
         myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
       }
 
-      const searchDataWithPagination = {
-        ...searchData,
-        page: page,
-        page_size: pageSize,
-      };
-
       const requestOptions: RequestInit = {
         method: "POST",
         headers: myHeaders,
-        body: JSON.stringify(searchDataWithPagination),
+        body: JSON.stringify(searchData),
         redirect: "follow",
       };
 
       const response = await fetch(
-        `${BASE_URL}/v1/admins/products/search`,
+        `${BASE_URL}/v1/admins/products/search?page=${page}&page_size=20`,
         requestOptions
       );
 
@@ -294,6 +299,8 @@ export default function StockReceiptsPage() {
         setProducts(result.results || result || []);
       }
 
+      console.log(result);
+
       // Update pagination state
       const paginationData = {
         currentPage: result.current_page || result.page || page,
@@ -302,11 +309,11 @@ export default function StockReceiptsPage() {
           result.totalPages ||
           Math.ceil(
             (result.total || result.count || 0) /
-              (result.page_size || result.pageSize || pageSize)
+              (result.page_size || result.pageSize || 20)
           ) ||
           1,
         totalItems: result.total_items || result.total || result.count || 0,
-        pageSize: result.page_size || result.pageSize || pageSize,
+        pageSize: result.page_size || result.pageSize || 20,
         hasNext:
           result.has_next ||
           result.hasNext ||
@@ -328,6 +335,8 @@ export default function StockReceiptsPage() {
       setLoading(false);
     }
   };
+
+  console.log(productsPagination);
 
   const handleProductSearch = async (
     searchTerm: string = "",
@@ -352,12 +361,12 @@ export default function StockReceiptsPage() {
     handleProductSearch("", 1);
   };
 
-  const handleSearchInputChange = (value: string) => {
-    setSearchQuery(value);
+  const handleProductSearchInputChange = (value: string) => {
+    setProductSearchQuery(value);
 
     // Clear existing timer
-    if (searchTimer) {
-      clearTimeout(searchTimer);
+    if (productSearchTimer) {
+      clearTimeout(productSearchTimer);
     }
 
     // Set new timer for debounce (500ms delay)
@@ -365,19 +374,22 @@ export default function StockReceiptsPage() {
       handleProductSearch(value, 1);
     }, 500);
 
-    setSearchTimer(newTimer);
+    setProductSearchTimer(newTimer);
   };
 
   // Cleanup timer on component unmount
   useEffect(() => {
     return () => {
-      if (searchTimer) {
-        clearTimeout(searchTimer);
+      if (companySearchTimer) {
+        clearTimeout(companySearchTimer);
+      }
+      if (productSearchTimer) {
+        clearTimeout(productSearchTimer);
       }
     };
-  }, [searchTimer]);
+  }, [companySearchTimer, productSearchTimer]);
 
-  const getCompanies = async () => {
+  const getCompanies = async (searchTerm: string = "", page: number = 1) => {
     try {
       setLoading(true);
 
@@ -387,14 +399,20 @@ export default function StockReceiptsPage() {
         myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
       }
 
+      // Prepare search data
+      const searchData = {
+        search: searchTerm,
+      };
+
       const requestOptions: RequestInit = {
-        method: "GET",
+        method: "POST",
         headers: myHeaders,
         redirect: "follow",
+        body: JSON.stringify(searchData),
       };
 
       const response = await fetch(
-        `${BASE_URL}/v1/admins/companies`,
+        `${BASE_URL}/v1/admins/companies/search?page=${page}&page_size=20`,
         requestOptions
       );
 
@@ -405,6 +423,30 @@ export default function StockReceiptsPage() {
       }
 
       setCompanies(result.results || result || []);
+
+      console.log(result);
+
+      // Update pagination for companies
+      setCompaniesPagination({
+        currentPage: result.current_page || result.page || page,
+        totalPages:
+          result.total_pages ||
+          result.totalPages ||
+          Math.ceil((result.total || result.count || 0) / 20) ||
+          1,
+        totalItems: result.total_items || result.total || result.count || 0,
+        pageSize: result.page_size || result.pageSize || 20,
+        hasNext:
+          result.has_next ||
+          result.hasNext ||
+          (result.current_page || result.page || page) <
+            (result.total_pages || result.totalPages || 1),
+        hasPrevious:
+          result.has_previous ||
+          result.hasPrevious ||
+          (result.current_page || result.page || page) > 1,
+      });
+
       return result;
     } catch (error: any) {
       const msg = error?.message || t("app.pos.companies_load_error");
@@ -459,13 +501,9 @@ export default function StockReceiptsPage() {
   };
 
   const handleFilterApply = () => {
-    if (date && date2) {
-      setReceipts([]);
-      getReceipts(date, date2, 1, 50);
-      setIsFilterModalOpen(false);
-    } else {
-      toast.error(t("app.pos.select_date_range"));
-    }
+    setReceipts([]);
+    getReceipts(date, date2, 1, 50, false, receiptSearchNumber);
+    setIsFilterModalOpen(false);
   };
   // useEffect(() => {
   //   // getSearchProducts funksiyasini kerakli parametr bilan chaqiring
@@ -480,9 +518,13 @@ export default function StockReceiptsPage() {
 
   const [open2, setOpen2] = React.useState(false);
   const [date2, setDate2] = React.useState<string | undefined>(undefined);
+
+  // Mobile calendar states
+  const [mobileCalendarOpen, setMobileCalendarOpen] = React.useState(false);
+  const [mobileCalendarOpen2, setMobileCalendarOpen2] = React.useState(false);
   const downloadReport = async (date: string) => {
     if (!date) {
-      toast.error("Iltimos, sanani tanlang");
+      toast.error(t("app.pos.please_select_date"));
       return;
     }
 
@@ -532,9 +574,9 @@ export default function StockReceiptsPage() {
       // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      toast.success("Hisobot muvaffaqiyatli yuklab olindi");
+      toast.success(t("app.pos.report_downloaded_success"));
     } catch (error: any) {
-      const msg = error?.message || "Hisobotni yuklab olishda xatolik";
+      const msg = error?.message || t("app.pos.report_download_error");
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -542,7 +584,7 @@ export default function StockReceiptsPage() {
   };
   const downloadReceipts = async (date: string) => {
     if (!date) {
-      toast.error("Iltimos, sanani tanlang");
+      toast.error(t("app.pos.please_select_date"));
       return;
     }
 
@@ -593,9 +635,9 @@ export default function StockReceiptsPage() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success("Cheklar muvaffaqiyatli yuklab olindi");
+      toast.success(t("app.pos.receipts_downloaded_success"));
     } catch (error: any) {
-      const msg = error?.message || "Cheklarni yuklab olishda xatolik";
+      const msg = error?.message || t("app.pos.receipts_download_error");
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -638,22 +680,63 @@ export default function StockReceiptsPage() {
           <div className=" w-full">
             <div className="w-full mt-0">
               <div className="space-y-4">
-                <div className="bg-bgColor flex justify-between">
-                  <h2 className="text-sm md:text-base font-medium  text-black rounded-sm p-2 px-3">
-                    {t("app.pos.receipts")}
-                  </h2>
-                  {/* Mobile Filter Button */}
-                  <div className="md:hidden flex justify-between items-center">
-                    <div className="flex gap-2 ">
-                      <Button
-                        onClick={() => setIsFilterModalOpen(true)}
-                        variant="outline"
-                        className="cursor-pointer text-[12px] px-3 py-2 flex items-center gap-2 "
-                      >
-                        <Filter className="h-4 w-4 " />
-                        {t("app.pos.filter")}
+                <div className="bg-bgColor flex flex-col md:flex-row justify-between gap-2">
+                  {/* search receipts */}
+                  <div className="text-sm md:text-base font-medium text-black rounded-sm p-2 px-3 w-full md:w-auto">
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        setReceipts([]);
+                        getReceipts(
+                          date,
+                          date2,
+                          1,
+                          50,
+                          false,
+                          receiptSearchNumber
+                        );
+                      }}
+                      className="flex items-center gap-2 w-full"
+                    >
+                      <div className="relative w-full">
+                        <input
+                          type="text"
+                          value={receiptSearchNumber}
+                          onChange={(e) =>
+                            setReceiptSearchNumber(e.target.value)
+                          }
+                          placeholder={t("app.pos.search_receipt_number")}
+                          className="px-3 py-1 pr-8 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                        />
+                        {receiptSearchNumber && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setReceiptSearchNumber("");
+                              setReceipts([]);
+                              getReceipts(date, date2, 1, 50, false, "");
+                            }}
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                      <Button type="submit" className="px-3 py-1 text-sm">
+                        {t("app.pos.search")}
                       </Button>
-                    </div>
+                    </form>
+                  </div>
+                  {/* Mobile Filter Button */}
+                  <div className="md:hidden flex justify-center items-center w-full md:w-auto">
+                    <Button
+                      onClick={() => setIsFilterModalOpen(true)}
+                      variant="outline"
+                      className="cursor-pointer text-[12px] px-3 py-2 flex items-center gap-2 w-full justify-center"
+                    >
+                      <Filter className="h-4 w-4 " />
+                      {t("app.pos.filter")}
+                    </Button>
                   </div>
                 </div>
 
@@ -667,7 +750,7 @@ export default function StockReceiptsPage() {
                         onClick={() => {
                           setIsCompanyModalOpen(true);
                           if (companies.length === 0) {
-                            getCompanies();
+                            getCompanies("", 1);
                           }
                         }}
                         className="w-48 justify-between font-normal text-sm overflow-hidden"
@@ -709,85 +792,121 @@ export default function StockReceiptsPage() {
                         <ChevronDownIcon className="h-4 w-4" />
                       </Button>
                     </div>
-                    <Popover open={open} onOpenChange={setOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          id="date"
-                          className="w-[49%] sm:w-30 justify-between font-normal text-sm"
+                    {/* Desktop Calendar */}
+                    <div className="hidden md:contents">
+                      <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            id="date"
+                            className="w-[49%] sm:w-30 justify-between font-normal text-sm"
+                          >
+                            {date ? date : t("app.pos.from")}
+                            <ChevronDownIcon className="h-4 w-4" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-auto overflow-hidden p-0 z-[9999]"
+                          align="center"
+                          side="bottom"
+                          sideOffset={5}
+                          avoidCollisions={true}
+                          collisionPadding={10}
                         >
-                          {date ? date : t("app.pos.from")}
-                          <ChevronDownIcon className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto overflow-hidden p-0"
-                        align="start"
-                      >
-                        <Calendar
-                          mode="single"
-                          selected={date ? new Date(date) : undefined}
-                          captionLayout="dropdown"
-                          onSelect={(selectedDate) => {
-                            if (selectedDate) {
-                              const formatted = `${selectedDate.getFullYear()}-${String(
-                                selectedDate.getMonth() + 1
-                              ).padStart(2, "0")}-${String(
-                                selectedDate.getDate()
-                              ).padStart(2, "0")}`;
+                          <Calendar
+                            mode="single"
+                            selected={date ? new Date(date) : undefined}
+                            captionLayout="dropdown"
+                            onSelect={(selectedDate) => {
+                              if (selectedDate) {
+                                const formatted = `${selectedDate.getFullYear()}-${String(
+                                  selectedDate.getMonth() + 1
+                                ).padStart(2, "0")}-${String(
+                                  selectedDate.getDate()
+                                ).padStart(2, "0")}`;
 
-                              setDate(formatted);
-                              setOpen(false);
-                            }
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
+                                setDate(formatted);
+                                setOpen(false);
+                              }
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>
 
-                    <Popover open={open2} onOpenChange={setOpen2}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          id="date"
-                          className="w-[49%] sm:w-30 justify-between font-normal text-sm"
+                      <Popover open={open2} onOpenChange={setOpen2}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            id="date"
+                            className="w-[49%] sm:w-30 justify-between font-normal text-sm"
+                          >
+                            {date2 ? date2 : t("app.pos.to")}
+                            <ChevronDownIcon className="h-4 w-4" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-auto overflow-hidden p-0 z-[9999]"
+                          align="center"
+                          side="bottom"
+                          sideOffset={5}
+                          avoidCollisions={true}
+                          collisionPadding={10}
                         >
-                          {date2 ? date2 : t("app.pos.to")}
-                          <ChevronDownIcon className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto overflow-hidden p-0"
-                        align="start"
-                      >
-                        <Calendar
-                          mode="single"
-                          selected={date2 ? new Date(date2) : undefined}
-                          captionLayout="dropdown"
-                          onSelect={(selectedDate) => {
-                            if (selectedDate) {
-                              const formatted = `${selectedDate.getFullYear()}-${String(
-                                selectedDate.getMonth() + 1
-                              ).padStart(2, "0")}-${String(
-                                selectedDate.getDate()
-                              ).padStart(2, "0")}`;
+                          <Calendar
+                            mode="single"
+                            selected={date2 ? new Date(date2) : undefined}
+                            captionLayout="dropdown"
+                            onSelect={(selectedDate) => {
+                              if (selectedDate) {
+                                const formatted = `${selectedDate.getFullYear()}-${String(
+                                  selectedDate.getMonth() + 1
+                                ).padStart(2, "0")}-${String(
+                                  selectedDate.getDate()
+                                ).padStart(2, "0")}`;
 
-                              setDate2(formatted);
-                              setOpen2(false);
-                            }
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
+                                setDate2(formatted);
+                                setOpen2(false);
+                              }
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    {/* Mobile Calendar Buttons */}
+                    <div className="md:hidden flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setMobileCalendarOpen(true)}
+                        className="w-[49%] justify-between font-normal text-sm"
+                      >
+                        {date ? date : t("app.pos.from")}
+                        <ChevronDownIcon className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setMobileCalendarOpen2(true)}
+                        className="w-[49%] justify-between font-normal text-sm"
+                      >
+                        {date2 ? date2 : t("app.pos.to")}
+                        <ChevronDownIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Action buttons - responsive */}
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button
                       onClick={() => {
-                        if (date && date2) {
-                          setReceipts([]);
-                          getReceipts(date, date2, 1, 50);
-                        }
+                        setReceipts([]);
+                        getReceipts(
+                          date,
+                          date2,
+                          1,
+                          50,
+                          false,
+                          receiptSearchNumber
+                        );
                       }}
                       className="cursor-pointer text-sm px-3 py-2"
                     >
@@ -832,28 +951,28 @@ export default function StockReceiptsPage() {
                           №
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                          Операция
+                          {t("app.pos.operation")}
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                          Номер чека
+                          {t("app.pos.receipt_number")}
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                          Дата и время
+                          {t("app.pos.date_time")}
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                          Тип оплаты
+                          {t("app.pos.payment_type")}
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                          Наличные
+                          {t("app.pos.cash")}
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                          Картой
+                          {t("app.pos.card")}
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                          Сумма
+                          {t("app.pos.amount")}
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
-                          Статус 1С
+                          {t("app.pos.status_1c")}
                         </th>
                       </tr>
                     </thead>
@@ -876,7 +995,9 @@ export default function StockReceiptsPage() {
                             </div>
                           </td>
                           <td className="border border-border px-4 py-2">
-                            <h2 className="text-green-500">Продажа</h2>{" "}
+                            <h2 className="text-green-500">
+                              {t("app.pos.sale")}
+                            </h2>{" "}
                             {org?.qr_code_url && (
                               <Link
                                 onClick={(e) => {
@@ -886,7 +1007,7 @@ export default function StockReceiptsPage() {
                                 target="_blank"
                                 href={org.qr_code_url}
                               >
-                                QR код
+                                {t("app.pos.qr_code")}
                               </Link>
                             )}
                           </td>
@@ -907,7 +1028,7 @@ export default function StockReceiptsPage() {
                           <td className="border border-border px-4 py-4">
                             {/* <h2>
                             {org?.payments.map((item) => {
-                              if (item.payment_type.name === "Наличные") {
+                              if (item.payment_type.name === "Cash") {
 
                                 return item.price.toLocaleString("ru-RU");
                               } else {
@@ -917,7 +1038,8 @@ export default function StockReceiptsPage() {
                             сум
                           </h2> */}
                             <h2>
-                              {org?.received_cash.toLocaleString("ru-RU")} сум
+                              {org?.received_cash.toLocaleString("ru-RU")}{" "}
+                              {t("app.pos.sum")}
                             </h2>
                           </td>
                           <td className="border border-border px-4 py-4">
@@ -935,7 +1057,8 @@ export default function StockReceiptsPage() {
                             сум
                           </h2> */}
                             <h2>
-                              {org?.received_card.toLocaleString("ru-RU")} сум
+                              {org?.received_card.toLocaleString("ru-RU")}{" "}
+                              {t("app.pos.sum")}
                             </h2>
                           </td>
                           <td className="border border-border px-4 py-4">
@@ -944,7 +1067,7 @@ export default function StockReceiptsPage() {
                                 Number(org?.received_cash) +
                                 Number(org?.received_card)
                               ).toLocaleString("ru-RU")}{" "}
-                              сум
+                              {t("app.pos.sum")}
                               {/* {org?.received_cash +
                               org?.received_card.toLocaleString("ru-RU")}
                             сум */}
@@ -952,10 +1075,12 @@ export default function StockReceiptsPage() {
                           </td>
                           <td className="border border-border border-l-0 rounded-r-lg px-4 py-4">
                             {org?.sent_to_1c ? (
-                              <span className="text-green-500">Отправлено</span>
+                              <span className="text-green-500">
+                                {t("app.pos.sent")}
+                              </span>
                             ) : (
                               <span className="text-red-500">
-                                Не отправлено
+                                {t("app.pos.not_sent")}
                               </span>
                             )}
                           </td>
@@ -971,14 +1096,14 @@ export default function StockReceiptsPage() {
                     currentPage={receiptsPagination.currentPage}
                     totalPages={receiptsPagination.totalPages}
                     onPageChange={(page) => {
-                      if (date && date2) {
-                        getReceipts(
-                          date,
-                          date2,
-                          page,
-                          receiptsPagination.pageSize
-                        );
-                      }
+                      getReceipts(
+                        date,
+                        date2,
+                        page,
+                        receiptsPagination.pageSize,
+                        false,
+                        receiptSearchNumber
+                      );
                     }}
                     showMoreItems={
                       receiptsPagination.currentPage <
@@ -992,21 +1117,20 @@ export default function StockReceiptsPage() {
                     }
                     onShowMore={() => {
                       if (
-                        date &&
-                        date2 &&
-                        (receiptsPagination.currentPage <
+                        receiptsPagination.currentPage <
                           receiptsPagination.totalPages ||
-                          (receiptsPagination.totalPages === 1 &&
-                            receiptsPagination.totalItems >
-                              receiptsPagination.pageSize) ||
-                          receiptsPagination.totalItems > receipts.length)
+                        (receiptsPagination.totalPages === 1 &&
+                          receiptsPagination.totalItems >
+                            receiptsPagination.pageSize) ||
+                        receiptsPagination.totalItems > receipts.length
                       ) {
                         getReceipts(
                           date,
                           date2,
                           receiptsPagination.currentPage + 1,
                           receiptsPagination.pageSize,
-                          true // append = true for "Show More" functionality
+                          true, // append = true for "Show More" functionality
+                          receiptSearchNumber
                         );
                       }
                     }}
@@ -1025,7 +1149,7 @@ export default function StockReceiptsPage() {
                     }
                   }}
                 >
-                  <div className="bg-bgColor rounded-lg shadow-2xl max-w-md w-full h-full  overflow-auto">
+                  <div className="bg-bgColor rounded-lg shadow-2xl max-w-md w-[80%] sm:w-full h-full  overflow-auto">
                     {/* Header */}
                     <div className="bg-gray-50 px-4 py-1  flex justify-between items-center">
                       <h2
@@ -1058,8 +1182,8 @@ export default function StockReceiptsPage() {
                           }`}
                         >
                           {selectedReceipt?.sent_to_1c
-                            ? " Отправлен на сервер Синхронизирован с 1С"
-                            : "Не синхронизирован"}
+                            ? t("app.pos.sent_to_1c")
+                            : t("app.pos.not_synchronized")}
                         </span>
                       </div>
                     </div>
@@ -1086,24 +1210,26 @@ export default function StockReceiptsPage() {
                         <div className="p-4 font-mono text-sm">
                           {/* Store Header */}
                           <div className="text-center mb-4  pb-3">
-                            <div className="text-lg font-bold">Продажа</div>
+                            <div className="text-lg font-bold">
+                              {t("app.pos.sale")}
+                            </div>
                             <div className="text-xs text-gray-600">Kanstik</div>
                           </div>
 
                           {/* Receipt Info */}
                           <div className="space-y-2 mb-4">
                             <div className="flex justify-between">
-                              <span>Дата и время:</span>
+                              <span>{t("app.pos.date_time")}:</span>
                               <span className="font-semibold">
                                 {formatDate(selectedReceipt.close_time)}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span>ИНН/ПИНФЛ:</span>
+                              <span>{t("app.pos.inn_pinfl")}:</span>
                               <span>{selectedReceipt.fiscal_sign}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span>Кассир:</span>
+                              <span>{t("app.pos.cashier")}:</span>
                               <span className="text-right max-w-[200px]">
                                 {selectedReceipt.staff_name}
                               </span>
@@ -1113,7 +1239,7 @@ export default function StockReceiptsPage() {
                           {/* Items Section */}
                           <div className=" pt-3 mb-4">
                             <div className="text-center font-semibold mb-2">
-                              Товары
+                              {t("app.pos.products")}
                             </div>
                             <div className="space-y-2">
                               {selectedReceipt?.products?.map(
@@ -1129,7 +1255,8 @@ export default function StockReceiptsPage() {
                                             {item.product.classifier_title}
                                           </div>
                                           <div className="text-xs text-gray-600">
-                                            {item.quantity}.0 шт. х{" "}
+                                            {item.quantity}.0 {t("app.pos.pcs")}{" "}
+                                            х{" "}
                                             {item.price /
                                               item.quantity.toLocaleString(
                                                 "ru-RU"
@@ -1147,11 +1274,14 @@ export default function StockReceiptsPage() {
                                       {/* Tax Info */}
                                       <div className=" pt-3 mb-4">
                                         <div className="flex justify-between text-xs">
-                                          <span>НДС: ({item.vat_percent})</span>
+                                          <span>
+                                            {t("app.pos.vat")}: (
+                                            {item.vat_percent})
+                                          </span>
                                           <span>{item.vat}</span>
                                         </div>
                                         <div className="flex justify-between text-xs">
-                                          <span>ИКПУ:</span>
+                                          <span>{t("app.pos.ikpu")}:</span>
                                           <span>{item.class_code}</span>
                                         </div>
                                       </div>
@@ -1166,7 +1296,7 @@ export default function StockReceiptsPage() {
                           <div className=" pt-3 mb-4">
                             <div className="space-y-1">
                               <div className="flex justify-between font-semibold">
-                                <span>Сумма:</span>
+                                <span>{t("app.pos.amount")}:</span>
                                 <span>
                                   {(
                                     Number(
@@ -1183,7 +1313,7 @@ export default function StockReceiptsPage() {
                                 </span>
                               </div>
                               <div className="flex justify-between">
-                                <span>Оплачено:</span>
+                                <span>{t("app.pos.paid")}:</span>
                                 <span>
                                   {(
                                     Number(
@@ -1200,7 +1330,7 @@ export default function StockReceiptsPage() {
                                 </span>
                               </div>
                               <div className="flex justify-between">
-                                <span>Наличные:</span>
+                                <span>{t("app.pos.cash")}:</span>
                                 <span>
                                   {Number(
                                     selectedReceipt?.received_cash
@@ -1210,7 +1340,7 @@ export default function StockReceiptsPage() {
                                 </span>
                               </div>
                               <div className="flex justify-between">
-                                <span>Картой:</span>
+                                <span>{t("app.pos.card")}:</span>
                                 <span>
                                   {Number(
                                     selectedReceipt?.received_card
@@ -1220,7 +1350,7 @@ export default function StockReceiptsPage() {
                                 </span>
                               </div>
                               <div className="flex justify-between">
-                                <span>Бон. картой:</span>
+                                <span>{t("app.pos.bonus_card")}:</span>
                                 <span>0</span>
                               </div>
                             </div>
@@ -1230,14 +1360,15 @@ export default function StockReceiptsPage() {
                           <div className=" pt-3 mb-4">
                             <div className="text-center text-xs space-y-1">
                               <div className="flex justify-between">
-                                <span>ФМ:</span>{" "}
+                                <span>{t("app.pos.fm")}:</span>{" "}
                                 <span>{selectedReceipt?.terminal_id}</span>
                               </div>
                               <div className="flex justify-between">
-                                <span>ФП:</span> <span>414675046328</span>
+                                <span>{t("app.pos.fp")}:</span>{" "}
+                                <span>414675046328</span>
                               </div>
                               <div className="flex justify-between">
-                                <span>Чек №:</span>{" "}
+                                <span>{t("app.pos.receipt_number")} №:</span>{" "}
                                 <span>{selectedReceipt.receipt_seq}</span>
                               </div>
                               <div className="flex justify-between">
@@ -1267,7 +1398,7 @@ export default function StockReceiptsPage() {
                     {/* Header */}
                     <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
                       <h2 className="text-lg font-semibold text-red-600">
-                        Ошибка синхронизации
+                        {t("app.pos.sync_error")}
                       </h2>
                       <button
                         onClick={() => setIsErrorModalOpen(false)}
@@ -1285,7 +1416,7 @@ export default function StockReceiptsPage() {
                         </div>
                         <p className="text-gray-700 text-sm leading-relaxed">
                           {selectedReceipt?.error_1c ||
-                            "Произошла ошибка при синхронизации с 1С"}
+                            t("app.pos.sync_error_message")}
                         </p>
                       </div>
                     </div>
@@ -1296,7 +1427,7 @@ export default function StockReceiptsPage() {
                         onClick={() => setIsErrorModalOpen(false)}
                         className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors"
                       >
-                        Закрыть
+                        {t("app.pos.close")}
                       </button>
                     </div>
                   </div>
@@ -1306,169 +1437,263 @@ export default function StockReceiptsPage() {
               {/* Product Selection Modal */}
               {isProductModalOpen && (
                 <div
-                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-60"
+                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4"
                   onClick={(e) => {
                     if (e.target === e.currentTarget) {
                       setIsProductModalOpen(false);
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl max-w-[90%] w-full h-[95vh] overflow-hidden relative">
-                    <button
-                      onClick={() => setIsProductModalOpen(false)}
-                      className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
-                    >
-                      <X className="h-4 w-4 " />
-                    </button>
+                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] md:max-h-[95vh] flex flex-col modal-container relative overflow-hidden">
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-4 md:p-6 border-b bg-gray-50 flex-shrink-0">
+                      <h2 className="text-lg md:text-xl font-semibold text-gray-900">
+                        {t("app.pos.select_product")}
+                      </h2>
+                      <button
+                        onClick={() => setIsProductModalOpen(false)}
+                        className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+
                     {/* Search Section */}
-                    <div className="p-6 border-b">
-                      <div className="flex gap-3 justify-between">
+                    <div className="p-4 md:p-6 border-b bg-white flex-shrink-0">
+                      <div className="relative w-full">
                         <input
                           type="text"
                           placeholder={t("app.pos.enter_product_name")}
-                          value={searchQuery}
+                          value={productSearchQuery}
                           onChange={(e) =>
-                            handleSearchInputChange(e.target.value)
+                            handleProductSearchInputChange(e.target.value)
                           }
-                          className="w-[80%] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
                         />
+                        {productSearchQuery && (
+                          <button
+                            onClick={() => {
+                              setProductSearchQuery("");
+                              handleProductSearch("", 1);
+                            }}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
                     </div>
 
-                    {/* Products Table */}
-                    <div className="overflow-auto max-h-120">
+                    {/* Products Content */}
+                    <div className="flex-1 overflow-y-auto min-h-0 modal-scroll-container modal-content-scrollable">
                       {loading ? (
-                        <div className="flex justify-center items-center py-8">
+                        <div className="flex justify-center items-center py-12">
                           <Loading />
                         </div>
                       ) : products.length === 0 ? (
-                        <div className="text-center py-8 text-gray-500">
-                          {t("app.pos.no_products_found")}
+                        <div className="text-center py-12 text-gray-500">
+                          <div className="text-lg mb-2">
+                            {t("app.pos.no_products_found")}
+                          </div>
+                          <div className="text-sm">
+                            {t("app.pos.try_different_search")}
+                          </div>
                         </div>
                       ) : (
-                        <table className="w-full text-sm relative border-separate border-spacing-y-2">
-                          <thead className="sticky top-[0px] z-10 bg-bgColor">
-                            <tr>
-                              <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
-                                №
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                                {t("app.pos.product_name_article")}
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                                {t("app.pos.product_classifier")}
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                                {t("app.pos.remaining_reserve")}
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
-                                {t("app.pos.price")}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {products.map((product: Product, index: number) => (
-                              <tr
-                                key={product.id}
-                                className="hover:bg-accent/50 cursor-pointer"
-                                onClick={() => {
-                                  setSelectedProduct(product);
-                                  setIsProductModalOpen(false);
-                                  toast.success(
-                                    `${product.classifier_title} ${t(
-                                      "app.pos.selected"
-                                    )}`
-                                  );
-                                }}
-                              >
-                                <td className="border border-border border-r-0 rounded-l-lg">
-                                  <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
-                                    {(productsPagination.currentPage - 1) *
-                                      productsPagination.pageSize +
-                                      index +
-                                      1}
-                                  </div>
-                                </td>
-                                <td className="border border-border px-4 py-3">
-                                  <div>
-                                    <div className="font-medium text-sm">
-                                      {product.title}
-                                    </div>
-                                    <div className="text-xs text-gray-500">
-                                      {t("app.pos.article")}: {product.id}
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className="border border-border px-4 py-3">
-                                  <div className="text-sm">
-                                    {product.classifier_title}
-                                  </div>
-                                </td>
-                                <td className="border border-border px-4 py-3">
-                                  <div className="text-sm">
-                                    {t("app.pos.remaining_reserve")}:{" "}
-                                    {product.remaining || 0}
-                                  </div>
-                                  <div className="text-xs text-gray-500">
-                                    {t("app.pos.own")}: {product.quantity || 0}
-                                  </div>
-                                </td>
-                                <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
-                                  <div className="font-semibold text-sm">
-                                    {product.price?.toLocaleString("ru-RU") ||
-                                      0}{" "}
-                                    {t("app.pos.currency")}
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      )}
-                    </div>
+                        <>
+                          {/* Desktop Table */}
+                          <div className="hidden md:block px-5">
+                            <table className="w-full text-sm relative border-separate border-spacing-y-2">
+                              <thead className="sticky top-[0px] z-10 bg-bgColor">
+                                <tr>
+                                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                                    №
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                                    {t("app.pos.product_name_article")}
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                                    {t("app.pos.product_classifier")}
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                                    {t("app.pos.remaining_reserve")}
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
+                                    {t("app.pos.price")}
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {products.map(
+                                  (product: Product, index: number) => (
+                                    <tr
+                                      key={product.id}
+                                      className="hover:bg-accent/50 cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedProduct(product);
+                                        setIsProductModalOpen(false);
+                                        toast.success(
+                                          `${product.classifier_title} ${t(
+                                            "app.pos.selected"
+                                          )}`
+                                        );
+                                      }}
+                                    >
+                                      <td className="border border-border border-r-0 rounded-l-lg">
+                                        <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                                          {(productsPagination.currentPage -
+                                            1) *
+                                            productsPagination.pageSize +
+                                            index +
+                                            1}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border px-4 py-3">
+                                        <div className="font-medium text-sm">
+                                          {product.title}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                          {t("app.pos.article")}: {product.id}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border px-4 py-3">
+                                        <div className="text-sm">
+                                          {product.classifier_title}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border px-4 py-3">
+                                        <div className="text-sm">
+                                          {product.remaining || 0}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                          {t("app.pos.own")}:{" "}
+                                          {product.quantity || 0}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
+                                        <div className="font-semibold text-sm">
+                                          {product.price?.toLocaleString(
+                                            "ru-RU"
+                                          ) || 0}{" "}
+                                          {t("app.pos.currency")}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  )
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
 
-                    {/* Product Pagination */}
-                    {products.length > 0 &&
-                      productsPagination.totalPages > 1 && (
-                        <div className="p-4 border-t">
-                          <Pagination
-                            currentPage={productsPagination.currentPage}
-                            totalPages={productsPagination.totalPages}
-                            onPageChange={(page) => {
-                              handleProductSearch(searchQuery, page);
-                            }}
-                            showMoreItems={
-                              productsPagination.currentPage <
-                                productsPagination.totalPages ||
-                              (productsPagination.totalPages === 1 &&
-                                productsPagination.totalItems >
-                                  productsPagination.pageSize) ||
-                              productsPagination.totalItems > products.length
-                                ? productsPagination.pageSize
-                                : 0
-                            }
-                            onShowMore={() => {
-                              if (
+                          {/* Mobile Cards */}
+                          <div className="md:hidden">
+                            <div className="space-y-3 p-4">
+                              {products.map(
+                                (product: Product, index: number) => (
+                                  <div
+                                    key={product.id}
+                                    className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                    onClick={() => {
+                                      setSelectedProduct(product);
+                                      setIsProductModalOpen(false);
+                                      toast.success(
+                                        `${product.classifier_title} ${t(
+                                          "app.pos.selected"
+                                        )}`
+                                      );
+                                    }}
+                                  >
+                                    <div className="flex justify-between items-start mb-3">
+                                      <div className="flex-1">
+                                        <h3 className="font-medium text-base text-gray-900 mb-1">
+                                          {product.classifier_title}
+                                        </h3>
+                                        <p className="text-sm text-gray-600 mb-1">
+                                          {product.title}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                          {t("app.pos.article")}: {product.id}
+                                        </p>
+                                      </div>
+                                      <div className="text-right">
+                                        <div className="font-semibold text-lg text-gray-900">
+                                          {product.price?.toLocaleString(
+                                            "ru-RU"
+                                          ) || 0}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                          {t("app.pos.currency")}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                                      <div className="text-sm">
+                                        <span className="text-gray-600">
+                                          {t("app.pos.remaining_reserve")}:{" "}
+                                        </span>
+                                        <span className="font-medium">
+                                          {product.remaining || 0}
+                                        </span>
+                                      </div>
+                                      <div className="text-sm">
+                                        <span className="text-gray-600">
+                                          {t("app.pos.own")}:{" "}
+                                        </span>
+                                        <span className="font-medium">
+                                          {product.quantity || 0}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      {/* Product Pagination */}
+                      {products.length > 0 &&
+                        productsPagination.totalPages > 1 && (
+                          <div className="p-4 border-t">
+                            <Pagination
+                              currentPage={productsPagination.currentPage}
+                              totalPages={productsPagination.totalPages}
+                              onPageChange={(page) => {
+                                handleProductSearch(productSearchQuery, page);
+                              }}
+                              showMoreItems={
                                 productsPagination.currentPage <
                                   productsPagination.totalPages ||
                                 (productsPagination.totalPages === 1 &&
                                   productsPagination.totalItems >
                                     productsPagination.pageSize) ||
                                 productsPagination.totalItems > products.length
-                              ) {
-                                getSearchProducts(
-                                  { title: searchQuery },
-                                  productsPagination.currentPage + 1,
-                                  productsPagination.pageSize,
-                                  true // append = true for "Show More" functionality
-                                );
+                                  ? productsPagination.pageSize
+                                  : 0
                               }
-                            }}
-                            disabled={loading}
-                            className="mt-4"
-                          />
-                        </div>
-                      )}
+                              onShowMore={() => {
+                                if (
+                                  productsPagination.currentPage <
+                                    productsPagination.totalPages ||
+                                  (productsPagination.totalPages === 1 &&
+                                    productsPagination.totalItems >
+                                      productsPagination.pageSize) ||
+                                  productsPagination.totalItems >
+                                    products.length
+                                ) {
+                                  getSearchProducts(
+                                    { title: productSearchQuery },
+                                    productsPagination.currentPage + 1,
+                                    true // append = true for "Show More" functionality
+                                  );
+                                }
+                              }}
+                              disabled={loading}
+                              className="mt-4"
+                            />
+                          </div>
+                        )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -1476,95 +1701,248 @@ export default function StockReceiptsPage() {
               {/* Company Selection Modal */}
               {isCompanyModalOpen && (
                 <div
-                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-60"
+                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4"
                   onClick={(e) => {
                     if (e.target === e.currentTarget) {
                       setIsCompanyModalOpen(false);
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden">
+                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col modal-container overflow-hidden relative">
                     {/* Header */}
-                    <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center relative ">
-                      <h2 className="text-lg font-semibold text-gray-900">
+                    <div className="flex items-center justify-between p-4 md:p-6 border-b bg-gray-50 flex-shrink-0">
+                      <h2 className="text-lg md:text-xl font-semibold text-gray-900">
                         {t("app.pos.select_company")}
                       </h2>
                       <button
                         onClick={() => setIsCompanyModalOpen(false)}
                         className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
                       >
-                        <X className="h-4 w-4 " />
+                        <X className="h-4 w-4" />
                       </button>
                     </div>
 
-                    {/* Companies Table */}
-                    <div className="overflow-auto max-h-96">
+                    {/* Search Input */}
+                    <div className="p-4 md:p-6 border-b bg-white flex-shrink-0">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={companySearchQuery}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setCompanySearchQuery(value);
+
+                            // Clear previous timer
+                            if (companySearchTimer) {
+                              clearTimeout(companySearchTimer);
+                            }
+
+                            // Set new timer for debounced search
+                            const newTimer = setTimeout(() => {
+                              getCompanies(value, 1);
+                            }, 500);
+
+                            setCompanySearchTimer(newTimer);
+                          }}
+                          placeholder={t("app.pos.enter_company_name")}
+                          className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
+                        />
+                        {companySearchQuery && (
+                          <button
+                            onClick={() => {
+                              setCompanySearchQuery("");
+                              getCompanies("", 1);
+                            }}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Companies Content */}
+                    <div className="flex-1 overflow-y-auto min-h-0 modal-scroll-container modal-content-scrollable">
                       {loading ? (
-                        <div className="flex justify-center items-center py-8">
+                        <div className="flex justify-center items-center py-12">
                           <Loading />
                         </div>
                       ) : companies.length === 0 ? (
-                        <div className="text-center py-8 text-gray-500">
-                          {t("app.pos.no_companies_found")}
+                        <div className="text-center py-12 text-gray-500">
+                          <div className="text-lg mb-2">
+                            {t("app.pos.no_companies_found")}
+                          </div>
+                          <div className="text-sm">
+                            {t("app.pos.try_different_search")}
+                          </div>
                         </div>
                       ) : (
-                        <table className="w-full text-sm relative border-separate border-spacing-y-2">
-                          <thead className="sticky top-[0px] z-10 bg-bgColor">
-                            <tr>
-                              <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
-                                №
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                                {t("app.pos.company_name")}
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                                {t("app.pos.phone_number")}
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
-                                {t("app.pos.card_number")}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {companies.map(
-                              (company: Company, index: number) => (
-                                <tr
-                                  key={company.id}
-                                  className="hover:bg-accent/50 cursor-pointer"
-                                  onClick={() => {
-                                    setSelectedCompany(company);
-                                    setIsCompanyModalOpen(false);
-                                    toast.success(
-                                      `${company.name} ${t("app.pos.selected")}`
-                                    );
-                                  }}
-                                >
-                                  <td className="border border-border border-r-0 rounded-l-lg">
-                                    <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
-                                      {index + 1}
-                                    </div>
-                                  </td>
-                                  <td className="border border-border px-4 py-3">
-                                    <div className="font-medium text-sm">
-                                      {company.name}
-                                    </div>
-                                  </td>
-                                  <td className="border border-border px-4 py-3">
-                                    <div className="text-sm">
-                                      {company.phone_number || "-"}
-                                    </div>
-                                  </td>
-                                  <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
-                                    <div className="text-sm">
-                                      {company?.card_numbers[0]?.card_number ||
-                                        "-"}
-                                    </div>
-                                  </td>
+                        <>
+                          {/* Desktop Table */}
+                          <div className="hidden md:block px-5">
+                            <table className="w-full text-sm relative border-separate border-spacing-y-2">
+                              <thead className="sticky top-[0px] z-10 bg-bgColor">
+                                <tr>
+                                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                                    №
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                                    {t("app.pos.company_name")}
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                                    {t("app.pos.phone_number")}
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
+                                    {t("app.pos.card_number")}
+                                  </th>
                                 </tr>
-                              )
-                            )}
-                          </tbody>
-                        </table>
+                              </thead>
+                              <tbody>
+                                {companies.map(
+                                  (company: Company, index: number) => (
+                                    <tr
+                                      key={company.id}
+                                      className="hover:bg-accent/50 cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedCompany(company);
+                                        setIsCompanyModalOpen(false);
+                                        toast.success(
+                                          `${company.name} ${t(
+                                            "app.pos.selected"
+                                          )}`
+                                        );
+                                      }}
+                                    >
+                                      <td className="border border-border border-r-0 rounded-l-lg">
+                                        <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                                          {(companiesPagination.currentPage -
+                                            1) *
+                                            20 +
+                                            index +
+                                            1}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border px-4 py-3">
+                                        <div className="font-medium text-sm">
+                                          {company.name}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border px-4 py-3">
+                                        <div className="text-sm">
+                                          {company.phone_number || "-"}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
+                                        <div className="text-sm">
+                                          {company?.card_numbers[0]
+                                            ?.card_number || "-"}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  )
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+
+                          {/* Mobile Cards */}
+                          <div className="md:hidden">
+                            <div className="space-y-3 p-4">
+                              {companies.map(
+                                (company: Company, index: number) => (
+                                  <div
+                                    key={company.id}
+                                    className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                    onClick={() => {
+                                      setSelectedCompany(company);
+                                      setIsCompanyModalOpen(false);
+                                      toast.success(
+                                        `${company.name} ${t(
+                                          "app.pos.selected"
+                                        )}`
+                                      );
+                                    }}
+                                  >
+                                    <div className="flex justify-between items-start mb-3">
+                                      <div className="flex-1">
+                                        <h3 className="font-medium text-base text-gray-900 mb-2">
+                                          {company.name}
+                                        </h3>
+                                        <div className="space-y-1">
+                                          <div className="flex items-center text-sm text-gray-600">
+                                            <span className="font-medium mr-2">
+                                              {t("app.pos.phone_number")}:
+                                            </span>
+                                            <span>
+                                              {company.phone_number || "-"}
+                                            </span>
+                                          </div>
+                                          <div className="flex items-center text-sm text-gray-600">
+                                            <span className="font-medium mr-2">
+                                              {t("app.pos.card_number")}:
+                                            </span>
+                                            <span>
+                                              {company?.card_numbers[0]
+                                                ?.card_number || "-"}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="text-xs text-gray-400 ml-4">
+                                        #
+                                        {(companiesPagination.currentPage - 1) *
+                                          20 +
+                                          index +
+                                          1}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      {/* Pagination for Companies */}
+                      {!loading && companies.length > 0 && (
+                        <div className="p-4 border-t">
+                          <Pagination
+                            currentPage={companiesPagination.currentPage}
+                            totalPages={companiesPagination.totalPages}
+                            onPageChange={(page) => {
+                              getCompanies(companySearchQuery, page);
+                            }}
+                            showMoreItems={
+                              companiesPagination.currentPage <
+                                companiesPagination.totalPages ||
+                              (companiesPagination.totalPages === 1 &&
+                                companiesPagination.totalItems >
+                                  companiesPagination.pageSize) ||
+                              companiesPagination.totalItems > companies.length
+                                ? companiesPagination.pageSize
+                                : 0
+                            }
+                            onShowMore={() => {
+                              if (
+                                companiesPagination.currentPage <
+                                  companiesPagination.totalPages ||
+                                (companiesPagination.totalPages === 1 &&
+                                  companiesPagination.totalItems >
+                                    companiesPagination.pageSize) ||
+                                companiesPagination.totalItems >
+                                  companies.length
+                              ) {
+                                getCompanies(
+                                  companySearchQuery,
+                                  companiesPagination.currentPage + 1
+                                );
+                              }
+                            }}
+                            disabled={loading}
+                            className="mt-4"
+                          />
+                        </div>
                       )}
                     </div>
                   </div>
@@ -1574,94 +1952,85 @@ export default function StockReceiptsPage() {
               {/* Payment Type Selection Modal */}
               {isPaymentTypeModalOpen && (
                 <div
-                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-60"
+                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4 "
                   onClick={(e) => {
                     if (e.target === e.currentTarget) {
                       setIsPaymentTypeModalOpen(false);
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden relative">
+                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col modal-container overflow-hidden relative">
                     {/* Header */}
-                    <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
-                      <h2 className="text-lg font-semibold text-gray-900">
+                    <div className="flex items-center justify-between p-4 md:p-6 border-b bg-gray-50 flex-shrink-0">
+                      <h2 className="text-lg md:text-xl font-semibold text-gray-900">
                         {t("app.pos.select_payment_type")}
                       </h2>
                       <button
                         onClick={() => setIsPaymentTypeModalOpen(false)}
                         className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
                       >
-                        <X className="h-4 w-4 " />
+                        <X className="h-4 w-4" />
                       </button>
                     </div>
 
-                    {/* Payment Types Table */}
-                    <div className="overflow-auto max-h-96">
+                    {/* Payment Types Content */}
+                    <div className="flex-1 overflow-y-auto min-h-0 modal-scroll-container modal-content-scrollable">
                       {loading ? (
-                        <div className="flex justify-center items-center py-8">
+                        <div className="flex justify-center items-center py-12">
                           <Loading />
                         </div>
                       ) : paymentTypes.length === 0 ? (
-                        <div className="text-center py-8 text-gray-500">
-                          {t("app.pos.no_payment_types_found")}
+                        <div className="text-center py-12 text-gray-500">
+                          <div className="text-lg mb-2">
+                            {t("app.pos.no_payment_types_found")}
+                          </div>
                         </div>
                       ) : (
-                        <table className="w-full text-sm relative border-separate border-spacing-y-2">
-                          <thead className="sticky top-[0px] z-10 bg-bgColor">
-                            <tr>
-                              <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
-                                №
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                                {t("app.pos.payment_type_image")}
-                              </th>
-                              <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
-                                {t("app.pos.payment_type_name")}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {paymentTypes.map(
-                              (paymentType: PaymentType, index: number) => (
-                                <tr
-                                  key={paymentType.id}
-                                  className="hover:bg-accent/50 cursor-pointer"
-                                  onClick={() => {
-                                    setSelectedPaymentType(paymentType);
-                                    setIsPaymentTypeModalOpen(false);
-                                    toast.success(
-                                      `${paymentType.name} ${t(
-                                        "app.pos.selected"
-                                      )}`
-                                    );
-                                  }}
-                                >
-                                  <td className="border border-border border-r-0 rounded-l-lg">
-                                    <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
-                                      {index + 1}
-                                    </div>
-                                  </td>
-                                  <td className="border border-border px-4 py-3">
-                                    <div className="flex items-center">
-                                      {paymentType.image_url ? (
-                                        <Image
-                                          src={
-                                            paymentType.image_url
-                                              ? `${BASE_URL}${paymentType.image_url}`
-                                              : "/images/nophoto.png" // yoki default rasm
-                                          }
-                                          width={28}
-                                          height={28}
-                                          alt={paymentType.name || "image"}
-                                          className="w-8 h-8 object-contain"
-                                        />
-                                      ) : (
-                                        <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
+                        <>
+                          {/* Desktop Table */}
+                          <div className="hidden md:block px-5">
+                            <table className="w-full text-sm relative border-separate border-spacing-y-2">
+                              <thead className="sticky top-[0px] z-10 bg-bgColor">
+                                <tr>
+                                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                                    №
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                                    {t("app.pos.payment_type_image")}
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
+                                    {t("app.pos.payment_type_name")}
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {paymentTypes.map(
+                                  (paymentType: PaymentType, index: number) => (
+                                    <tr
+                                      key={paymentType.id}
+                                      className="hover:bg-accent/50 cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedPaymentType(paymentType);
+                                        setIsPaymentTypeModalOpen(false);
+                                        toast.success(
+                                          `${paymentType.name} ${t(
+                                            "app.pos.selected"
+                                          )}`
+                                        );
+                                      }}
+                                    >
+                                      <td className="border border-border border-r-0 rounded-l-lg">
+                                        <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                                          {index + 1}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border px-4 py-3">
+                                        <div className="flex items-center">
                                           <Image
                                             src={
                                               paymentType.image_url
                                                 ? `${BASE_URL}${paymentType.image_url}`
-                                                : "/images/nophoto.png" // yoki default rasm
+                                                : "/images/nophoto.png"
                                             }
                                             width={28}
                                             height={28}
@@ -1669,19 +2038,64 @@ export default function StockReceiptsPage() {
                                             className="w-8 h-8 object-contain"
                                           />
                                         </div>
-                                      )}
+                                      </td>
+                                      <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
+                                        <div className="font-medium text-sm">
+                                          {paymentType.name}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  )
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+
+                          {/* Mobile Cards */}
+                          <div className="md:hidden">
+                            <div className="space-y-3 p-4">
+                              {paymentTypes.map(
+                                (paymentType: PaymentType, index: number) => (
+                                  <div
+                                    key={paymentType.id}
+                                    className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                    onClick={() => {
+                                      setSelectedPaymentType(paymentType);
+                                      setIsPaymentTypeModalOpen(false);
+                                      toast.success(
+                                        `${paymentType.name} ${t(
+                                          "app.pos.selected"
+                                        )}`
+                                      );
+                                    }}
+                                  >
+                                    <div className="flex items-center space-x-4">
+                                      <div className="flex-shrink-0">
+                                        <Image
+                                          src={
+                                            paymentType.image_url
+                                              ? `${BASE_URL}${paymentType.image_url}`
+                                              : "/images/nophoto.png"
+                                          }
+                                          width={40}
+                                          height={40}
+                                          alt={paymentType.name || "image"}
+                                          className="w-10 h-10 object-contain rounded-lg border border-gray-200"
+                                        />
+                                      </div>
+                                      <div className="flex-1">
+                                        <h3 className="font-medium text-base text-gray-900">
+                                          {paymentType.name}
+                                        </h3>
+                                        
+                                      </div>
                                     </div>
-                                  </td>
-                                  <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
-                                    <div className="font-medium text-sm">
-                                      {paymentType.name}
-                                    </div>
-                                  </td>
-                                </tr>
-                              )
-                            )}
-                          </tbody>
-                        </table>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
@@ -1698,7 +2112,7 @@ export default function StockReceiptsPage() {
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden mx-4">
+                  <div className="bg-white rounded-lg shadow-2xl max-w-xl w-full max-h-[90vh] overflow-hidden mx-4 relative">
                     {/* Header */}
                     <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
                       <h2 className="text-lg font-semibold text-gray-900">
@@ -1706,9 +2120,9 @@ export default function StockReceiptsPage() {
                       </h2>
                       <button
                         onClick={() => setIsFilterModalOpen(false)}
-                        className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+                        className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
                       >
-                        ×
+                        <X className="h-4 w-4 " />
                       </button>
                     </div>
 
@@ -1721,73 +2135,106 @@ export default function StockReceiptsPage() {
                             {t("app.pos.date_range")}
                           </h3>
                           <div className="flex gap-3">
-                            <Popover open={open} onOpenChange={setOpen}>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  className="w-[48%] sm:w-full justify-between font-normal text-sm"
+                            {/* Desktop Calendar */}
+                            <div className="hidden md:contents">
+                              <Popover open={open} onOpenChange={setOpen}>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="w-[48%] sm:w-full justify-between font-normal text-sm "
+                                  >
+                                    {date ? date : t("app.pos.from")}
+                                    <ChevronDownIcon className="h-4 w-4" />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto overflow-hidden p-0 z-[9999]"
+                                  align="center"
+                                  side="bottom"
+                                  sideOffset={5}
+                                  avoidCollisions={true}
+                                  collisionPadding={10}
                                 >
-                                  {date ? date : t("app.pos.from")}
-                                  <ChevronDownIcon className="h-4 w-4" />
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto overflow-hidden p-0"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={date ? new Date(date) : undefined}
-                                  captionLayout="dropdown"
-                                  onSelect={(selectedDate) => {
-                                    if (selectedDate) {
-                                      const formatted = `${selectedDate.getFullYear()}-${String(
-                                        selectedDate.getMonth() + 1
-                                      ).padStart(2, "0")}-${String(
-                                        selectedDate.getDate()
-                                      ).padStart(2, "0")}`;
+                                  <Calendar
+                                    mode="single"
+                                    selected={date ? new Date(date) : undefined}
+                                    captionLayout="dropdown"
+                                    onSelect={(selectedDate) => {
+                                      if (selectedDate) {
+                                        const formatted = `${selectedDate.getFullYear()}-${String(
+                                          selectedDate.getMonth() + 1
+                                        ).padStart(2, "0")}-${String(
+                                          selectedDate.getDate()
+                                        ).padStart(2, "0")}`;
 
-                                      setDate(formatted);
-                                      setOpen(false);
-                                    }
-                                  }}
-                                />
-                              </PopoverContent>
-                            </Popover>
+                                        setDate(formatted);
+                                        setOpen(false);
+                                      }
+                                    }}
+                                  />
+                                </PopoverContent>
+                              </Popover>
 
-                            <Popover open={open2} onOpenChange={setOpen2}>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  className="w-[48%] sm:w-full justify-between font-normal text-sm"
+                              <Popover open={open2} onOpenChange={setOpen2}>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="w-[48%] sm:w-full justify-between font-normal text-sm"
+                                  >
+                                    {date2 ? date2 : t("app.pos.to")}
+                                    <ChevronDownIcon className="h-4 w-4" />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto overflow-hidden p-0 z-[9999]"
+                                  align="center"
+                                  side="bottom"
+                                  sideOffset={5}
+                                  avoidCollisions={true}
+                                  collisionPadding={10}
                                 >
-                                  {date2 ? date2 : t("app.pos.to")}
-                                  <ChevronDownIcon className="h-4 w-4" />
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto overflow-hidden p-0"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={date2 ? new Date(date2) : undefined}
-                                  captionLayout="dropdown"
-                                  onSelect={(selectedDate) => {
-                                    if (selectedDate) {
-                                      const formatted = `${selectedDate.getFullYear()}-${String(
-                                        selectedDate.getMonth() + 1
-                                      ).padStart(2, "0")}-${String(
-                                        selectedDate.getDate()
-                                      ).padStart(2, "0")}`;
-
-                                      setDate2(formatted);
-                                      setOpen2(false);
+                                  <Calendar
+                                    mode="single"
+                                    selected={
+                                      date2 ? new Date(date2) : undefined
                                     }
-                                  }}
-                                />
-                              </PopoverContent>
-                            </Popover>
+                                    captionLayout="dropdown"
+                                    onSelect={(selectedDate) => {
+                                      if (selectedDate) {
+                                        const formatted = `${selectedDate.getFullYear()}-${String(
+                                          selectedDate.getMonth() + 1
+                                        ).padStart(2, "0")}-${String(
+                                          selectedDate.getDate()
+                                        ).padStart(2, "0")}`;
+
+                                        setDate2(formatted);
+                                        setOpen2(false);
+                                      }
+                                    }}
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
+
+                            {/* Mobile Calendar Buttons */}
+                            <div className="md:hidden flex gap-3 w-full">
+                              <Button
+                                variant="outline"
+                                onClick={() => setMobileCalendarOpen(true)}
+                                className="w-[48%] justify-between font-normal text-sm"
+                              >
+                                {date ? date : t("app.pos.from")}
+                                <ChevronDownIcon className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                onClick={() => setMobileCalendarOpen2(true)}
+                                className="w-[48%] justify-between font-normal text-sm"
+                              >
+                                {date2 ? date2 : t("app.pos.to")}
+                                <ChevronDownIcon className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
 
@@ -1801,7 +2248,7 @@ export default function StockReceiptsPage() {
                             onClick={() => {
                               setIsCompanyModalOpen(true);
                               if (companies.length === 0) {
-                                getCompanies();
+                                getCompanies("", 1);
                               }
                             }}
                             className="w-full justify-between font-normal text-sm"
@@ -1875,6 +2322,80 @@ export default function StockReceiptsPage() {
                         {t("app.pos.download_receipts")}
                       </Button>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Mobile Calendar Modal for From Date */}
+              {mobileCalendarOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+                  <div className="bg-white rounded-lg shadow-2xl max-w-sm w-full mx-4 p-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold">
+                        {t("app.pos.from")}
+                      </h3>
+                      <button
+                        onClick={() => setMobileCalendarOpen(false)}
+                        className="text-gray-500 hover:text-gray-700 text-xl"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <Calendar
+                      mode="single"
+                      selected={date ? new Date(date) : undefined}
+                      captionLayout="dropdown"
+                      className="w-full mobile-calendar-modal"
+                      onSelect={(selectedDate) => {
+                        if (selectedDate) {
+                          const formatted = `${selectedDate.getFullYear()}-${String(
+                            selectedDate.getMonth() + 1
+                          ).padStart(2, "0")}-${String(
+                            selectedDate.getDate()
+                          ).padStart(2, "0")}`;
+
+                          setDate(formatted);
+                          setMobileCalendarOpen(false);
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Mobile Calendar Modal for To Date */}
+              {mobileCalendarOpen2 && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+                  <div className="bg-white rounded-lg shadow-2xl max-w-sm w-full mx-4 p-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold">
+                        {t("app.pos.to")}
+                      </h3>
+                      <button
+                        onClick={() => setMobileCalendarOpen2(false)}
+                        className="text-gray-500 hover:text-gray-700 text-xl"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <Calendar
+                      mode="single"
+                      selected={date2 ? new Date(date2) : undefined}
+                      captionLayout="dropdown"
+                      className="w-full mobile-calendar-modal"
+                      onSelect={(selectedDate) => {
+                        if (selectedDate) {
+                          const formatted = `${selectedDate.getFullYear()}-${String(
+                            selectedDate.getMonth() + 1
+                          ).padStart(2, "0")}-${String(
+                            selectedDate.getDate()
+                          ).padStart(2, "0")}`;
+
+                          setDate2(formatted);
+                          setMobileCalendarOpen2(false);
+                        }
+                      }}
+                    />
                   </div>
                 </div>
               )}

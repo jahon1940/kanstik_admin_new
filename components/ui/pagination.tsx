@@ -62,7 +62,7 @@ export function Pagination({
   return (
     <div className={cn("flex flex-col items-center gap-4", className)}>
       {/* Show More Button */}
-      {showMoreItems > 0 && onShowMore && (
+      {/* {showMoreItems > 0 && onShowMore && (
         <Button
           onClick={onShowMore}
           disabled={disabled}
@@ -70,7 +70,7 @@ export function Pagination({
         >
           {t("app.pagination.show_more")} {showMoreItems}
         </Button>
-      )}
+      )} */}
 
       {/* Pagination */}
       <div className="flex items-center gap-2">

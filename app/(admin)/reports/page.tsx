@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import Link from "next/link";
+import StockReport from "@/components/StockReport";
 
 export default function ReportsPage() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -71,7 +72,7 @@ export default function ReportsPage() {
       })
       .catch((e) => {
         const msg =
-          e?.response?.data?.message || e?.message || "Yuklashda xatolik";
+          e?.response?.data?.message || e?.message || t("toast.network_error");
         if (!cancelled) setError(msg);
         toast.error(msg);
         setLoading(false);
@@ -205,35 +206,11 @@ export default function ReportsPage() {
               </td>
             </tr>
           ) : (
-            <table className="w-full  text-sm">
-              <tbody className="divide-y">
-                {ordersSite?.map((org: any, index: number) => (
-                  <tr
-                    key={org?.id}
-                    className="hover:bg-accent/50 cursor-pointer"
-                  >
-                    <td className="px-2 py-2 w-12 text-center text-sm text-gray-600 border-r border-gray-300">
-                      {index + 1}
-                    </td>
-                    <td className="px-4 py-2 border-r border-gray-300">
-                      <Link href={`/order/${org.id}`}>
-                        <h2 className="text-green-500">#{org.id}</h2>
-                      </Link>
-                    </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
-                      <Link href={`/order/${org.id}`}>
-                        <h2> {formatDate(org?.created_at)}</h2>
-                      </Link>
-                    </td>
-                    <td className="px-4 py-4 border-r border-gray-300">
-                      <Link href={`/order/${org.id}`}>
-                        <h2>{org?.price?.toLocaleString("ru-RU")} сум </h2>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="space-y-4">
+              {ordersSite?.map((org: any, index: number) => (
+                <StockReport key={org?.id} data={org} formatDate={formatDate} />
+              ))}
+            </div>
           )}
         </div>
       </div>

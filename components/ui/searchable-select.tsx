@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import Select from "react-select";
+import { useTranslation } from "react-i18next";
 
 interface SearchableSelectProps {
   options: Array<{ value: string; label: string }>;
@@ -18,11 +19,12 @@ export function SearchableSelect({
   options,
   value,
   onValueChange,
-  placeholder = "Выберите опцию...",
-  searchPlaceholder = "Поиск...",
-  emptyText = "Ничего не найдено.",
+  placeholder,
+  searchPlaceholder,
+  emptyText,
   className,
 }: SearchableSelectProps) {
+  const { t } = useTranslation();
   const selectedOption = React.useMemo(
     () => options.find((option) => option.value === value) ?? null,
     [options, value]
@@ -41,8 +43,8 @@ export function SearchableSelect({
         }}
         isClearable={false}
         isSearchable={true}
-        placeholder={placeholder}
-        noOptionsMessage={() => emptyText}
+        placeholder={placeholder || t("ui.select_option")}
+        noOptionsMessage={() => emptyText || t("ui.nothing_found")}
         classNamePrefix="rs"
         styles={{
           control: (base) => ({ ...base, minHeight: 36 }),
@@ -53,7 +55,7 @@ export function SearchableSelect({
         menuPortalTarget={
           typeof document !== "undefined" ? document.body : undefined
         }
-        aria-label={searchPlaceholder}
+        aria-label={searchPlaceholder || t("ui.search")}
       />
     </div>
   );

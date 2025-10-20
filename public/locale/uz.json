@@ -39,7 +39,13 @@
     "reports": {
       "title": "Hisobotlar",
       "title2": "O'rtacha tekshirish hisoboti",
-      "generate_orders": "Yaratish"
+      "generate_orders": "Yaratish",
+      "store": "Do'kon",
+      "receipt_count": "Cheklar soni",
+      "turnover": "Aylanma",
+      "details": "Batafsil",
+      "by_payment_types": "To'lov turlari bo'yicha",
+      "cashier": "Kassa"
     },
     "webapp": { "title": "Veb-sayt va ilova" },
     "stock": {
@@ -153,7 +159,40 @@
       "cancel": "Bekor qilish",
       "select_date_range": "Sana oralig'ini tanlang",
       "sale": "Sotuv",
-      "refund": "Qaytarish"
+      "refund": "Qaytarish",
+      "operation": "Operatsiya",
+      "receipt_number": "Chek raqami",
+      "date_time": "Sana va vaqt",
+      "cash": "Naqd",
+      "card": "Karta",
+      "sent_to_1c": "Serverga yuborildi, 1C bilan sinxronlashtirildi",
+      "not_synchronized": "Sinxronlashtirilmagan",
+      "sync_error": "Sinxronlash xatoligi",
+      "sync_error_message": "1C bilan sinxronlashda xatolik yuz berdi",
+      "close": "Yopish",
+      "amount": "Summa",
+      "status_1c": "1C holati",
+      "qr_code": "QR kod",
+      "sum": "so'm",
+      "sent": "Yuborildi",
+      "not_sent": "Yuborilmadi",
+      "inn_pinfl": "INN/PINFL",
+      "cashier": "Kassir",
+      "products": "Mahsulotlar",
+      "pcs": "dona",
+      "vat": "QQS",
+      "ikpu": "IKPU",
+      "paid": "To'landi",
+      "bonus_card": "Bonus karta",
+      "fm": "FM",
+      "fp": "FP",
+      "report_downloaded_success": "Hisobot muvaffaqiyatli yuklab olindi",
+      "report_download_error": "Hisobotni yuklab olishda xatolik",
+      "receipts_downloaded_success": "Cheklar muvaffaqiyatli yuklab olindi",
+      "receipts_download_error": "Cheklarni yuklab olishda xatolik",
+      "please_select_date": "Iltimos, sanani tanlang",
+      "search_receipt_number": "Chek raqamini qidirish...",
+      "enter_company_name": "Kompaniya nomini kiriting..."
     },
     "pagination": {
       "show_more": "Ko'rsatish",
@@ -174,10 +213,83 @@
       "bonus": "Bonus",
       "currency": "so'm"
     },
-    "not_found": "Mijoz topilmadi"
+    "not_found": "Mijoz topilmadi",
+    "account_not_created": "Akkaunt yaratilmagan"
+  },
+  "logout": {
+    "confirm_title": "Tasdiqlash",
+    "confirm_message": "Chiqishni xohlaysizmi?",
+    "confirm_yes": "Ha, Chiqish",
+    "confirm_cancel": "Bekor qilish"
   },
   "lang": {
     "uz": "O'zbekcha",
     "ru": "Ruscha"
+  },
+  "login": {
+    "welcome": "Xush kelibsiz!",
+    "subtitle": "Ishlaringizga qaytaylik!",
+    "username": "Login",
+    "password": "Parol",
+    "username_placeholder": "Login...",
+    "login": "Kirish",
+    "logging_in": "Tizimga kirish...",
+    "manage_sales": "Sotuvlarni zamonaviy boshqaring!"
+  },
+  "alert": {
+    "delete_title": "Elementni o'chirish?",
+    "delete_description": "Bu amalni bekor qilib bo'lmaydi. Element butunlay o'chiriladi.",
+    "delete_confirm": "O'chirish",
+    "save_title": "O'zgarishlarni saqlash?",
+    "save_description": "Barcha o'zgarishlarni saqlashni xohlaysizmi?",
+    "save_confirm": "Saqlash",
+    "cancel": "Bekor qilish",
+    "confirm": "Tasdiqlash"
+  },
+  "ui": {
+    "select_option": "Variantni tanlang...",
+    "search": "Qidirish...",
+    "nothing_found": "Hech narsa topilmadi."
+  },
+  "order": {
+    "title": "Buyurtma",
+    "name_article": "Nomi / Artikul",
+    "brand": "Brend",
+    "quantity": "Miqdor",
+    "price": "Narx",
+    "amount": "Summa",
+    "article": "Artikul",
+    "pcs": "dona",
+    "sum": "so'm",
+    "date": "Sana",
+    "status": "Holat",
+    "pickup_store": "Olib ketish do'koni",
+    "payment_type": "To'lov turi",
+    "delivery_type": "Yetkazib berish turi",
+    "cash": "Naqd",
+    "card": "Karta",
+    "pickup": "Olib ketish",
+    "delivery": "Yetkazib berish"
+  },
+  "payments": {
+    "image_uploaded_success": "Rasm muvaffaqiyatli yuklandi!",
+    "select_payment": "To'lov turini tanlang",
+    "select": "Tanlang",
+    "confirmation": "Tasdiqlash",
+    "add_payment_confirmation": "Ushbu to'lov turini qo'shishni xohlaysizmi?",
+    "delete_payment_confirmation": "Ushbu to'lov turini o'chirishni xohlaysizmi?",
+    "yes_add": "Ha, qo'shish",
+    "yes_delete": "Ha, o'chirish",
+    "select_payment_type": "To'lov turini tanlang",
+    "update_photo_for": "Rasm yangilash:",
+    "click_to_select_image": "Rasm tanlash uchun bosing",
+    "please_select_image": "Iltimos, rasmni tanlang",
+    "update_photo": "Rasmni yangilash"
+  },
+  "settings": {
+    "language": "Til",
+    "appearance": "Ko'rinish",
+    "appearance_desc": "Dastur ko'rinishini sozlash (keyingi yangilanishlarda)"
   }
+}
 }

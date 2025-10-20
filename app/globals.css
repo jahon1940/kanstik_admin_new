@@ -166,3 +166,228 @@
     @apply w-full max-w-none px-4 md:max-w-7xl md:mx-auto;
   }
 }
+
+
+
+
+
+/* Ensure calendar is properly sized on mobile */
+@media (max-width: 768px) {
+  .touch-manipulation {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .touch-manipulation button[role="gridcell"] {
+    font-size: 16px;
+    padding: 8px;
+  }
+
+  /* Mobile calendar modal specific styles */
+  .mobile-calendar-modal {
+    touch-action: manipulation;
+  }
+
+  .mobile-calendar-modal button[role="gridcell"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    font-size: 16px !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-calendar-modal button[role="gridcell"]:hover {
+    background-color: #f3f4f6;
+  }
+
+  .mobile-calendar-modal button[role="gridcell"][data-selected="true"] {
+    background-color: #3b82f6 !important;
+    color: white !important;
+  }
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .touch-manipulation button[role="gridcell"] {
+    -webkit-appearance: none;
+    border-radius: 4px;
+  }
+}
+
+/* Res
+ponsive Modal Styles */
+@media (max-width: 768px) {
+
+  /* Modal improvements for mobile */
+  .modal-responsive {
+    margin: 1rem;
+    max-height: 90vh;
+  }
+
+  /* Card hover effects for mobile */
+  .mobile-card {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .mobile-card:active {
+    transform: scale(0.98);
+    background-color: #f9fafb;
+  }
+
+  /* Better touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improved spacing for mobile cards */
+  .mobile-card-spacing {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Better text sizing for mobile */
+  .mobile-text-primary {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .mobile-text-secondary {
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+}
+
+/* Mod
+al Scroll Fix */
+.modal-scroll-container {
+  /* iOS momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+}
+
+/* Better scrollbar styling */
+.modal-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.modal-scroll-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.modal-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Mobile specific modal fixes */
+@media (max-width: 768px) {
+  .modal-container {
+    /* Ensure proper flex behavior on mobile */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .modal-content-scrollable {
+    /* Force proper scrolling on mobile */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Fix for iOS Safari */
+  .modal-content-scrollable>* {
+    /* Prevent content from being cut off */
+    flex-shrink: 0;
+  }
+}
+
+/* StockReport Component Styles */
+.stock-report-container {
+  transition: all 0.3s ease-in-out;
+}
+
+.stock-report-expanded {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.stock-report-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.stock-report-button:hover {
+  background-color: #f9fafb;
+}
+
+/* Red border styling to match the design */
+.stock-report-main-border {
+  border: 2px solid #ef4444;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.stock-report-expanded-border {
+  border: 2px solid #ef4444;
+  border-top: 0;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+/* Data row styling */
+.stock-report-data-row {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.stock-report-data-row:hover {
+  background-color: #f3f4f6;
+}
+
+/* Typography improvements */
+.stock-report-title {
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.stock-report-label {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.stock-report-value {
+  color: #111827;
+  font-weight: 600;
+}
+
+.stock-report-section-title {
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Animation for expand/collapse */
+.stock-report-content {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

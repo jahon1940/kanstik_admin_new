@@ -39,7 +39,13 @@
     "reports": {
       "title": "Отчеты",
       "title2": "Отчет средний чек",
-      "generate_orders": "Сформировать"
+      "generate_orders": "Сформировать",
+      "store": "Магазин",
+      "receipt_count": "Кол-во чеков",
+      "turnover": "Оборот",
+      "details": "Подробно",
+      "by_payment_types": "По типам оплаты",
+      "cashier": "Касса"
     },
     "webapp": { "title": "Сайт и приложение" },
     "stock": {
@@ -153,7 +159,40 @@
       "cancel": "Отмена",
       "select_date_range": "Выберите диапазон дат",
       "sale": "Продажа",
-      "refund": "Возврат"
+      "refund": "Возврат",
+      "operation": "Операция",
+      "receipt_number": "Номер чека",
+      "date_time": "Дата и время",
+      "cash": "Наличные",
+      "card": "Картой",
+      "sent_to_1c": "Отправлен на сервер Синхронизирован с 1С",
+      "not_synchronized": "Не синхронизирован",
+      "sync_error": "Ошибка синхронизации",
+      "sync_error_message": "Произошла ошибка при синхронизации с 1С",
+      "close": "Закрыть",
+      "amount": "Сумма",
+      "status_1c": "Статус 1С",
+      "qr_code": "QR код",
+      "sum": "сум",
+      "sent": "Отправлено",
+      "not_sent": "Не отправлено",
+      "inn_pinfl": "ИНН/ПИНФЛ",
+      "cashier": "Кассир",
+      "products": "Товары",
+      "pcs": "шт.",
+      "vat": "НДС",
+      "ikpu": "ИКПУ",
+      "paid": "Оплачено",
+      "bonus_card": "Бон. картой",
+      "fm": "ФМ",
+      "fp": "ФП",
+      "report_downloaded_success": "Отчет успешно загружен",
+      "report_download_error": "Ошибка при загрузке отчета",
+      "receipts_downloaded_success": "Чеки успешно загружены",
+      "receipts_download_error": "Ошибка при загрузке чеков",
+      "please_select_date": "Пожалуйста, выберите дату",
+      "search_receipt_number": "Поиск по номеру чека...",
+      "enter_company_name": "Введите название компании..."
     },
     "pagination": {
       "show_more": "Показать ещё",
@@ -174,10 +213,82 @@
       "bonus": "Бонус",
       "currency": "сум"
     },
-    "not_found": "Клиент не найден"
+    "not_found": "Клиент не найден",
+    "account_not_created": "Аккаунт несоздан"
+  },
+  "logout": {
+    "confirm_title": "Подтверждение",
+    "confirm_message": "Вы уверены, что хотите выйти?",
+    "confirm_yes": "Да, Выход",
+    "confirm_cancel": "Отмена"
   },
   "lang": {
     "uz": "Узбекский",
     "ru": "Русский"
+  },
+  "login": {
+    "welcome": "Добро пожаловать!",
+    "subtitle": "Давайте вернемся к вашим делам!",
+    "username": "Логин",
+    "password": "Пароль",
+    "username_placeholder": "Логин...",
+    "login": "Вход",
+    "logging_in": "Вход в систему...",
+    "manage_sales": "Управляйте продажами стильно!"
+  },
+  "alert": {
+    "delete_title": "Удалить элемент?",
+    "delete_description": "Это действие нельзя отменить. Элемент будет удален навсегда.",
+    "delete_confirm": "Удалить",
+    "save_title": "Сохранить изменения?",
+    "save_description": "Вы уверены, что хотите сохранить все изменения?",
+    "save_confirm": "Сохранить",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить"
+  },
+  "ui": {
+    "select_option": "Выберите опцию...",
+    "search": "Поиск...",
+    "nothing_found": "Ничего не найдено."
+  },
+  "order": {
+    "title": "Заказ",
+    "name_article": "Название / Артикул",
+    "brand": "Бренд",
+    "quantity": "Количество",
+    "price": "Цена",
+    "amount": "Сумма",
+    "article": "Артикул",
+    "pcs": "штук",
+    "sum": "сум",
+    "date": "Дата",
+    "status": "Статус",
+    "pickup_store": "Магазин получение",
+    "payment_type": "Тип оплаты",
+    "delivery_type": "Тип получение",
+    "cash": "Наличными",
+    "card": "Картой",
+    "pickup": "Самовывоз",
+    "delivery": "Доставка"
+  },
+  "payments": {
+    "image_uploaded_success": "Изображение успешно загружено!",
+    "select_payment": "Выберите Платеж",
+    "select": "Выберите",
+    "confirmation": "Подтверждение",
+    "add_payment_confirmation": "Вы уверены, что хотите добавить этот способ оплаты?",
+    "delete_payment_confirmation": "Вы уверены, что хотите удалить этот способ оплаты?",
+    "yes_add": "Да, добавить",
+    "yes_delete": "Да, удалить",
+    "select_payment_type": "выберите тип оплаты",
+    "update_photo_for": "Обновить фото для",
+    "click_to_select_image": "Нажмите для выбора изображения",
+    "please_select_image": "Пожалуйста, выберите изображение",
+    "update_photo": "Обновить фото"
+  },
+  "settings": {
+    "language": "Язык",
+    "appearance": "Внешний вид",
+    "appearance_desc": "Настройка внешнего вида приложения (в следующих обновлениях)"
   }
 }
