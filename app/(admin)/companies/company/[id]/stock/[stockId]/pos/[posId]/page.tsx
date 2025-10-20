@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ChevronLeft } from "lucide-react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -21,6 +21,7 @@ export default function Pos() {
 
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
+   const pathname = usePathname();
 
   const params = useParams();
   const router = useRouter();
@@ -119,7 +120,7 @@ export default function Pos() {
             <div className="flex flex-col gap-3">
               <Link
                 href={{
-                  pathname: `/pos/${params.posId}/aboutpos`,
+                  pathname: `${pathname}/aboutpos`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -129,7 +130,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.posId}/cashiers`,
+                  pathname: `${pathname}/cashiers`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -139,7 +140,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.posId}/receipts`,
+                  pathname: `${pathname}/receipts`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -149,7 +150,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.posId}/payments`,
+                  pathname: `${pathname}/payments`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -159,7 +160,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.posId}/orders`,
+                  pathname: `${pathname}/orders`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
@@ -169,7 +170,7 @@ export default function Pos() {
 
               <Link
                 href={{
-                  pathname: `/pos/${params.posId}/discount`,
+                  pathname: `${pathname}/discount`,
                   query: { name },
                 }}
                 className="flex items-center justify-center px-6 py-4 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
