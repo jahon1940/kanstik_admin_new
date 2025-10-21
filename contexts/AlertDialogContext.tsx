@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useTranslation } from "react-i18next";
+import { X } from "lucide-react";
 
 interface AlertDialogOptions {
   title: string;
@@ -79,6 +80,14 @@ export const AlertDialogProvider: React.FC<AlertDialogProviderProps> = ({
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
+            {/* X Close Button */}
+            <button
+              onClick={handleCancel}
+              className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </button>
             <AlertDialogTitle>{options?.title}</AlertDialogTitle>
             <AlertDialogDescription>
               {options?.description}

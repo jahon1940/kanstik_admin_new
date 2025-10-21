@@ -204,10 +204,10 @@ export function Sidebar({
           type="button"
           onClick={() => {
             showAlert({
-              title: t("app.logout.confirm_title"),
-              description: t("app.logout.confirm_message"),
-              confirmText: t("app.logout.confirm_yes"),
-              cancelText: t("app.logout.confirm_cancel"),
+              title: t("logout.confirm_title"),
+              description: t("logout.confirm_message"),
+              confirmText: t("logout.confirm_yes"),
+              cancelText: t("logout.confirm_cancel"),
               onConfirm: () => {
                 handleLogout();
               },

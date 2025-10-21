@@ -64,8 +64,6 @@ export default function ReportsPage() {
     )
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
-
         if (!cancelled) setOrdersSite(result.results ?? null);
         setLoading(false);
         setError(null);
@@ -81,6 +79,51 @@ export default function ReportsPage() {
     return () => {
       cancelled = true;
     };
+  };
+
+  const downloadReport = async (date: string, date2: string) => {
+    if (!date || !date2) {
+      toast.error(t("app.pos.please_select_date"));
+      return;
+    }
+
+    try {
+      const myHeaders = new Headers();
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/receipts/info/download-excel?from_date=${date}&to_date=${date2}`,
+        {
+          method: "POST",
+          headers: myHeaders,
+          redirect: "follow",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(t("toast.network_error"));
+      }
+
+      // Get the blob from response
+      const blob = await response.blob();
+
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `receipts_report_${date}_${date2}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success(t("app.pos.report_downloaded"));
+    } catch (error: any) {
+      const msg = error?.message || t("toast.network_error");
+      toast.error(msg);
+    }
   };
 
   const formatDate = (isoString: string) => {
@@ -159,7 +202,7 @@ export default function ReportsPage() {
                 >
                   <Calendar
                     mode="single"
-                    selected={ordersDate ? new Date(ordersDate) : undefined}
+                    selected={ordersDate2 ? new Date(ordersDate2) : undefined}
                     captionLayout="dropdown"
                     onSelect={(selectedDate) => {
                       if (selectedDate) {
@@ -187,6 +230,18 @@ export default function ReportsPage() {
                 className="cursor-pointer text-sm px-3 py-2 w-full"
               >
                 {t("app.reports.generate_orders")}
+              </Button>
+            </div>
+            {/* download button */}
+            <div className="flex">
+              <Button
+                onClick={() => {
+                  if (ordersDate && ordersDate2)
+                    downloadReport(ordersDate, ordersDate2);
+                }}
+                className="cursor-pointer text-sm px-3 py-2 w-full"
+              >
+                {t("app.reports.download_reports")}
               </Button>
             </div>
           </div>

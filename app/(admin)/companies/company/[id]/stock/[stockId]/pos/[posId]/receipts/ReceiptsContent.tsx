@@ -571,8 +571,12 @@ const ReceiptsContent = () => {
                     <td className="border border-border px-4 py-4">
                       {" "}
                       <h2>
-                        {org?.payments?.map((type: any) => {
-                          return type.payment_type.name + " ";
+                        {org?.payments?.map((type: any, index:number) => {
+                           if (index > 0) {
+                             return " / " + type.payment_type.name ;
+                           } else {
+                             return type.payment_type.name;
+                           }
                         })}
                       </h2>
                     </td>
@@ -621,47 +625,51 @@ const ReceiptsContent = () => {
         </div>
 
         {/* Pagination */}
-        {receipts?.length > 0 && (
-          <Pagination
-            currentPage={receiptsPagination.currentPage}
-            totalPages={receiptsPagination.totalPages}
-            onPageChange={(page) => {
-              if (date && date2) {
-                getReceipts(date, date2, page, receiptsPagination.pageSize);
-              }
-            }}
-            showMoreItems={
-              receiptsPagination.currentPage < receiptsPagination.totalPages ||
-              (receiptsPagination.totalPages === 1 &&
-                receiptsPagination.totalItems > receiptsPagination.pageSize) ||
-              receiptsPagination.totalItems > receipts.length
-                ? receiptsPagination.pageSize
-                : 0
-            }
-            onShowMore={() => {
-              if (
-                date &&
-                date2 &&
-                (receiptsPagination.currentPage <
+        {!loading &&
+          receipts?.length > 0 &&
+          receiptsPagination.totalPages > 1 && (
+            <Pagination
+              currentPage={receiptsPagination.currentPage}
+              totalPages={receiptsPagination.totalPages}
+              onPageChange={(page) => {
+                if (date && date2) {
+                  getReceipts(date, date2, page, receiptsPagination.pageSize);
+                }
+              }}
+              showMoreItems={
+                receiptsPagination.currentPage <
                   receiptsPagination.totalPages ||
-                  (receiptsPagination.totalPages === 1 &&
-                    receiptsPagination.totalItems >
-                      receiptsPagination.pageSize) ||
-                  receiptsPagination.totalItems > receipts.length)
-              ) {
-                getReceipts(
-                  date,
-                  date2,
-                  receiptsPagination.currentPage + 1,
-                  receiptsPagination.pageSize,
-                  true // append = true for "Show More" functionality
-                );
+                (receiptsPagination.totalPages === 1 &&
+                  receiptsPagination.totalItems >
+                    receiptsPagination.pageSize) ||
+                receiptsPagination.totalItems > receipts.length
+                  ? receiptsPagination.pageSize
+                  : 0
               }
-            }}
-            disabled={loading}
-            className="mt-4"
-          />
-        )}
+              onShowMore={() => {
+                if (
+                  date &&
+                  date2 &&
+                  (receiptsPagination.currentPage <
+                    receiptsPagination.totalPages ||
+                    (receiptsPagination.totalPages === 1 &&
+                      receiptsPagination.totalItems >
+                        receiptsPagination.pageSize) ||
+                    receiptsPagination.totalItems > receipts.length)
+                ) {
+                  getReceipts(
+                    date,
+                    date2,
+                    receiptsPagination.currentPage + 1,
+                    receiptsPagination.pageSize,
+                    true // append = true for "Show More" functionality
+                  );
+                }
+              }}
+              disabled={loading}
+              className="mt-4"
+            />
+          )}
       </div>
       {/* Receipt Modal */}
       {isModalOpen && (

@@ -40,8 +40,10 @@
       "title": "Hisobotlar",
       "title2": "O'rtacha tekshirish hisoboti",
       "generate_orders": "Yaratish",
+      "download_reports": "Hisobotni yuklab oling",
       "store": "Do'kon",
       "receipt_count": "Cheklar soni",
+      "average_receipt": "O'rtacha hisob",
       "turnover": "Aylanma",
       "details": "Batafsil",
       "by_payment_types": "To'lov turlari bo'yicha",
@@ -118,6 +120,7 @@
       "discount_enabled": "Yoqilgan",
       "discount_disabled": "O'chirilgan",
       "discount_percentage": "Chegirma foizini kiriting",
+      "all": "Hammasi",
       "apply_changes": "O'zgarishlarni qo'llash",
       "applying": "Qo'llanmoqda...",
       "discount_updated_success": "Chegirma muvaffaqiyatli yangilandi",
@@ -177,7 +180,6 @@
       "sent": "Yuborildi",
       "not_sent": "Yuborilmadi",
       "inn_pinfl": "INN/PINFL",
-      "cashier": "Kassir",
       "products": "Mahsulotlar",
       "pcs": "dona",
       "vat": "QQS",
@@ -191,6 +193,7 @@
       "receipts_downloaded_success": "Cheklar muvaffaqiyatli yuklab olindi",
       "receipts_download_error": "Cheklarni yuklab olishda xatolik",
       "please_select_date": "Iltimos, sanani tanlang",
+      "report_downloaded": "Hisobot muvaffaqiyatli yuklab olindi",
       "search_receipt_number": "Chek raqamini qidirish...",
       "enter_company_name": "Kompaniya nomini kiriting..."
     },
@@ -292,4 +295,3 @@
     "appearance_desc": "Dastur ko'rinishini sozlash (keyingi yangilanishlarda)"
   }
 }
-

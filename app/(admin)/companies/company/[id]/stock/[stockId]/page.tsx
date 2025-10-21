@@ -290,7 +290,7 @@ export default function StockPage() {
               <h1 className="text-xl  pb-1 mb-1">
                 {t("app.stock.account_title")}
               </h1>
-              <table className="text-sm border-separate border-spacing-x-2">
+              <table className="text-sm border-separate border-spacing-x-2 mb-4">
                 <tbody>
                   <tr>
                     <td className="py-1">{t("app.stock.organization")}:</td>
@@ -322,16 +322,16 @@ export default function StockPage() {
                   </tr>
                 </tbody>
               </table>
+              <Link
+                href={{
+                  pathname: `${pathname}/receipts`,
+                  query: { name: data?.name },
+                }}
+                className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full block"
+              >
+                {t("app.stock.all_receipts")}
+              </Link>
             </div>
-            <Link
-              href={{
-                pathname: `${pathname}/receipts`,
-                query: { name: data?.name },
-              }}
-              className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90 w-full block"
-            >
-              {t("app.stock.all_receipts")}
-            </Link>
           </div>
 
           {/* O‘ng panel */}

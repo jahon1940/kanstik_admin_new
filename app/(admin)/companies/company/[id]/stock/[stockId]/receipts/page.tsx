@@ -7,7 +7,14 @@ import { getDeviceToken } from "@/lib/token";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
-import { ChevronDownIcon, Info, Filter, ChevronLeft, X } from "lucide-react";
+import {
+  ChevronDownIcon,
+  Info,
+  Filter,
+  ChevronLeft,
+  X,
+  Search,
+} from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -522,127 +529,6 @@ export default function StockReceiptsPage() {
   // Mobile calendar states
   const [mobileCalendarOpen, setMobileCalendarOpen] = React.useState(false);
   const [mobileCalendarOpen2, setMobileCalendarOpen2] = React.useState(false);
-  const downloadReport = async (date: string) => {
-    if (!date) {
-      toast.error(t("app.pos.please_select_date"));
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-
-      const response = await fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/reports/download-excel/${date}`,
-        {
-          method: "POST",
-          headers: myHeaders,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Get the filename from response headers or create a default one
-      const contentDisposition = response.headers.get("content-disposition");
-      let filename = `report_${date}.xlsx`;
-
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-        if (filenameMatch) {
-          filename = filenameMatch[1];
-        }
-      }
-
-      // Convert response to blob
-      const blob = await response.blob();
-
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-
-      // Cleanup
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-      toast.success(t("app.pos.report_downloaded_success"));
-    } catch (error: any) {
-      const msg = error?.message || t("app.pos.report_download_error");
-      toast.error(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const downloadReceipts = async (date: string) => {
-    if (!date) {
-      toast.error(t("app.pos.please_select_date"));
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-
-      const response = await fetch(
-        `${BASE_URL}/v1/admins/pos/${params.id}/receipts/download-excel/${date}`,
-        {
-          method: "POST",
-          headers: myHeaders,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Get the filename from response headers or create a default one
-      const contentDisposition = response.headers.get("content-disposition");
-      let filename = `receipts_${date}.xlsx`;
-
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-        if (filenameMatch) {
-          filename = filenameMatch[1];
-        }
-      }
-
-      // Convert response to blob
-      const blob = await response.blob();
-
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-
-      // Cleanup
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      toast.success(t("app.pos.receipts_downloaded_success"));
-    } catch (error: any) {
-      const msg = error?.message || t("app.pos.receipts_download_error");
-      toast.error(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);
@@ -682,8 +568,11 @@ export default function StockReceiptsPage() {
               <div className="space-y-4">
                 <div className="bg-bgColor flex flex-col md:flex-row justify-between gap-2">
                   {/* search receipts */}
-                  <div className="text-sm md:text-base font-medium text-black rounded-sm p-2 px-3 w-full md:w-auto">
+                  <div className="text-sm md:text-base font-medium text-black rounded-sm p-2 px-3 w-full">
                     <form
+                      className="flex gap-3 w-full"
+                      role="search"
+                      aria-label={t("app.search")}
                       onSubmit={(e) => {
                         e.preventDefault();
                         setReceipts([]);
@@ -696,33 +585,21 @@ export default function StockReceiptsPage() {
                           receiptSearchNumber
                         );
                       }}
-                      className="flex items-center gap-2 w-full"
                     >
-                      <div className="relative w-full">
+                      <div className="flex items-center gap-2 rounded-md border px-3 py-2 bg-background w-215">
+                        <Search size={16} className="text-muted-foreground" />
                         <input
-                          type="text"
+                          type="search"
+                          className="w-full bg-transparent outline-none"
+                          aria-label={t("app.search")}
                           value={receiptSearchNumber}
                           onChange={(e) =>
                             setReceiptSearchNumber(e.target.value)
                           }
                           placeholder={t("app.pos.search_receipt_number")}
-                          className="px-3 py-1 pr-8 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
-                        {receiptSearchNumber && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setReceiptSearchNumber("");
-                              setReceipts([]);
-                              getReceipts(date, date2, 1, 50, false, "");
-                            }}
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        )}
                       </div>
-                      <Button type="submit" className="px-3 py-1 text-sm">
+                      <Button type="submit" className="px-3 py-2 text-sm h-10">
                         {t("app.pos.search")}
                       </Button>
                     </form>
@@ -741,8 +618,8 @@ export default function StockReceiptsPage() {
                 </div>
 
                 {/* Desktop Filters - responsive */}
-                <div className="hidden md:flex flex-col sm:flex-row gap-2 sm:gap-3 justify-start">
-                  <div className="flex gap-2">
+                <div className="hidden md:flex flex-col sm:flex-row gap-2 sm:gap-3 justify-start flex-wrap">
+                  <div className="flex gap-2 flex-wrap">
                     {/* select company */}
                     <div>
                       <Button
@@ -788,6 +665,8 @@ export default function StockReceiptsPage() {
                       >
                         {selectedPaymentType
                           ? selectedPaymentType.name
+                          : selectedPaymentType === null
+                          ? t("app.pos.all")
                           : t("app.pos.select_payment_type")}
                         <ChevronDownIcon className="h-4 w-4" />
                       </Button>
@@ -912,22 +791,6 @@ export default function StockReceiptsPage() {
                     >
                       {t("app.pos.generate_receipts")}
                     </Button>
-                    <Button
-                      onClick={() => {
-                        if (date) downloadReport(date);
-                      }}
-                      className="cursor-pointer text-sm px-3 py-2 hidden md:block"
-                    >
-                      {t("app.pos.download_report")}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        if (date) downloadReceipts(date);
-                      }}
-                      className="cursor-pointer text-sm px-3 py-2 hidden md:block"
-                    >
-                      {t("app.pos.download_receipts")}
-                    </Button>
                   </div>
                 </div>
 
@@ -1020,8 +883,12 @@ export default function StockReceiptsPage() {
                           <td className="border border-border px-4 py-4">
                             {" "}
                             <h2>
-                              {org?.payments?.map((type: any) => {
-                                return type.payment_type.name + " ";
+                              {org?.payments?.map((type: any, index: number) => {
+                                 if (index > 0) {
+                                   return " / " + type.payment_type.name;
+                                 } else {
+                                   return type.payment_type.name;
+                                 }
                               })}
                             </h2>
                           </td>
@@ -1038,7 +905,9 @@ export default function StockReceiptsPage() {
                             сум
                           </h2> */}
                             <h2>
-                              {org?.received_cash.toLocaleString("ru-RU")}{" "}
+                              {Number(
+                                org?.received_cash.toString().slice(0, -2)
+                              ).toLocaleString("ru-RU")}{" "}
                               {t("app.pos.sum")}
                             </h2>
                           </td>
@@ -1057,15 +926,21 @@ export default function StockReceiptsPage() {
                             сум
                           </h2> */}
                             <h2>
-                              {org?.received_card.toLocaleString("ru-RU")}{" "}
+                              {Number(
+                                org?.received_card.toString().slice(0, -2)
+                              ).toLocaleString("ru-RU")}{" "}
                               {t("app.pos.sum")}
                             </h2>
                           </td>
                           <td className="border border-border px-4 py-4">
                             <h2>
                               {(
-                                Number(org?.received_cash) +
-                                Number(org?.received_card)
+                                Number(
+                                  org?.received_cash.toString().slice(0, -2)
+                                ) +
+                                Number(
+                                  org?.received_card.toString().slice(0, -2)
+                                )
                               ).toLocaleString("ru-RU")}{" "}
                               {t("app.pos.sum")}
                               {/* {org?.received_cash +
@@ -1091,53 +966,55 @@ export default function StockReceiptsPage() {
                 )}
 
                 {/* Pagination */}
-                {receipts?.length > 0 && (
-                  <Pagination
-                    currentPage={receiptsPagination.currentPage}
-                    totalPages={receiptsPagination.totalPages}
-                    onPageChange={(page) => {
-                      getReceipts(
-                        date,
-                        date2,
-                        page,
-                        receiptsPagination.pageSize,
-                        false,
-                        receiptSearchNumber
-                      );
-                    }}
-                    showMoreItems={
-                      receiptsPagination.currentPage <
-                        receiptsPagination.totalPages ||
-                      (receiptsPagination.totalPages === 1 &&
-                        receiptsPagination.totalItems >
-                          receiptsPagination.pageSize) ||
-                      receiptsPagination.totalItems > receipts.length
-                        ? receiptsPagination.pageSize
-                        : 0
-                    }
-                    onShowMore={() => {
-                      if (
+                {!loading &&
+                  receipts?.length > 0 &&
+                  receiptsPagination.totalPages > 1 && (
+                    <Pagination
+                      currentPage={receiptsPagination.currentPage}
+                      totalPages={receiptsPagination.totalPages}
+                      onPageChange={(page) => {
+                        getReceipts(
+                          date,
+                          date2,
+                          page,
+                          receiptsPagination.pageSize,
+                          false,
+                          receiptSearchNumber
+                        );
+                      }}
+                      showMoreItems={
                         receiptsPagination.currentPage <
                           receiptsPagination.totalPages ||
                         (receiptsPagination.totalPages === 1 &&
                           receiptsPagination.totalItems >
                             receiptsPagination.pageSize) ||
                         receiptsPagination.totalItems > receipts.length
-                      ) {
-                        getReceipts(
-                          date,
-                          date2,
-                          receiptsPagination.currentPage + 1,
-                          receiptsPagination.pageSize,
-                          true, // append = true for "Show More" functionality
-                          receiptSearchNumber
-                        );
+                          ? receiptsPagination.pageSize
+                          : 0
                       }
-                    }}
-                    disabled={loading}
-                    className="mt-4"
-                  />
-                )}
+                      onShowMore={() => {
+                        if (
+                          receiptsPagination.currentPage <
+                            receiptsPagination.totalPages ||
+                          (receiptsPagination.totalPages === 1 &&
+                            receiptsPagination.totalItems >
+                              receiptsPagination.pageSize) ||
+                          receiptsPagination.totalItems > receipts.length
+                        ) {
+                          getReceipts(
+                            date,
+                            date2,
+                            receiptsPagination.currentPage + 1,
+                            receiptsPagination.pageSize,
+                            true, // append = true for "Show More" functionality
+                            receiptSearchNumber
+                          );
+                        }
+                      }}
+                      disabled={loading}
+                      className="mt-4"
+                    />
+                  )}
               </div>
               {/* Receipt Modal */}
               {isModalOpen && (
@@ -1444,7 +1321,7 @@ export default function StockReceiptsPage() {
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] md:max-h-[95vh] flex flex-col modal-container relative overflow-hidden">
+                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-6xl h-[90vh]  flex flex-col modal-container relative overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 md:p-6 border-b bg-gray-50 flex-shrink-0">
                       <h2 className="text-lg md:text-xl font-semibold text-gray-900">
@@ -1652,7 +1529,8 @@ export default function StockReceiptsPage() {
                         </>
                       )}
                       {/* Product Pagination */}
-                      {products.length > 0 &&
+                      {!loading &&
+                        products.length > 0 &&
                         productsPagination.totalPages > 1 && (
                           <div className="p-4 border-t">
                             <Pagination
@@ -1708,7 +1586,7 @@ export default function StockReceiptsPage() {
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col modal-container overflow-hidden relative">
+                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col modal-container overflow-hidden relative">
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 md:p-6 border-b bg-gray-50 flex-shrink-0">
                       <h2 className="text-lg md:text-xl font-semibold text-gray-900">
@@ -1905,26 +1783,17 @@ export default function StockReceiptsPage() {
                       )}
 
                       {/* Pagination for Companies */}
-                      {!loading && companies.length > 0 && (
-                        <div className="p-4 border-t">
-                          <Pagination
-                            currentPage={companiesPagination.currentPage}
-                            totalPages={companiesPagination.totalPages}
-                            onPageChange={(page) => {
-                              getCompanies(companySearchQuery, page);
-                            }}
-                            showMoreItems={
-                              companiesPagination.currentPage <
-                                companiesPagination.totalPages ||
-                              (companiesPagination.totalPages === 1 &&
-                                companiesPagination.totalItems >
-                                  companiesPagination.pageSize) ||
-                              companiesPagination.totalItems > companies.length
-                                ? companiesPagination.pageSize
-                                : 0
-                            }
-                            onShowMore={() => {
-                              if (
+                      {!loading &&
+                        companies.length > 0 &&
+                        companiesPagination.totalPages > 1 && (
+                          <div className="p-4 border-t">
+                            <Pagination
+                              currentPage={companiesPagination.currentPage}
+                              totalPages={companiesPagination.totalPages}
+                              onPageChange={(page) => {
+                                getCompanies(companySearchQuery, page);
+                              }}
+                              showMoreItems={
                                 companiesPagination.currentPage <
                                   companiesPagination.totalPages ||
                                 (companiesPagination.totalPages === 1 &&
@@ -1932,18 +1801,30 @@ export default function StockReceiptsPage() {
                                     companiesPagination.pageSize) ||
                                 companiesPagination.totalItems >
                                   companies.length
-                              ) {
-                                getCompanies(
-                                  companySearchQuery,
-                                  companiesPagination.currentPage + 1
-                                );
+                                  ? companiesPagination.pageSize
+                                  : 0
                               }
-                            }}
-                            disabled={loading}
-                            className="mt-4"
-                          />
-                        </div>
-                      )}
+                              onShowMore={() => {
+                                if (
+                                  companiesPagination.currentPage <
+                                    companiesPagination.totalPages ||
+                                  (companiesPagination.totalPages === 1 &&
+                                    companiesPagination.totalItems >
+                                      companiesPagination.pageSize) ||
+                                  companiesPagination.totalItems >
+                                    companies.length
+                                ) {
+                                  getCompanies(
+                                    companySearchQuery,
+                                    companiesPagination.currentPage + 1
+                                  );
+                                }
+                              }}
+                              disabled={loading}
+                              className="mt-4"
+                            />
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -2004,6 +1885,39 @@ export default function StockReceiptsPage() {
                                 </tr>
                               </thead>
                               <tbody>
+                                {/* All option */}
+                                <tr
+                                  className="hover:bg-accent/50 cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedPaymentType(null);
+                                    setIsPaymentTypeModalOpen(false);
+                                    toast.success(
+                                      `${t("app.pos.all")} ${t(
+                                        "app.pos.selected"
+                                      )}`
+                                    );
+                                  }}
+                                >
+                                  <td className="border border-border border-r-0 rounded-l-lg">
+                                    <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
+                                      1
+                                    </div>
+                                  </td>
+                                  <td className="border border-border px-4 py-3">
+                                    <div className="flex items-center">
+                                      <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
+                                        <span className="text-xs text-gray-500">
+                                          ALL
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
+                                    <div className="font-medium text-sm">
+                                      {t("app.pos.all")}
+                                    </div>
+                                  </td>
+                                </tr>
                                 {paymentTypes.map(
                                   (paymentType: PaymentType, index: number) => (
                                     <tr
@@ -2021,7 +1935,7 @@ export default function StockReceiptsPage() {
                                     >
                                       <td className="border border-border border-r-0 rounded-l-lg">
                                         <div className="px-2 py-3 w-12 text-center text-sm text-gray-600">
-                                          {index + 1}
+                                          {index + 2}
                                         </div>
                                       </td>
                                       <td className="border border-border px-4 py-3">
@@ -2054,6 +1968,34 @@ export default function StockReceiptsPage() {
                           {/* Mobile Cards */}
                           <div className="md:hidden">
                             <div className="space-y-3 p-4">
+                              {/* All option */}
+                              <div
+                                className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                onClick={() => {
+                                  setSelectedPaymentType(null);
+                                  setIsPaymentTypeModalOpen(false);
+                                  toast.success(
+                                    `${t("app.pos.all")} ${t(
+                                      "app.pos.selected"
+                                    )}`
+                                  );
+                                }}
+                              >
+                                <div className="flex items-center space-x-4">
+                                  <div className="flex-shrink-0">
+                                    <div className="w-10 h-10 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
+                                      <span className="text-xs text-gray-500 font-medium">
+                                        ALL
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="flex-1">
+                                    <h3 className="font-medium text-base text-gray-900">
+                                      {t("app.pos.all")}
+                                    </h3>
+                                  </div>
+                                </div>
+                              </div>
                               {paymentTypes.map(
                                 (paymentType: PaymentType, index: number) => (
                                   <div
@@ -2087,7 +2029,6 @@ export default function StockReceiptsPage() {
                                         <h3 className="font-medium text-base text-gray-900">
                                           {paymentType.name}
                                         </h3>
-                                        
                                       </div>
                                     </div>
                                   </div>
@@ -2294,6 +2235,8 @@ export default function StockReceiptsPage() {
                           >
                             {selectedPaymentType
                               ? selectedPaymentType.name
+                              : selectedPaymentType === null
+                              ? t("app.pos.all")
                               : t("app.pos.select_payment_type")}
                             <ChevronDownIcon className="h-4 w-4" />
                           </Button>
@@ -2304,22 +2247,6 @@ export default function StockReceiptsPage() {
                     <div className="bg-gray-50 px-6 py-4 border-t flex flex-col gap-2">
                       <Button onClick={handleFilterApply} className="px-6">
                         {t("app.pos.generate_receipts")}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          if (date) downloadReport(date);
-                        }}
-                        className="cursor-pointer text-sm px-3 py-2"
-                      >
-                        {t("app.pos.download_report")}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          if (date) downloadReceipts(date);
-                        }}
-                        className="cursor-pointer text-sm px-3 py-2"
-                      >
-                        {t("app.pos.download_receipts")}
                       </Button>
                     </div>
                   </div>

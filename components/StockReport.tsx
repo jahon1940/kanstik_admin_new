@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface StockReportProps {
@@ -25,11 +25,11 @@ interface StockReportProps {
 
 const StockReport: React.FC<StockReportProps> = ({ data, formatDate }) => {
   const { t } = useTranslation();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   console.log(data);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div className="w-full md:w-1/2 bg-white border border-gray-200 rounded-lg overflow-hidden">
       {/* Birinchi ramka - asosiy ma'lumotlar */}
       <div className=" rounded-t-lg p-4 bg-white">
         <div className="flex justify-between items-center mb-3">
@@ -40,8 +40,8 @@ const StockReport: React.FC<StockReportProps> = ({ data, formatDate }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+        <div className="grid grid-cols-1 gap-4">
+          <div className=" bg-gray-50 rounded-lg p-3 border border-gray-200">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">
                 {t("app.reports.receipt_count")}:
@@ -51,8 +51,21 @@ const StockReport: React.FC<StockReportProps> = ({ data, formatDate }) => {
               </span>
             </div>
           </div>
+          <div className=" bg-gray-50 rounded-lg p-3 border border-gray-200">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">
+                {t("app.reports.average_receipt")} ({t("app.pos.sum")}):
+              </span>
+              <span className="font-semibold text-gray-900">
+                {(
+                  Number(data.stock_receipt_sum) /
+                  Number(data.stock_receipt_count)
+                )?.toLocaleString("ru-RU") || "10 355 550"}
+              </span>
+            </div>
+          </div>
 
-          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+          <div className=" bg-gray-50 rounded-lg p-3 border border-gray-200">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">
                 {t("app.reports.turnover")} ({t("app.pos.sum")}):
@@ -67,84 +80,105 @@ const StockReport: React.FC<StockReportProps> = ({ data, formatDate }) => {
       </div>
 
       {/* Button */}
-      <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
+      <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 cursor-pointer">
         <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full flex items-center justify-center gap-2 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+          onClick={() => setIsModalOpen(true)}
+          className="w-full flex items-center justify-center gap-2 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors cursor-pointer"
         >
-          <span>{t("app.reports.details")}:</span>
-          {isExpanded ? (
-            <ChevronUp className="h-4 w-4" />
-          ) : (
-            <ChevronDown className="h-4 w-4" />
-          )}
+          <span>{t("app.reports.details")}</span>
+          <ChevronDown className="h-4 w-4" />
         </button>
       </div>
 
-      {/* Ikkinchi ramka - to'lov turlari (dropdown content) */}
-      {isExpanded && (
-        <div className=" rounded-b-lg p-4 bg-white">
-          <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">
-              {t("app.reports.by_payment_types")}:
-            </h4>
-            <div className="space-y-3">
-              {data?.payment_types?.map((item: any) => {
-                return (
-                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        {item.payment_type_name}:
-                      </span>
-                      <span className="font-semibold text-gray-900">
-                        {item?.sum.toLocaleString("ru-RU") || "4 978 340"}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
+      {/* Modal */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsModalOpen(false);
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b bg-gray-50 relative">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {t("app.reports.details")} - {data.stock || ""}
+              </h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
-          </div>
 
-          {/* Kassa ma'lumotlari */}
-          {data?.pos?.map((pos: any) => {
-            return (
-              <div className=" pt-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-sm text-gray-700">
-                    {t("app.reports.cashier")}:
-                  </span>
-                  <span className="text-blue-600 font-medium">
-                    {pos?.pos_name}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        {t("app.reports.receipt_count")}:
-                      </span>
-                      <span className="font-semibold text-gray-900">
-                        {pos.pos_receipt_count}
-                      </span>
+            {/* Modal Content */}
+            <div className="p-4 overflow-y-auto max-h-[calc(90vh-120px)]">
+              {/* To'lov turlari */}
+              <div className="mb-6">
+                <h4 className="text-sm font-medium text-gray-700 mb-3">
+                  {t("app.reports.by_payment_types")}:
+                </h4>
+                <div className="space-y-3">
+                  {data?.payment_types?.map((item: any, index: number) => (
+                    <div
+                      key={index}
+                      className="bg-gray-50 rounded-lg p-3 border border-gray-200"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          {item.payment_type_name}:
+                        </span>
+                        <span className="font-semibold text-gray-900">
+                          {item?.sum?.toLocaleString("ru-RU") || "4 978 340"}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        {t("app.reports.turnover")} ({t("app.pos.sum")}):
-                      </span>
-                      <span className="font-semibold text-gray-900">
-                        {pos?.pos_receipt_sum?.toLocaleString("ru-RU")}
-                      </span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
-            );
-          })}
+
+              {/* Kassa ma'lumotlari */}
+              {data?.pos?.map((pos: any, index: number) => (
+                <div key={index} className=" pt-4  first:pt-0">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-sm text-gray-700">
+                      {t("app.reports.cashier")}:
+                    </span>
+                    <span className="text-blue-600 font-medium">
+                      {pos?.pos_name}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          {t("app.reports.receipt_count")}:
+                        </span>
+                        <span className="font-semibold text-gray-900">
+                          {pos.pos_receipt_count}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          {t("app.reports.turnover")} ({t("app.pos.sum")}):
+                        </span>
+                        <span className="font-semibold text-gray-900">
+                          {pos?.pos_receipt_sum?.toLocaleString("ru-RU")}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
