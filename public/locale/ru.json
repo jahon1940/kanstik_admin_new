@@ -17,6 +17,7 @@
   "nav": {
     "companies": "Компании",
     "reports": "Отчеты",
+    "menu": "Меню",
     "clients": "Клиенты",
     "webapp": "Сайт и приложение",
     "setting": "Настройки",
@@ -39,6 +40,7 @@
     "reports": {
       "title": "Отчеты",
       "title2": "Отчет средний чек",
+      "link_name": "Сформировать средний чек",
       "generate_orders": "Сформировать",
       "download_reports": "Скачать отчет",
       "store": "Магазин",
@@ -129,12 +131,13 @@
       "enter_product_name": "Введите название товара...",
       "search": "Поиск",
       "searching": "Поиск...",
-      "product_name_article": "Наименование/Артикул",
+      "product_article": "Артикул",
+      "product_name": "Наименование",
       "product_classifier": "Наименование Узб",
       "remaining_reserve": "Ост./Резерв",
       "price": "Цена",
       "article": "Артикул",
-      "own": "Свой",
+      "own": "Своб. ост",
       "currency": "сум",
       "selected": "выбран",
       "no_products_found": "Товары не найдены. Выполните поиск.",
@@ -185,7 +188,8 @@
       "vat": "НДС",
       "ikpu": "ИКПУ",
       "paid": "Оплачено",
-      "bonus_card": "Бон. картой",
+      "bonus_card": "Бон.картой",
+      "bonus_card_number": "Номер карты",
       "fm": "ФМ",
       "fp": "ФП",
       "report_downloaded_success": "Отчет успешно загружен",
@@ -203,6 +207,10 @@
       "next": "Вперёд"
     },
     "logged_out": "Вы вышли из аккаунта"
+  },
+  "menu": {
+    "link1": "Номенклатура",
+    "link2": "Контрагенты"
   },
   "client": {
     "info": {
@@ -252,7 +260,8 @@
   "ui": {
     "select_option": "Выберите опцию...",
     "search": "Поиск...",
-    "nothing_found": "Ничего не найдено."
+    "nothing_found": "Ничего не найдено.",
+    "update": "Обновить"
   },
   "order": {
     "title": "Заказ",

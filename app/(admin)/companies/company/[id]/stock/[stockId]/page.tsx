@@ -18,6 +18,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import ArrowIcon from "@/components/icons/arrow";
+import ReceiptsIcon from "@/components/icons/receipts";
+import PlusIcon from "@/components/icons/plus";
+import Image from "next/image";
 
 // Pose (kassa) type
 type Pose = {
@@ -327,9 +331,13 @@ export default function StockPage() {
                   pathname: `${pathname}/receipts`,
                   query: { name: data?.name },
                 }}
-                className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full block"
+                className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
               >
-                {t("app.stock.all_receipts")}
+                <div className="flex gap-2 items-center">
+                  <ReceiptsIcon />
+                  {t("app.stock.all_receipts")}
+                </div>
+                <ArrowIcon />
               </Link>
             </div>
           </div>
@@ -341,8 +349,9 @@ export default function StockPage() {
             </h1>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90"
+              className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90 flex items-center gap-2"
             >
+              <PlusIcon />
               {t("app.stock.add_cashier")}
             </button>
             <table className="w-full text-sm relative border-separate border-spacing-y-2">
@@ -354,15 +363,18 @@ export default function StockPage() {
                   <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
                     {t("app.company.name")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b w-[40%] border-r border-gray-300 border border-l-0 rounded-r-lg">
+                  <th className="text-left font-semibold px-4 py-3 border-b w-[30%] border border-gray-300 border-l-0">
                     {t("app.company.status")}
+                  </th>
+                  <th className="text-left font-semibold px-4 py-3 border-b w-[20%] border-r border-gray-300 border border-l-0 rounded-r-lg">
+                    {t("ui.update")}
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={3} className=" rounded-lg px-4 py-6">
+                    <td colSpan={4} className=" rounded-lg px-4 py-6">
                       <Loading />
                     </td>
                   </tr>
@@ -370,7 +382,7 @@ export default function StockPage() {
                   <tr>
                     <td
                       className="px-4 py-6 text-red-600  rounded-lg"
-                      colSpan={3}
+                      colSpan={4}
                     >
                       {error}
                     </td>
@@ -379,7 +391,7 @@ export default function StockPage() {
                   <tr>
                     <td
                       className="px-4 py-6 text-muted-foreground border border-border rounded-lg"
-                      colSpan={3}
+                      colSpan={4}
                     >
                       {t("app.company.not_found")}
                     </td>
@@ -406,7 +418,7 @@ export default function StockPage() {
                           {org.name}
                         </Link>
                       </td>
-                      <td className="border border-border border-l-0 rounded-r-lg">
+                      <td className="border border-border border-l-0">
                         <Link
                           className="block px-4 py-3"
                           href={`${pathname}/pos/${org.id}`}
@@ -415,6 +427,24 @@ export default function StockPage() {
                             {t("app.company.active")}
                           </span>
                         </Link>
+                      </td>
+                      <td className="border border-border border-l-0 rounded-r-lg">
+                        <div className="px-4 py-3">
+                          <span
+                                                  onClick={() => {
+                                                    console.log("update");
+                                                    
+                                                  }}
+                                                  className="bg-[#6EC8F7] inline-block p-2 rounded-lg cursor-pointer  "
+                                                >
+                                                  <Image
+                                                    src="/icons/edit.svg"
+                                                    alt="home"
+                                                    width={20}
+                                                    height={20}
+                                                  />
+                                                </span>
+                        </div>
                       </td>
                     </tr>
                   ))

@@ -33,9 +33,13 @@ type Receipt = {
   received_cash: number;
   received_card: number;
   payments: Array<{
+    id: number;
     payment_type: {
+      id: number;
       name: string;
+      image_url?: string;
     };
+    price: number;
   }>;
   sent_to_1c: boolean;
   close_time: string;
@@ -45,6 +49,7 @@ type Receipt = {
   products?: any[];
   terminal_id: string;
   error_1c?: string;
+  card_number?: string;
 };
 
 // Product type
@@ -55,6 +60,7 @@ type Product = {
   price: number;
   quantity: number;
   remaining: number;
+  vendor_code: string
 };
 
 // Company type
@@ -160,7 +166,8 @@ export default function StockReceiptsPage() {
     page: number = 1,
     pageSize: number = 50,
     append: boolean = false,
-    receiptNumber: string = ""
+    receiptNumber: string = "",
+    paymentTypeId: number | null = null
   ) => {
     let cancelled = false;
 
@@ -179,7 +186,12 @@ export default function StockReceiptsPage() {
       receipt_number: receiptNumber || null,
       from_date: date || null,
       to_date: date2 || null,
-      payment_type_id: selectedPaymentType ? selectedPaymentType.id : null,
+      payment_type_id:
+        paymentTypeId !== null
+          ? paymentTypeId
+          : selectedPaymentType
+          ? selectedPaymentType.id
+          : null,
       product_id: selectedProduct ? selectedProduct.id : null,
       card_number: selectedCompany ? selectedCompany.card_number : null,
       page: page,
@@ -200,7 +212,7 @@ export default function StockReceiptsPage() {
       .then((result) => {
         console.log("Receipts API Response:", result);
 
-        console.log(result);
+       
 
         if (!cancelled) {
           if (append && page > 1) {
@@ -306,7 +318,7 @@ export default function StockReceiptsPage() {
         setProducts(result.results || result || []);
       }
 
-      console.log(result);
+
 
       // Update pagination state
       const paginationData = {
@@ -343,7 +355,7 @@ export default function StockReceiptsPage() {
     }
   };
 
-  console.log(productsPagination);
+
 
   const handleProductSearch = async (
     searchTerm: string = "",
@@ -431,7 +443,7 @@ export default function StockReceiptsPage() {
 
       setCompanies(result.results || result || []);
 
-      console.log(result);
+
 
       // Update pagination for companies
       setCompaniesPagination({
@@ -494,7 +506,7 @@ export default function StockReceiptsPage() {
         );
       }
 
-      console.log(result);
+   
 
       setPaymentTypes(result.results || result || []);
       return result;
@@ -509,7 +521,15 @@ export default function StockReceiptsPage() {
 
   const handleFilterApply = () => {
     setReceipts([]);
-    getReceipts(date, date2, 1, 50, false, receiptSearchNumber);
+    getReceipts(
+      date,
+      date2,
+      1,
+      50,
+      false,
+      receiptSearchNumber,
+      selectedPaymentType ? selectedPaymentType.id : null
+    );
     setIsFilterModalOpen(false);
   };
   // useEffect(() => {
@@ -542,6 +562,8 @@ export default function StockReceiptsPage() {
     return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
 
+
+
   return (
     <div defaultValue="info" className="space-y-3">
       {/* Header - responsive */}
@@ -561,7 +583,7 @@ export default function StockReceiptsPage() {
       </div>
       {/* Main content - responsive */}
       <div className="rounded-lg bg-card shadow-lg">
-        <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 ">
+        <div className="overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 ">
           {/* content - only visible on desktop/larger screens */}
           <div className=" w-full">
             <div className="w-full mt-0">
@@ -582,7 +604,8 @@ export default function StockReceiptsPage() {
                           1,
                           50,
                           false,
-                          receiptSearchNumber
+                          receiptSearchNumber,
+                          selectedPaymentType ? selectedPaymentType.id : null
                         );
                       }}
                     >
@@ -784,7 +807,8 @@ export default function StockReceiptsPage() {
                           1,
                           50,
                           false,
-                          receiptSearchNumber
+                          receiptSearchNumber,
+                          selectedPaymentType ? selectedPaymentType.id : null
                         );
                       }}
                       className="cursor-pointer text-sm px-3 py-2"
@@ -875,7 +899,7 @@ export default function StockReceiptsPage() {
                             )}
                           </td>
                           <td className="border border-border px-4 py-4">
-                            <h2>{org?.receipt_seq}</h2>
+                            <h2>{org?.receipt_seq || org?.id}</h2>
                           </td>
                           <td className="border border-border px-4 py-4">
                             <h2> {formatDate(org?.close_time)}</h2>
@@ -883,13 +907,51 @@ export default function StockReceiptsPage() {
                           <td className="border border-border px-4 py-4">
                             {" "}
                             <h2>
-                              {org?.payments?.map((type: any, index: number) => {
-                                 if (index > 0) {
-                                   return " / " + type.payment_type.name;
-                                 } else {
-                                   return type.payment_type.name;
-                                 }
-                              })}
+                              {org?.payments?.map(
+                                (type: any, index: number) => {
+                                  if (index > 0) {
+                                    return (
+                                      <div className="flex gap-2 items-center">
+                                        {" "}
+                                        <Image
+                                          src={
+                                            type.payment_type.image_url
+                                              ? `${BASE_URL}${type.payment_type.image_url}`
+                                              : "/images/nophoto.png"
+                                          }
+                                          width={28}
+                                          height={28}
+                                          alt={
+                                            type.payment_type.name || "image"
+                                          }
+                                          className="w-8 h-8 object-contain"
+                                        />
+                                        {type.payment_type.name}
+                                      </div>
+                                    );
+                                  } else {
+                                    return (
+                                      <div className="flex gap-2 items-center">
+                                        {" "}
+                                        <Image
+                                          src={
+                                            type.payment_type.image_url
+                                              ? `${BASE_URL}${type.payment_type.image_url}`
+                                              : "/images/nophoto.png"
+                                          }
+                                          width={28}
+                                          height={28}
+                                          alt={
+                                            type.payment_type.name || "image"
+                                          }
+                                          className="w-8 h-8 object-contain"
+                                        />
+                                        {type.payment_type.name}
+                                      </div>
+                                    );
+                                  }
+                                }
+                              )}
                             </h2>
                           </td>
                           <td className="border border-border px-4 py-4">
@@ -926,22 +988,56 @@ export default function StockReceiptsPage() {
                             сум
                           </h2> */}
                             <h2>
-                              {Number(
-                                org?.received_card.toString().slice(0, -2)
-                              ).toLocaleString("ru-RU")}{" "}
+                              {(() => {
+                                // Bonus payment type ni topish
+                                const bonusPayment = org?.payments?.find(
+                                  (payment: any) =>
+                                    payment.payment_type?.name === "Бонусы"
+                                );
+
+                                // Agar bonus payment mavjud bo'lsa, uning price ini ko'rsatish
+                                if (bonusPayment) {
+                                  return bonusPayment.price?.toLocaleString(
+                                    "ru-RU"
+                                  );
+                                }
+
+                                // Aks holda eski holatda qolish
+                                return Number(
+                                  org?.received_card.toString().slice(0, -2)
+                                ).toLocaleString("ru-RU");
+                              })()}{" "}
                               {t("app.pos.sum")}
                             </h2>
                           </td>
                           <td className="border border-border px-4 py-4">
                             <h2>
-                              {(
-                                Number(
+                              {(() => {
+                                const cashAmount = Number(
                                   org?.received_cash.toString().slice(0, -2)
-                                ) +
-                                Number(
-                                  org?.received_card.toString().slice(0, -2)
-                                )
-                              ).toLocaleString("ru-RU")}{" "}
+                                );
+
+                                // Bonus payment type ni topish
+                                const bonusPayment = org?.payments?.find(
+                                  (payment: any) =>
+                                    payment.payment_type?.name === "Бонусы"
+                                );
+
+                                let cardAmount;
+                                // Agar bonus payment mavjud bo'lsa, uning price ini ishlatish
+                                if (bonusPayment) {
+                                  cardAmount = bonusPayment.price || 0;
+                                } else {
+                                  // Aks holda eski holatda qolish
+                                  cardAmount = Number(
+                                    org?.received_card.toString().slice(0, -2)
+                                  );
+                                }
+
+                                return (cashAmount + cardAmount).toLocaleString(
+                                  "ru-RU"
+                                );
+                              })()}{" "}
                               {t("app.pos.sum")}
                               {/* {org?.received_cash +
                               org?.received_card.toLocaleString("ru-RU")}
@@ -979,7 +1075,8 @@ export default function StockReceiptsPage() {
                           page,
                           receiptsPagination.pageSize,
                           false,
-                          receiptSearchNumber
+                          receiptSearchNumber,
+                          selectedPaymentType ? selectedPaymentType.id : null
                         );
                       }}
                       showMoreItems={
@@ -1007,7 +1104,8 @@ export default function StockReceiptsPage() {
                             receiptsPagination.currentPage + 1,
                             receiptsPagination.pageSize,
                             true, // append = true for "Show More" functionality
-                            receiptSearchNumber
+                            receiptSearchNumber,
+                            selectedPaymentType ? selectedPaymentType.id : null
                           );
                         }
                       }}
@@ -1041,7 +1139,8 @@ export default function StockReceiptsPage() {
                           }
                         }}
                       >
-                        <Info /> {selectedReceipt?.receipt_seq}
+                        <Info />{" "}
+                        {selectedReceipt?.receipt_seq || selectedReceipt?.id}
                       </h2>
                       {/* <button
                 onClick={() => setIsModalOpen(false)}
@@ -1228,7 +1327,19 @@ export default function StockReceiptsPage() {
                               </div>
                               <div className="flex justify-between">
                                 <span>{t("app.pos.bonus_card")}:</span>
-                                <span>0</span>
+                                {/* bonus price */}
+                                <span>
+                                  {selectedReceipt?.payments
+                                    ?.find(
+                                      (payment: any) =>
+                                        payment.payment_type?.name === "Бонусы"
+                                    )
+                                    ?.price?.toLocaleString("ru-RU") || "0"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>{t("app.pos.bonus_card_number")}:</span>
+                                <span>{selectedReceipt?.card_number}</span>
                               </div>
                             </div>
                           </div>
@@ -1246,7 +1357,10 @@ export default function StockReceiptsPage() {
                               </div>
                               <div className="flex justify-between">
                                 <span>{t("app.pos.receipt_number")} №:</span>{" "}
-                                <span>{selectedReceipt.receipt_seq}</span>
+                                <span>
+                                  {selectedReceipt?.receipt_seq ||
+                                    selectedReceipt?.id}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span>S/N:</span>{" "}
@@ -1321,7 +1435,7 @@ export default function StockReceiptsPage() {
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-6xl h-[90vh]  flex flex-col modal-container relative overflow-hidden">
+                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-7xl h-[90vh]  flex flex-col modal-container relative overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 md:p-6 border-b bg-gray-50 flex-shrink-0">
                       <h2 className="text-lg md:text-xl font-semibold text-gray-900">
@@ -1387,7 +1501,10 @@ export default function StockReceiptsPage() {
                                     №
                                   </th>
                                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                                    {t("app.pos.product_name_article")}
+                                    {t("app.pos.product_article")}
+                                  </th>
+                                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                                    {t("app.pos.product_name")}
                                   </th>
                                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                                     {t("app.pos.product_classifier")}
@@ -1426,11 +1543,14 @@ export default function StockReceiptsPage() {
                                         </div>
                                       </td>
                                       <td className="border border-border px-4 py-3">
+                                        <div className="text-xs text-gray-500">
+                                        
+                                          {product.vendor_code}
+                                        </div>
+                                      </td>
+                                      <td className="border border-border px-4 py-3">
                                         <div className="font-medium text-sm">
                                           {product.title}
-                                        </div>
-                                        <div className="text-xs text-gray-500">
-                                          {t("app.pos.article")}: {product.id}
                                         </div>
                                       </td>
                                       <td className="border border-border px-4 py-3">
@@ -1442,7 +1562,7 @@ export default function StockReceiptsPage() {
                                         <div className="text-sm">
                                           {product.remaining || 0}
                                         </div>
-                                        <div className="text-xs text-gray-500">
+                                        <div className="text-xs text-primary">
                                           {t("app.pos.own")}:{" "}
                                           {product.quantity || 0}
                                         </div>
@@ -1840,7 +1960,7 @@ export default function StockReceiptsPage() {
                     }
                   }}
                 >
-                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col modal-container overflow-hidden relative">
+                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-lg h-[90vh] flex flex-col modal-container overflow-hidden relative">
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 md:p-6 border-b bg-gray-50 flex-shrink-0">
                       <h2 className="text-lg md:text-xl font-semibold text-gray-900">
@@ -1891,10 +2011,22 @@ export default function StockReceiptsPage() {
                                   onClick={() => {
                                     setSelectedPaymentType(null);
                                     setIsPaymentTypeModalOpen(false);
+                                    setIsFilterModalOpen(false); // Filter Modal ham yopilsin
                                     toast.success(
                                       `${t("app.pos.all")} ${t(
                                         "app.pos.selected"
                                       )}`
+                                    );
+                                    // Avtomatik getReceipts chaqirish
+                                    setReceipts([]);
+                                    getReceipts(
+                                      date,
+                                      date2,
+                                      1,
+                                      50,
+                                      false,
+                                      receiptSearchNumber,
+                                      null // Hammasi uchun null
                                     );
                                   }}
                                 >
@@ -1926,10 +2058,22 @@ export default function StockReceiptsPage() {
                                       onClick={() => {
                                         setSelectedPaymentType(paymentType);
                                         setIsPaymentTypeModalOpen(false);
+                                        setIsFilterModalOpen(false); // Filter Modal ham yopilsin
                                         toast.success(
                                           `${paymentType.name} ${t(
                                             "app.pos.selected"
                                           )}`
+                                        );
+                                        // Avtomatik getReceipts chaqirish
+                                        setReceipts([]);
+                                        getReceipts(
+                                          date,
+                                          date2,
+                                          1,
+                                          50,
+                                          false,
+                                          receiptSearchNumber,
+                                          paymentType.id // Tanlangan payment type ID
                                         );
                                       }}
                                     >
@@ -1974,10 +2118,22 @@ export default function StockReceiptsPage() {
                                 onClick={() => {
                                   setSelectedPaymentType(null);
                                   setIsPaymentTypeModalOpen(false);
+                                  setIsFilterModalOpen(false); // Filter Modal ham yopilsin
                                   toast.success(
                                     `${t("app.pos.all")} ${t(
                                       "app.pos.selected"
                                     )}`
+                                  );
+                                  // Avtomatik getReceipts chaqirish
+                                  setReceipts([]);
+                                  getReceipts(
+                                    date,
+                                    date2,
+                                    1,
+                                    50,
+                                    false,
+                                    receiptSearchNumber,
+                                    null // Hammasi uchun null
                                   );
                                 }}
                               >
@@ -2004,10 +2160,22 @@ export default function StockReceiptsPage() {
                                     onClick={() => {
                                       setSelectedPaymentType(paymentType);
                                       setIsPaymentTypeModalOpen(false);
+                                      setIsFilterModalOpen(false); // Filter Modal ham yopilsin
                                       toast.success(
                                         `${paymentType.name} ${t(
                                           "app.pos.selected"
                                         )}`
+                                      );
+                                      // Avtomatik getReceipts chaqirish
+                                      setReceipts([]);
+                                      getReceipts(
+                                        date,
+                                        date2,
+                                        1,
+                                        50,
+                                        false,
+                                        receiptSearchNumber,
+                                        paymentType.id // Tanlangan payment type ID
                                       );
                                     }}
                                   >

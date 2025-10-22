@@ -17,6 +17,7 @@
   "nav": {
     "companies": "Kompaniyalar",
     "reports": "Hisobotlar",
+    "menu": "Menyu",
     "clients": "Mijozlar",
     "webapp": "Veb-sayt va ilova",
     "setting": "Sozlamalar",
@@ -39,6 +40,7 @@
     "reports": {
       "title": "Hisobotlar",
       "title2": "O'rtacha tekshirish hisoboti",
+      "link_name": "O‘rtacha chekni ko'rish",
       "generate_orders": "Yaratish",
       "download_reports": "Hisobotni yuklab oling",
       "store": "Do'kon",
@@ -129,7 +131,8 @@
       "enter_product_name": "Mahsulot nomini kiriting...",
       "search": "Qidirish",
       "searching": "Qidirilmoqda...",
-      "product_name_article": "Nomi/Artikul",
+      "product_article": "Artikul",
+      "product_name": "Nomi",
       "product_classifier": "Nomi Uzb",
       "remaining_reserve": "Qoldiq/Zaxira",
       "price": "Narx",
@@ -186,6 +189,7 @@
       "ikpu": "IKPU",
       "paid": "To'landi",
       "bonus_card": "Bonus karta",
+      "bonus_card_number": "Karta raqami",
       "fm": "FM",
       "fp": "FP",
       "report_downloaded_success": "Hisobot muvaffaqiyatli yuklab olindi",
@@ -203,6 +207,10 @@
       "next": "Keyingi"
     },
     "logged_out": "Profilingizdan chiqdingiz"
+  },
+  "menu": {
+    "link1": "Nomenklatura",
+    "link2": "Qarama-qarshi tomonlar"
   },
   "client": {
     "info": {
@@ -252,7 +260,8 @@
   "ui": {
     "select_option": "Variantni tanlang...",
     "search": "Qidirish...",
-    "nothing_found": "Hech narsa topilmadi."
+    "nothing_found": "Hech narsa topilmadi.",
+    "update": "Yangilash"
   },
   "order": {
     "title": "Buyurtma",

@@ -16,6 +16,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import Link from "next/link";
 import { Pagination } from "@/components/ui/pagination";
+import Image from "next/image";
 
 // Receipt type
 type Receipt = {
@@ -24,9 +25,13 @@ type Receipt = {
   received_cash: number;
   received_card: number;
   payments: Array<{
+    id: number;
     payment_type: {
+      id: number;
       name: string;
+      image_url?: string;
     };
+    price: number;
   }>;
   sent_to_1c: boolean;
   close_time: string;
@@ -36,6 +41,7 @@ type Receipt = {
   products?: any[];
   terminal_id: string;
   error_1c?: string;
+  card_number?: string;
 };
 const ReceiptsContent = () => {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -563,7 +569,7 @@ const ReceiptsContent = () => {
                       )}
                     </td>
                     <td className="border border-border px-4 py-4">
-                      <h2>{org?.receipt_seq}</h2>
+                      <h2>{org?.receipt_seq || org?.id}</h2>
                     </td>
                     <td className="border border-border px-4 py-4">
                       <h2> {formatDate(org?.close_time)}</h2>
@@ -571,12 +577,44 @@ const ReceiptsContent = () => {
                     <td className="border border-border px-4 py-4">
                       {" "}
                       <h2>
-                        {org?.payments?.map((type: any, index:number) => {
-                           if (index > 0) {
-                             return " / " + type.payment_type.name ;
-                           } else {
-                             return type.payment_type.name;
-                           }
+                        {org?.payments?.map((type: any, index: number) => {
+                          if (index > 0) {
+                            return (
+                              <div className="flex flex-wrap gap-2 items-center">
+                                {" "}
+                                <Image
+                                  src={
+                                    type.payment_type.image_url
+                                      ? `${BASE_URL}${type.payment_type.image_url}`
+                                      : "/images/nophoto.png"
+                                  }
+                                  width={28}
+                                  height={28}
+                                  alt={type.payment_type.name || "image"}
+                                  className="w-8 h-8 object-contain"
+                                />
+                                <span>{type.payment_type.name}</span>
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <div className="flex gap-2 items-center">
+                                {" "}
+                                <Image
+                                  src={
+                                    type.payment_type.image_url
+                                      ? `${BASE_URL}${type.payment_type.image_url}`
+                                      : "/images/nophoto.png"
+                                  }
+                                  width={28}
+                                  height={28}
+                                  alt={type.payment_type.name || "image"}
+                                  className="w-8 h-8 object-contain"
+                                />
+                                <span>{type.payment_type.name}</span>
+                              </div>
+                            );
+                          }
                         })}
                       </h2>
                     </td>
@@ -590,10 +628,23 @@ const ReceiptsContent = () => {
                     </td>
                     <td className="border border-border px-4 py-4">
                       <h2>
-                        {" "}
-                        {Number(
-                          org?.received_card.toString().slice(0, -2)
-                        ).toLocaleString("ru-RU")}{" "}
+                        {(() => {
+                          // Bonus payment type ni topish
+                          const bonusPayment = org?.payments?.find(
+                            (payment: any) =>
+                              payment.payment_type?.name === "Бонусы"
+                          );
+
+                          // Agar bonus payment mavjud bo'lsa, uning price ini ko'rsatish
+                          if (bonusPayment) {
+                            return bonusPayment.price?.toLocaleString("ru-RU");
+                          }
+
+                          // Aks holda eski holatda qolish
+                          return Number(
+                            org?.received_card.toString().slice(0, -2)
+                          ).toLocaleString("ru-RU");
+                        })()}{" "}
                         {t("app.pos.sum")}
                       </h2>
                     </td>
@@ -874,7 +925,18 @@ const ReceiptsContent = () => {
                       </div>
                       <div className="flex justify-between">
                         <span>{t("app.pos.bonus_card")}:</span>
-                        <span>0</span>
+                        {/* bonus price */}
+                        <span>
+                          {selectedReceipt?.payments
+                            ?.find(
+                              (payment: any) =>
+                                payment.payment_type?.name === "Бонусы"
+                            )?.price?.toLocaleString("ru-RU") || "0"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>{t("app.pos.bonus_card_number")}:</span>
+                        <span>{selectedReceipt?.card_number}</span>
                       </div>
                     </div>
                   </div>
@@ -891,8 +953,10 @@ const ReceiptsContent = () => {
                         <span>414675046328</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>{t("app.pos.receipt_number")} №:</span>{" "}
-                        <span>{selectedReceipt.receipt_seq}</span>
+                        <span>{t("app.pos.receipt_number")} №:</span>
+                        <span>
+                          {selectedReceipt?.receipt_seq || selectedReceipt?.id}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>S/N:</span>{" "}

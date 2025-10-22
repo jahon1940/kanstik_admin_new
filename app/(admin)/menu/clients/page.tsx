@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 
 import Loading from "@/components/Loading";
 
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { getDeviceToken } from "@/lib/token";
 import { Pagination } from "@/components/ui/pagination";
 
@@ -29,6 +29,7 @@ export default function ClientsPage() {
   const { t } = useLanguage();
 
   const pathname = usePathname();
+    const router = useRouter();
 
   const requestData = {
     url: null,
@@ -97,11 +98,19 @@ export default function ClientsPage() {
     setCurrentPage(page);
     fetchClients(query, page);
   };
+  
 
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
       <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
         <h1 className="text-lg md:text-xl font-semibold">
           {t("app.company.title")}
         </h1>

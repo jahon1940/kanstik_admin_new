@@ -26,6 +26,7 @@ import ClientIcon from "./icons/client";
 import ReportIcon from "./icons/report";
 import CompanyIcon from "./icons/company";
 import { useAlertDialog } from "@/contexts/AlertDialogContext";
+import MenuIcon from "./icons/menu";
 
 export type NavItem = {
   label: string;
@@ -46,10 +47,15 @@ export const navItems: NavItem[] = [
     icon: (p) => <ReportIcon className={p.className} />,
   },
   {
-    label: "nav.clients",
-    href: "/clients",
-    icon: (p) => <ClientIcon className={p.className} />,
+    label: "nav.menu",
+    href: "/menu",
+    icon: (p) => <MenuIcon className={p.className} />,
   },
+  // {
+  //   label: "nav.clients",
+  //   href: "/clients",
+  //   icon: (p) => <ClientIcon className={p.className} />,
+  // },
   {
     label: "nav.webapp",
     href: "/webapp",

@@ -15,7 +15,6 @@ export default function ReportsPage() {
     <div className="space-y-4">
       {/* Header - responsive */}
       <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
-       
         <h1 className="text-lg md:text-xl font-semibold">
           {t("app.reports.title")}
         </h1>
@@ -25,12 +24,21 @@ export default function ReportsPage() {
         <div className="space-y-4">
           <Link
             href={{
-              pathname: `${pathname}/receipts`,
+              pathname: `${pathname}/clients`,
               // query: { name: data?.name },
             }}
             className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
           >
-            {t("app.reports.link_name")}
+            {t("menu.link1")}
+          </Link>
+          <Link
+            href={{
+              pathname: `${pathname}/clients`,
+              // query: { name: data?.name },
+            }}
+            className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
+          >
+            {t("menu.link2")}
           </Link>
         </div>
       </div>

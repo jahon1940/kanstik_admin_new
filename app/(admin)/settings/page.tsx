@@ -20,15 +20,7 @@ export default function SettingsPage() {
             <LanguageSelect />
           </div>
 
-          {/* Additional settings can be added here */}
-          <div className="border-t pt-6">
-            <h2 className="text-base md:text-lg font-medium mb-3">
-              {t("settings.appearance")}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {t("settings.appearance_desc")}
-            </p>
-          </div>
+         
         </div>
       </div>
     </div>
