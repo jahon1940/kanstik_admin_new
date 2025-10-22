@@ -431,19 +431,18 @@ export default function StockPage() {
                       <td className="border border-border border-l-0 rounded-r-lg">
                         <div className="px-4 py-3">
                           <span
-                                                  onClick={() => {
-                                                    console.log("update");
-                                                    
-                                                  }}
-                                                  className="bg-[#6EC8F7] inline-block p-2 rounded-lg cursor-pointer  "
-                                                >
-                                                  <Image
-                                                    src="/icons/edit.svg"
-                                                    alt="home"
-                                                    width={20}
-                                                    height={20}
-                                                  />
-                                                </span>
+                            onClick={() => {
+                              console.log("update");
+                            }}
+                            className="bg-[#6EC8F7] inline-block p-2 rounded-lg cursor-pointer  "
+                          >
+                            <Image
+                              src="/icons/edit.svg"
+                              alt="home"
+                              width={20}
+                              height={20}
+                            />
+                          </span>
                         </div>
                       </td>
                     </tr>

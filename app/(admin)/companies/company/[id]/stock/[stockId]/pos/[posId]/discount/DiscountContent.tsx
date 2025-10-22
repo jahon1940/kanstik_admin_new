@@ -4,67 +4,115 @@ import { getDeviceToken } from "@/lib/token";
 import { cn } from "@/lib/utils";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 const DiscountContent = () => {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-    const { t } = useTranslation();
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const { t } = useTranslation();
 
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const params = useParams();
 
-    const params = useParams();
-    
+  // Discount state
+  const [enableDiscount, setEnableDiscount] = React.useState<boolean>(false);
+  const [currentDiscountValue, setCurrentDiscountValue] =
+    React.useState<number>(0); // Yuqoridagi display uchun
+  const [inputDiscountValue, setInputDiscountValue] =
+    React.useState<string>(""); // Input uchun (string)
 
-    // Discount state
-    const [enableDiscount, setEnableDiscount] = React.useState<boolean>(false);
-    const [discountValue, setDiscountValue] = React.useState<number>(0);
+  const getDiscount = async () => {
+    try {
+      setLoading(true);
 
-    const handleDiscountSubmit = async () => {
-      try {
-        setLoading(true);
-
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        if (getDeviceToken()) {
-          myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-        }
-
-        const requestData = {
-          enable_discount: enableDiscount,
-          discount: discountValue,
-        };
-
-        const requestOptions: RequestInit = {
-          method: "PUT",
-          headers: myHeaders,
-          body: JSON.stringify(requestData),
-          redirect: "follow",
-        };
-
-        const response = await fetch(
-          `${BASE_URL}/v1/admins/pos/${params.posId}/discount`,
-          requestOptions
-        );
-
-        if (response.ok || response.status === 204) {
-          toast.success(t("app.pos.discount_updated_success"));
-        } else {
-          const errorData = await response.json().catch(() => ({}));
-          const errorMessage =
-            errorData.message || t("app.pos.discount_update_error");
-          toast.error(errorMessage);
-        }
-      } catch (error: any) {
-        const msg = error?.message || t("app.pos.discount_update_error");
-        toast.error(msg);
-      } finally {
-        setLoading(false);
+      const myHeaders = new Headers();
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
       }
-    };
 
+      const requestOptions: RequestInit = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/pos/${params.posId}/discount`,
+        requestOptions
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Discount API Response:", result);
+
+        // API dan kelgan ma'lumotlarni state ga o'rnatish
+        setEnableDiscount(result.enable_discount || false);
+        setCurrentDiscountValue(result.discount || 0); // Display uchun
+        // inputDiscountValue ni yangilamaymiz - faqat POST uchun
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.message || t("toast.network_error");
+        toast.error(errorMessage);
+      }
+    } catch (error: any) {
+      const msg = error?.message || t("toast.network_error");
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDiscountSubmit = async () => {
+    try {
+      setLoading(true);
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestData = {
+        enable_discount: enableDiscount,
+        discount: Number(inputDiscountValue) || 0,
+      };
+
+      const requestOptions: RequestInit = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify(requestData),
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/pos/${params.posId}/discount`,
+        requestOptions
+      );
+
+      if (response.ok || response.status === 204) {
+        toast.success(t("app.pos.discount_updated_success"));
+        // Muvaffaqiyatli yangilangandan keyin display qiymatini ham yangilash
+        setCurrentDiscountValue(Number(inputDiscountValue) || 0);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage =
+          errorData.message || t("app.pos.discount_update_error");
+        toast.error(errorMessage);
+      }
+    } catch (error: any) {
+      const msg = error?.message || t("app.pos.discount_update_error");
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Component yuklanganda discount ma'lumotlarini olish
+  useEffect(() => {
+    getDiscount();
+  }, []);
 
   return (
     <div className="w-full mt-0">
@@ -85,7 +133,7 @@ const DiscountContent = () => {
                   {enableDiscount
                     ? t("app.pos.discount_enabled")
                     : t("app.pos.discount_disabled")}{" "}
-                  0%
+                  {currentDiscountValue}%
                 </p>
               </div>
               <button
@@ -114,12 +162,8 @@ const DiscountContent = () => {
             <div className="relative">
               <input
                 type="number"
-                value={discountValue === 0 ? "" : discountValue}
-                onChange={(e) =>
-                  setDiscountValue(
-                    e.target.value === "" ? 0 : Number(e.target.value)
-                  )
-                }
+                value={inputDiscountValue}
+                onChange={(e) => setInputDiscountValue(e.target.value)}
                 className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
                 placeholder="0"
               />
