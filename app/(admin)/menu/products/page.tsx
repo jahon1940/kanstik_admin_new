@@ -170,7 +170,7 @@ const ProductsPage = () => {
         <h1 className="text-lg md:text-xl font-semibold">{t("menu.link1")}</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-7xl h-[89vh]  flex flex-col modal-container relative overflow-hidden space-y-4">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-8xl h-[89vh]  flex flex-col modal-container relative overflow-hidden space-y-4">
         {/* Search Section */}
         <div className="p-4 md:p-6 border-b bg-white flex-shrink-0">
           <div className="relative w-full">
