@@ -29,7 +29,7 @@ export default function ReceiptsPage() {
         </div>
       </div>
       <div className="rounded-lg bg-card shadow-lg">
-        <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
+        <div className="overflow-auto h-[calc(100vh-9.5rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
           {/* Receipts Tab */}
           <ReceiptsContent />
         </div>

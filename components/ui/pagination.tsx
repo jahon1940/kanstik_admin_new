@@ -83,7 +83,10 @@ export function Pagination({
           className="flex items-center gap-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronLeft className="h-4 w-4" />
-          {t("app.pagination.previous")}
+          <span className="hidden sm:block">
+            {" "}
+            {t("app.pagination.previous")}
+          </span>
         </Button>
 
         {/* Page Numbers */}
@@ -128,7 +131,7 @@ export function Pagination({
           disabled={currentPage >= totalPages || disabled}
           className="flex items-center gap-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {t("app.pagination.next")}
+          <span className="hidden sm:block">{t("app.pagination.next")}</span>
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>

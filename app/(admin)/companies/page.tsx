@@ -94,7 +94,7 @@ export default function CompaniesPage() {
         </div>
 
         {/* Jadval container - responsive height */}
-        <div className="overflow-auto h-[calc(100vh-12rem)] md:h-[calc(100vh-11rem)] px-3 md:px-4 pb-4">
+        <div className="overflow-auto h-[calc(100vh-13.5rem)] md:h-[calc(100vh-11rem)] px-3 md:px-4 pb-4">
           {/* Desktop table */}
           <div className="hidden md:block">
             <table className="w-full text-sm relative border-separate border-spacing-y-2">

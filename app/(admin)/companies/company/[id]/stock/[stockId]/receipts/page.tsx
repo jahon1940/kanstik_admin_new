@@ -24,7 +24,7 @@ import { Calendar } from "@/components/ui/calendar";
 import Link from "next/link";
 import Image from "next/image";
 import { Pagination } from "@/components/ui/pagination";
-import { log } from "util";
+
 
 // Receipt type
 type Receipt = {
@@ -60,7 +60,7 @@ type Product = {
   price: number;
   quantity: number;
   remaining: number;
-  vendor_code: string
+  vendor_code: string;
 };
 
 // Company type
@@ -212,8 +212,6 @@ export default function StockReceiptsPage() {
       .then((result) => {
         console.log("Receipts API Response:", result);
 
-       
-
         if (!cancelled) {
           if (append && page > 1) {
             // Append new results to existing ones for "Show More" functionality
@@ -318,8 +316,6 @@ export default function StockReceiptsPage() {
         setProducts(result.results || result || []);
       }
 
-
-
       // Update pagination state
       const paginationData = {
         currentPage: result.current_page || result.page || page,
@@ -354,8 +350,6 @@ export default function StockReceiptsPage() {
       setLoading(false);
     }
   };
-
-
 
   const handleProductSearch = async (
     searchTerm: string = "",
@@ -443,8 +437,6 @@ export default function StockReceiptsPage() {
 
       setCompanies(result.results || result || []);
 
-
-
       // Update pagination for companies
       setCompaniesPagination({
         currentPage: result.current_page || result.page || page,
@@ -506,8 +498,6 @@ export default function StockReceiptsPage() {
         );
       }
 
-   
-
       setPaymentTypes(result.results || result || []);
       return result;
     } catch (error: any) {
@@ -562,8 +552,6 @@ export default function StockReceiptsPage() {
     return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
 
-
-
   return (
     <div defaultValue="info" className="space-y-3">
       {/* Header - responsive */}
@@ -583,7 +571,7 @@ export default function StockReceiptsPage() {
       </div>
       {/* Main content - responsive */}
       <div className="rounded-lg bg-card shadow-lg">
-        <div className="overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 ">
+        <div className="overflow-auto h-[calc(100vh-9.5rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 ">
           {/* content - only visible on desktop/larger screens */}
           <div className=" w-full">
             <div className="w-full mt-0">
@@ -843,22 +831,22 @@ export default function StockReceiptsPage() {
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                           {t("app.pos.receipt_number")}
                         </th>
-                        <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                        <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                           {t("app.pos.date_time")}
                         </th>
-                        <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                        <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                           {t("app.pos.payment_type")}
                         </th>
-                        <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                        <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                           {t("app.pos.cash")}
                         </th>
-                        <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                        <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                           {t("app.pos.card")}
                         </th>
-                        <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                        <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0 md:border-r-1 rounded-r-lg md:rounded-r-none">
                           {t("app.pos.amount")}
                         </th>
-                        <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
+                        <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
                           {t("app.pos.status_1c")}
                         </th>
                       </tr>
@@ -901,10 +889,10 @@ export default function StockReceiptsPage() {
                           <td className="border border-border px-4 py-4">
                             <h2>{org?.receipt_seq || org?.id}</h2>
                           </td>
-                          <td className="border border-border px-4 py-4">
+                          <td className="hidden md:table-cell border border-border px-4 py-4">
                             <h2> {formatDate(org?.close_time)}</h2>
                           </td>
-                          <td className="border border-border px-4 py-4">
+                          <td className="hidden md:table-cell border border-border px-4 py-4">
                             {" "}
                             <h2>
                               {org?.payments?.map(
@@ -954,7 +942,7 @@ export default function StockReceiptsPage() {
                               )}
                             </h2>
                           </td>
-                          <td className="border border-border px-4 py-4">
+                          <td className="hidden md:table-cell border border-border px-4 py-4">
                             {/* <h2>
                             {org?.payments.map((item) => {
                               if (item.payment_type.name === "Cash") {
@@ -973,7 +961,7 @@ export default function StockReceiptsPage() {
                               {t("app.pos.sum")}
                             </h2>
                           </td>
-                          <td className="border border-border px-4 py-4">
+                          <td className="hidden md:table-cell border border-border px-4 py-4">
                             {/* <h2>
                             {org?.payments.map((item) => {
                               if (
@@ -1010,7 +998,7 @@ export default function StockReceiptsPage() {
                               {t("app.pos.sum")}
                             </h2>
                           </td>
-                          <td className="border border-border px-4 py-4">
+                          <td className="border border-border px-4 py-4 border-l-0 md:border-l rounded-r-lg md:rounded-r-none">
                             <h2>
                               {(() => {
                                 const cashAmount = Number(
@@ -1044,7 +1032,7 @@ export default function StockReceiptsPage() {
                             сум */}
                             </h2>
                           </td>
-                          <td className="border border-border border-l-0 rounded-r-lg px-4 py-4">
+                          <td className="hidden md:table-cell border border-border border-l-0 rounded-r-lg px-4 py-4">
                             {org?.sent_to_1c ? (
                               <span className="text-green-500">
                                 {t("app.pos.sent")}
@@ -1544,7 +1532,6 @@ export default function StockReceiptsPage() {
                                       </td>
                                       <td className="border border-border px-4 py-3">
                                         <div className="text-xs text-gray-500">
-                                        
                                           {product.vendor_code}
                                         </div>
                                       </td>

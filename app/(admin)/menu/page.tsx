@@ -24,7 +24,7 @@ export default function ReportsPage() {
         <div className="space-y-4">
           <Link
             href={{
-              pathname: `${pathname}/clients`,
+              pathname: `${pathname}/products`,
               // query: { name: data?.name },
             }}
             className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "

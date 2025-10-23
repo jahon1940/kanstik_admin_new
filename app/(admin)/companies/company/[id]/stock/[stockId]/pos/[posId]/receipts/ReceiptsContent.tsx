@@ -505,22 +505,22 @@ const ReceiptsContent = () => {
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     {t("app.pos.receipt_number")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                  <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     {t("app.pos.date_time")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                  <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     {t("app.pos.payment_type")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                  <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     {t("app.pos.cash")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                  <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                     {t("app.pos.card")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
+                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0 md:border-r-1 rounded-r-lg md:rounded-r-none">
                     {t("app.pos.amount")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
+                  <th className="hidden md:table-cell text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
                     {t("app.pos.status_1c")}
                   </th>
                 </tr>
@@ -535,7 +535,7 @@ const ReceiptsContent = () => {
                       setIsModalOpen(true);
                     }}
                   >
-                    <td className="border border-border border-r-0 rounded-l-lg px-4 py-4">
+                    <td className="border border-border border-r-0 rounded-l-lg p-4">
                       <h2>
                         {(receiptsPagination.currentPage - 1) *
                           receiptsPagination.pageSize +
@@ -568,13 +568,13 @@ const ReceiptsContent = () => {
                         </Link>
                       )}
                     </td>
-                    <td className="border border-border px-4 py-4">
+                    <td className="border border-border p-4">
                       <h2>{org?.receipt_seq || org?.id}</h2>
                     </td>
-                    <td className="border border-border px-4 py-4">
+                    <td className="hidden md:table-cell border border-border p-4 ">
                       <h2> {formatDate(org?.close_time)}</h2>
                     </td>
-                    <td className="border border-border px-4 py-4">
+                    <td className="hidden md:table-cell border border-border p-4">
                       {" "}
                       <h2>
                         {org?.payments?.map((type: any, index: number) => {
@@ -618,7 +618,7 @@ const ReceiptsContent = () => {
                         })}
                       </h2>
                     </td>
-                    <td className="border border-border px-4 py-4">
+                    <td className="hidden md:table-cell border border-border p-4">
                       <h2>
                         {Number(
                           org?.received_cash.toString().slice(0, -2)
@@ -626,7 +626,7 @@ const ReceiptsContent = () => {
                         {t("app.pos.sum")}
                       </h2>
                     </td>
-                    <td className="border border-border px-4 py-4">
+                    <td className="hidden md:table-cell border border-border p-4">
                       <h2>
                         {(() => {
                           // Bonus payment type ni topish
@@ -648,7 +648,7 @@ const ReceiptsContent = () => {
                         {t("app.pos.sum")}
                       </h2>
                     </td>
-                    <td className="border border-border px-4 py-4">
+                    <td className="border border-border p-4 border-l-0 md:border-l rounded-r-lg md:rounded-r-none">
                       <h2>
                         {(
                           Number(org?.received_cash.toString().slice(0, -2)) +
@@ -657,7 +657,7 @@ const ReceiptsContent = () => {
                         {t("app.pos.sum")}
                       </h2>
                     </td>
-                    <td className="border border-border border-l-0 rounded-r-lg px-4 py-4">
+                    <td className="hidden md:table-cell border border-border border-l-0 rounded-r-lg p-4">
                       {org?.sent_to_1c ? (
                         <span className="text-green-500">
                           {t("app.pos.sent")}
@@ -931,7 +931,8 @@ const ReceiptsContent = () => {
                             ?.find(
                               (payment: any) =>
                                 payment.payment_type?.name === "Бонусы"
-                            )?.price?.toLocaleString("ru-RU") || "0"}
+                            )
+                            ?.price?.toLocaleString("ru-RU") || "0"}
                         </span>
                       </div>
                       <div className="flex justify-between">
