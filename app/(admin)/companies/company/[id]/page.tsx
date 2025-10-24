@@ -102,7 +102,7 @@ export default function CompanyPage() {
         </div>
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
-        <div className="overflow-auto h-[calc(100vh-15rem)] px-4">
+        <div className="overflow-auto h-[calc(100vh-15rem)] md:h-[calc(100vh-11rem)] px-4">
           <table className="w-full text-sm relative border-separate border-spacing-y-2">
             <thead className="sticky top-[0px] z-10 bg-bgColor">
               <tr>

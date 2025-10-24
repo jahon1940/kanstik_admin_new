@@ -82,7 +82,7 @@ export default function ClientPage() {
 
       <div className="rounded-lg bg-card shadow-lg">
         {/* Client information container - responsive height */}
-        <div className="overflow-auto h-[calc(100vh-12rem)] md:h-[calc(100vh-6rem)] px-3 md:px-4 pb-4">
+        <div className="overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)] px-3 md:px-4 pb-4">
           {loading ? (
             <div className="flex justify-center items-center h-full">
               <Loading />

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import {  usePathname } from "next/navigation";
 
 import Link from "next/link";
+import ArrowIcon from "@/components/icons/arrow";
 
 
 
@@ -21,7 +22,7 @@ export default function ReportsPage() {
       </div>
 
       <div className="rounded-lg bg-card shadow-lg p-4 md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)]">
-        <div className="space-y-4">
+        <div className="space-y-4 w-full md:w-1/2 ">
           <Link
             href={{
               pathname: `${pathname}/products`,
@@ -30,6 +31,7 @@ export default function ReportsPage() {
             className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
           >
             {t("menu.link1")}
+            <ArrowIcon />
           </Link>
           <Link
             href={{
@@ -39,6 +41,7 @@ export default function ReportsPage() {
             className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
           >
             {t("menu.link2")}
+            <ArrowIcon />
           </Link>
         </div>
       </div>

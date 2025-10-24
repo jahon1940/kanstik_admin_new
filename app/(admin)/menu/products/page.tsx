@@ -159,7 +159,7 @@ const ProductsPage = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:px-4 md:py-3 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
@@ -167,36 +167,32 @@ const ProductsPage = () => {
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <h1 className="text-lg md:text-xl font-semibold">{t("menu.link1")}</h1>
+        {/* Search Section */}
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder={t("app.pos.enter_product_name")}
+            value={productSearchQuery}
+            onChange={(e) => handleProductSearchInputChange(e.target.value)}
+            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
+          />
+          {productSearchQuery && (
+            <button
+              onClick={() => {
+                setProductSearchQuery("");
+                handleProductSearch("", 1);
+              }}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-8xl h-[89vh]  flex flex-col modal-container relative overflow-hidden space-y-4">
-        {/* Search Section */}
-        <div className="p-4 md:p-6 border-b bg-white flex-shrink-0">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder={t("app.pos.enter_product_name")}
-              value={productSearchQuery}
-              onChange={(e) => handleProductSearchInputChange(e.target.value)}
-              className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
-            />
-            {productSearchQuery && (
-              <button
-                onClick={() => {
-                  setProductSearchQuery("");
-                  handleProductSearch("", 1);
-                }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-        </div>
-
+      <div className="rounded-lg bg-card shadow-lg h-[calc(100vh-10rem)] md:h-[calc(100vh-6.5rem)] flex flex-col">
         {/* Products Content */}
-        <div className="flex-1 overflow-y-auto min-h-0 modal-scroll-container modal-content-scrollable">
+        <div className="flex-1 overflow-y-auto  px-0 md:px-4 pb-4 ">
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <Loading />
@@ -211,7 +207,7 @@ const ProductsPage = () => {
           ) : (
             <>
               {/* Desktop Table */}
-              <div className="hidden md:block px-5">
+              <div className="hidden md:block ">
                 <table className="w-full text-sm relative border-separate border-spacing-y-2">
                   <thead className="sticky top-[0px] z-10 bg-bgColor">
                     <tr>
@@ -337,49 +333,49 @@ const ProductsPage = () => {
               </div>
             </>
           )}
-          {/* Product Pagination */}
-          {!loading &&
-            products.length > 0 &&
-            productsPagination.totalPages > 1 && (
-              <div className="p-4 border-t">
-                <Pagination
-                  currentPage={productsPagination.currentPage}
-                  totalPages={productsPagination.totalPages}
-                  onPageChange={(page) => {
-                    handleProductSearch(productSearchQuery, page);
-                  }}
-                  showMoreItems={
+        </div>
+        {/* Product Pagination */}
+        {!loading &&
+          products.length > 0 &&
+          productsPagination.totalPages > 1 && (
+            <div className="p-2 border-t">
+              <Pagination
+                currentPage={productsPagination.currentPage}
+                totalPages={productsPagination.totalPages}
+                onPageChange={(page) => {
+                  handleProductSearch(productSearchQuery, page);
+                }}
+                showMoreItems={
+                  productsPagination.currentPage <
+                    productsPagination.totalPages ||
+                  (productsPagination.totalPages === 1 &&
+                    productsPagination.totalItems >
+                      productsPagination.pageSize) ||
+                  productsPagination.totalItems > products.length
+                    ? productsPagination.pageSize
+                    : 0
+                }
+                onShowMore={() => {
+                  if (
                     productsPagination.currentPage <
                       productsPagination.totalPages ||
                     (productsPagination.totalPages === 1 &&
                       productsPagination.totalItems >
                         productsPagination.pageSize) ||
                     productsPagination.totalItems > products.length
-                      ? productsPagination.pageSize
-                      : 0
+                  ) {
+                    getSearchProducts(
+                      { title: productSearchQuery },
+                      productsPagination.currentPage + 1,
+                      true // append = true for "Show More" functionality
+                    );
                   }
-                  onShowMore={() => {
-                    if (
-                      productsPagination.currentPage <
-                        productsPagination.totalPages ||
-                      (productsPagination.totalPages === 1 &&
-                        productsPagination.totalItems >
-                          productsPagination.pageSize) ||
-                      productsPagination.totalItems > products.length
-                    ) {
-                      getSearchProducts(
-                        { title: productSearchQuery },
-                        productsPagination.currentPage + 1,
-                        true // append = true for "Show More" functionality
-                      );
-                    }
-                  }}
-                  disabled={loading}
-                  className="mt-4"
-                />
-              </div>
-            )}
-        </div>
+                }}
+                disabled={loading}
+                className=""
+              />
+            </div>
+          )}
       </div>
     </div>
   );

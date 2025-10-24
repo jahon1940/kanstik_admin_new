@@ -14,9 +14,7 @@ export default function WebAppPage() {
 
       <div className="rounded-lg bg-card shadow-lg p-4 md:p-6">
         <div className="text-center py-8 md:py-12">
-          <p className="text-muted-foreground text-sm md:text-base">
-            Website & App content
-          </p>
+          <p className="text-muted-foreground text-sm md:text-base">Скоро...</p>
         </div>
       </div>
     </div>

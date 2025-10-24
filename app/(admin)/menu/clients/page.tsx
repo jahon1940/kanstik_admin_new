@@ -103,7 +103,7 @@ export default function ClientsPage() {
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:px-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
@@ -111,38 +111,24 @@ export default function ClientsPage() {
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <h1 className="text-lg md:text-xl font-semibold">
-          {t("app.company.title")}
-        </h1>
+        {/* Qidiruv paneli - responsive */}
+
+        <div className="flex items-center gap-2 rounded-md border px-3 py-2 bg-background w-full">
+          <Search size={16} className="text-muted-foreground flex-shrink-0" />
+          <input
+            type="search"
+            placeholder={t("app.search")}
+            className="w-full bg-transparent outline-none text-sm md:text-base"
+            aria-label={t("app.search")}
+            value={query}
+            onChange={handleSearchChange}
+          />
+        </div>
       </div>
 
-      <div className="rounded-lg bg-card shadow-lg">
-        {/* Qidiruv paneli - responsive */}
-        <div className="p-3 md:p-4">
-          <form
-            className="flex items-center gap-3"
-            role="search"
-            aria-label={t("app.search")}
-          >
-            <div className="flex items-center gap-2 rounded-md border px-3 py-2 bg-background w-full">
-              <Search
-                size={16}
-                className="text-muted-foreground flex-shrink-0"
-              />
-              <input
-                type="search"
-                placeholder={t("app.search")}
-                className="w-full bg-transparent outline-none text-sm md:text-base"
-                aria-label={t("app.search")}
-                value={query}
-                onChange={handleSearchChange}
-              />
-            </div>
-          </form>
-        </div>
-
+      <div className="rounded-lg bg-card shadow-lg h-[calc(100vh-10rem)] md:h-[calc(100vh-6.5rem)] flex flex-col">
         {/* Jadval container - responsive height */}
-        <div className="overflow-auto h-[calc(100vh-12rem)] md:h-[calc(100vh-11rem)] px-3 md:px-4 pb-4">
+        <div className="flex-1 overflow-y-auto  px-3 md:px-4 pb-4">
           {/* Desktop table */}
           <div className="hidden md:block">
             <table className="w-full text-sm relative border-separate border-spacing-y-2">
@@ -164,7 +150,7 @@ export default function ClientsPage() {
                   <tr>
                     <td
                       colSpan={3}
-                      className="border border-border rounded-lg px-4 py-6"
+                      className=" rounded-lg px-4 py-6"
                     >
                       <Loading />
                     </td>
@@ -181,7 +167,7 @@ export default function ClientsPage() {
                 ) : clients.length === 0 ? (
                   <tr>
                     <td
-                      className="px-4 py-6 text-muted-foreground border border-border rounded-lg"
+                      className="px-4 py-6 text-muted-foreground  rounded-lg"
                       colSpan={3}
                     >
                       {t("app.company.not_found")}
@@ -278,18 +264,18 @@ export default function ClientsPage() {
               ))
             )}
           </div>
-          {/* Pagination */}
-          {!loading && !error && clients.length > 0 && totalPages > 1 && (
-            <div className="p-3 md:p-4 border-t">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                disabled={loading}
-              />
-            </div>
-          )}
         </div>
+        {/* Pagination */}
+        {!loading && !error && clients.length > 0 && totalPages > 1 && (
+          <div className="p-2 border-t">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              disabled={loading}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
