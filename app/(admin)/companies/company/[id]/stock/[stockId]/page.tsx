@@ -289,7 +289,7 @@ export default function StockPage() {
       <div className="">
         <div className="flex flex-col md:flex-row gap-4 items-start">
           {/* Chap panel */}
-            <div className="w-full flex-shrink-0 md:w-[450px]  rounded-2xl p-4 bg-secondary shadow-lg shadow-black/10 dark:shadow-black/30 mb-6">
+            <div className="w-full flex-shrink-0 md:w-[450px]  rounded-2xl p-4 bg-secondary shadow-lg shadow-black/10 dark:shadow-black/30 sm:mb-6">
               <h1 className="text-xl  pb-1 mb-1">
                 {t("app.stock.account_title")}
               </h1>
@@ -352,7 +352,7 @@ export default function StockPage() {
               <PlusIcon />
               {t("app.stock.add_cashier")}
             </button>
-            <table className="w-full text-xs relative border-separate border-spacing-y-2">
+            <table className="w-full text-xs sm:text-sm relative border-separate border-spacing-y-2">
               <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
                   <th className="text-left font-semibold px-3 py-2 sm:px-4 sm:py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">

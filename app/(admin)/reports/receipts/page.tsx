@@ -127,6 +127,9 @@ export default function ReportsPage() {
     }
   };
 
+  console.log(ordersSite);
+  
+
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);
 

@@ -57,10 +57,13 @@ const StockReport: React.FC<StockReportProps> = ({ data, formatDate }) => {
                 {t("app.reports.average_receipt")} ({t("app.pos.sum")}):
               </span>
               <span className="font-semibold text-gray-900">
-                {(
-                  Number(data.stock_receipt_sum) /
-                  Number(data.stock_receipt_count)
-                )?.toLocaleString("ru-RU") || "10 355 550"}
+                {(data.stock_receipt_sum > 0 &&
+                  (
+                    Number(data.stock_receipt_sum) /
+                    Number(data.stock_receipt_count)
+                  )?.toLocaleString("ru-RU")) ||
+                  "0"}
+                {}
               </span>
             </div>
           </div>
@@ -104,7 +107,7 @@ const StockReport: React.FC<StockReportProps> = ({ data, formatDate }) => {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b bg-gray-50">
               <h2 className="text-lg font-semibold text-gray-900">
-               {data.stock || ""}
+                {data.stock || ""}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}

@@ -59,6 +59,7 @@
       "organization": "Tashkilot",
       "name": "Nomi",
       "phone": "Telefon",
+      "role": "Rol",
       "address": "Manzil",
       "region": "Viloyat",
       "products_by_stocks": "Omborlar bo'yicha mahsulotlar",
@@ -126,6 +127,12 @@
       "all": "Hammasi",
       "reset_filters": "Filtrlarni tozalash",
       "filters_reset": "Filtrlar tozalandi",
+      "brand": "Brend",
+      "category": "Kategoriya",
+      "article": "Artikul",
+      "remaining_reserve": "Qoldiq/Zaxira",
+      "own": "O'zniki",
+      "currency": "so'm",
       "apply_changes": "O'zgarishlarni qo'llash",
       "applying": "Qo'llanmoqda...",
       "discount_updated_success": "Chegirma muvaffaqiyatli yangilandi",
@@ -204,6 +211,10 @@
       "search_receipt_number": "Chek raqamini qidirish...",
       "enter_company_name": "Kompaniya nomini kiriting..."
     },
+    "management": {
+      "discounts": "Chegirmalar",
+      "add_discount": "Skidka qo'shish"
+    },
     "pagination": {
       "show_more": "Ko'rsatish",
       "previous": "Oldingi",
@@ -213,7 +224,32 @@
   },
   "menu": {
     "link1": "Nomenklatura",
-    "link2": "Qarama-qarshi tomonlar"
+    "link2": "Qarama-qarshi tomonlar",
+    "link3": "Menejerlar",
+    "link4": "Chegirma",
+    "link5": "KVI Mahsulotlar"
+  },
+  "product": {
+    "modal": {
+      "product_info_tab": "Mahsulot haqida ma'lumot",
+      "product_info_tab_short": "Ma'lumot",
+      "stocks_tab": "Do'konlardagi mavjudlik",
+      "stocks_tab_short": "Mavjudlik",
+      "country_manufacturer": "Ishlab chiqaruvchi mamlakat",
+      "classifier_code": "Klassifikator kodi",
+      "classifier": "Klassifikator",
+      "unit_measurement": "O'lchov birligi",
+      "package_type": "Qadoqlash turi",
+      "package_code": "Qadoqlash kodi",
+      "in_package": "Qadoqda",
+      "address": "Manzil",
+      "phone_number": "Telefon raqami",
+      "stock": "Qoldiq",
+      "not_specified": "Ko'rsatilmagan",
+      "phone_short": "Tel",
+      "remaining_reserved": "Qoldiq/Zaxira",
+      "own_stock": "O'z qoldig'i"
+    }
   },
   "client": {
     "info": {
@@ -264,7 +300,8 @@
     "select_option": "Variantni tanlang...",
     "search": "Qidirish...",
     "nothing_found": "Hech narsa topilmadi.",
-    "update": "Yangilash"
+    "update": "Yangilash",
+    "close": "Yopish"
   },
   "order": {
     "title": "Buyurtma",
@@ -305,5 +342,27 @@
     "language": "Til",
     "appearance": "Ko'rinish",
     "appearance_desc": "Dastur ko'rinishini sozlash (keyingi yangilanishlarda)"
+  },
+  "discount": {
+    "form": {
+      "add_discount_title": "Chegirma qo'shish",
+      "edit_discount_title": "Chegirmani tahrirlash",
+      "discount_name": "Chegirma nomi",
+      "discount_name_placeholder": "Chegirma nomini kiriting...",
+      "discount_percent": "Chegirma foizi",
+      "discount_percent_placeholder": "Foizni kiriting (0-100)...",
+      "add_discount": "Chegirma qo'shish",
+      "update_discount": "Chegirmani yangilash",
+      "adding": "Qo'shilmoqda...",
+      "updating": "Yangilanmoqda...",
+      "all_fields_required": "Barcha maydonlar to'ldirilishi shart",
+      "invalid_percent": "Foiz 0 dan 100 gacha bo'lgan son bo'lishi kerak",
+      "discount_added_success": "Chegirma muvaffaqiyatli qo'shildi!",
+      "discount_updated_success": "Chegirma muvaffaqiyatli yangilandi!",
+      "discount_deleted_success": "Chegirma muvaffaqiyatli o'chirildi!",
+      "delete_confirmation_title": "Chegirmani o'chirish?",
+      "delete_confirmation_message": "Ushbu chegirmani o'chirishni xohlaysizmi? Bu amalni bekor qilib bo'lmaydi.",
+      "yes_delete": "Ha, o'chirish"
+    }
   }
 }

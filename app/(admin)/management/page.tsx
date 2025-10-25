@@ -43,6 +43,36 @@ export default function ReportsPage() {
             {t("menu.link2")}
             <ArrowIcon />
           </Link>
+          <Link
+            href={{
+              pathname: `${pathname}/managers`,
+              // query: { name: data?.name },
+            }}
+            className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
+          >
+            {t("menu.link3")}
+            <ArrowIcon />
+          </Link>
+          <Link
+            href={{
+              pathname: `${pathname}/discount`,
+              // query: { name: data?.name },
+            }}
+            className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
+          >
+            {t("menu.link4")}
+            <ArrowIcon />
+          </Link>
+          <Link
+            href={{
+              pathname: `${pathname}/kvi_discount`,
+              // query: { name: data?.name },
+            }}
+            className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
+          >
+            {t("menu.link5")}
+            <ArrowIcon />
+          </Link>
         </div>
       </div>
     </div>

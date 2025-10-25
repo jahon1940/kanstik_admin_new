@@ -59,6 +59,7 @@
       "organization": "Организация",
       "name": "Название",
       "phone": "Телефон",
+      "role": "Роль",
       "address": "Адрес",
       "region": "Регион",
       "products_by_stocks": "Продукты по складам",
@@ -126,6 +127,12 @@
       "all": "Все",
       "reset_filters": "Сбросить фильтры",
       "filters_reset": "Фильтры сброшены",
+      "brand": "Бренд",
+      "category": "Категория",
+      "article": "Артикул",
+      "remaining_reserve": "Остаток/Резерв",
+      "own": "Собственный",
+      "currency": "сум",
       "apply_changes": "Применить изменения",
       "applying": "Применение...",
       "discount_updated_success": "Скидка успешно обновлена",
@@ -204,6 +211,10 @@
       "search_receipt_number": "Поиск по номеру чека...",
       "enter_company_name": "Введите название компании..."
     },
+    "management": {
+      "discounts": "Скидки",
+      "add_discount": "Добавить скидку"
+    },
     "pagination": {
       "show_more": "Показать ещё",
       "previous": "Назад",
@@ -213,7 +224,32 @@
   },
   "menu": {
     "link1": "Номенклатура",
-    "link2": "Контрагенты"
+    "link2": "Контрагенты",
+    "link3": "Сатрутники",
+    "link4": "Скидка",
+    "link5": "KVI Продукти"
+  },
+  "product": {
+    "modal": {
+      "product_info_tab": "Информация о Наменклатуре",
+      "product_info_tab_short": "Информация",
+      "stocks_tab": "Наличие в магазинах",
+      "stocks_tab_short": "Наличие",
+      "country_manufacturer": "Страна производителя",
+      "classifier_code": "Код классификатора",
+      "classifier": "Классификатор",
+      "unit_measurement": "Ед. измерение",
+      "package_type": "Тип упаковки",
+      "package_code": "Код упаковки",
+      "in_package": "В упаковке",
+      "address": "Адрес",
+      "phone_number": "Номер телефона",
+      "stock": "Остаток",
+      "not_specified": "Не указано",
+      "phone_short": "Тел",
+      "remaining_reserved": "Ост./Резерв",
+      "own_stock": "Своё ост."
+    }
   },
   "client": {
     "info": {
@@ -264,7 +300,8 @@
     "select_option": "Выберите опцию...",
     "search": "Поиск...",
     "nothing_found": "Ничего не найдено.",
-    "update": "Обновить"
+    "update": "Обновить",
+    "close": "Закрыть"
   },
   "order": {
     "title": "Заказ",
@@ -305,5 +342,27 @@
     "language": "Язык",
     "appearance": "Внешний вид",
     "appearance_desc": "Настройка внешнего вида приложения (в следующих обновлениях)"
+  },
+  "discount": {
+    "form": {
+      "add_discount_title": "Добавить скидку",
+      "edit_discount_title": "Редактировать скидку",
+      "discount_name": "Название скидки",
+      "discount_name_placeholder": "Введите название скидки...",
+      "discount_percent": "Процент скидки",
+      "discount_percent_placeholder": "Введите процент (0-100)...",
+      "add_discount": "Добавить скидку",
+      "update_discount": "Обновить скидку",
+      "adding": "Добавление...",
+      "updating": "Обновление...",
+      "all_fields_required": "Все поля обязательны для заполнения",
+      "invalid_percent": "Процент должен быть числом от 0 до 100",
+      "discount_added_success": "Скидка успешно добавлена!",
+      "discount_updated_success": "Скидка успешно обновлена!",
+      "discount_deleted_success": "Скидка успешно удалена!",
+      "delete_confirmation_title": "Удалить скидку?",
+      "delete_confirmation_message": "Вы уверены, что хотите удалить эту скидку? Это действие нельзя отменить.",
+      "yes_delete": "Да, удалить"
+    }
   }
 }
