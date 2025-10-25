@@ -80,7 +80,7 @@ export function Pagination({
           size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1 || disabled}
-          className="flex items-center gap-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <ChevronLeft className="h-4 w-4" />
           <span className="hidden sm:block">
@@ -94,7 +94,10 @@ export function Pagination({
           {visiblePages.map((page, index) => {
             if (page === "...") {
               return (
-                <span key={`dots-${index}`} className="px-3 py-2 text-gray-500">
+                <span
+                  key={`dots-${index}`}
+                  className="px-3 py-2 text-gray-500 cursor-pointer"
+                >
                   ...
                 </span>
               );
@@ -111,7 +114,7 @@ export function Pagination({
                 onClick={() => onPageChange(pageNum)}
                 disabled={disabled}
                 className={cn(
-                  "min-w-[40px] bg-white border text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed",
+                  "min-w-[40px] bg-white border text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
                   isActive
                     ? "border-primary text-primary bg-primary/10"
                     : "border-gray-300"
@@ -129,7 +132,7 @@ export function Pagination({
           size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages || disabled}
-          className="flex items-center gap-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <span className="hidden sm:block">{t("app.pagination.next")}</span>
           <ChevronRight className="h-4 w-4" />

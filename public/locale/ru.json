@@ -251,6 +251,14 @@
       "own_stock": "Своё ост."
     }
   },
+  "kvi_discount": {
+    "search_products": "Поиск товаров...",
+    "product_column": "Продукт",
+    "actions_column": "Действия",
+    "number_column": "№",
+    "article": "Артикул",
+    "added_products": "Добавленные продукты"
+  },
   "client": {
     "info": {
       "title": "Информация о клиенте",

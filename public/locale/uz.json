@@ -251,6 +251,14 @@
       "own_stock": "O'z qoldig'i"
     }
   },
+  "kvi_discount": {
+    "search_products": "Mahsulotlarni qidirish...",
+    "product_column": "Mahsulot",
+    "actions_column": "Amallar",
+    "number_column": "№",
+    "article": "Artikul",
+    "added_products": "Qo'shilgan mahsulotlar"
+  },
   "client": {
     "info": {
       "title": "Mijoz haqida ma'lumot",
