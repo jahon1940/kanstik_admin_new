@@ -17,6 +17,7 @@
   "nav": {
     "companies": "Компании",
     "reports": "Отчеты",
+    "management": "Управление",
     "menu": "Меню",
     "clients": "Клиенты",
     "webapp": "Сайт и приложение",
@@ -123,6 +124,8 @@
       "discount_disabled": "Выключен",
       "discount_percentage": "Укажите скидку в процентах",
       "all": "Все",
+      "reset_filters": "Сбросить фильтры",
+      "filters_reset": "Фильтры сброшены",
       "apply_changes": "Применить изменения",
       "applying": "Применение...",
       "discount_updated_success": "Скидка успешно обновлена",

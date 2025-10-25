@@ -1,6 +1,6 @@
 import type { SVGProps, FC } from "react";
 
-const LogOutIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
+const SettingsIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       width="18"
@@ -30,4 +30,4 @@ const LogOutIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   );
 };
 
-export default LogOutIcon;
+export default SettingsIcon;

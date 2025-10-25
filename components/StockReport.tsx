@@ -102,13 +102,13 @@ const StockReport: React.FC<StockReportProps> = ({ data, formatDate }) => {
         >
           <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b bg-gray-50 relative">
+            <div className="flex items-center justify-between p-4 border-b bg-gray-50">
               <h2 className="text-lg font-semibold text-gray-900">
-                {t("app.reports.details")} - {data.stock || ""}
+               {data.stock || ""}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
+                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>

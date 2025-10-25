@@ -50,6 +50,7 @@ const LanguageSelect = () => {
       padding: "0",
       color: "#6B7280",
       "&:hover": { color: "#6B7280" },
+      
     }),
     menu: (provided) => ({
       ...provided,
@@ -59,10 +60,11 @@ const LanguageSelect = () => {
       boxShadow:
         "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
       marginTop: "4px",
-      right: "0px",
+      left: "0px",
       zIndex: 9999,
       minWidth: "120px",
       width: "auto",
+      
     }),
     menuList: (provided) => ({
       ...provided,
@@ -109,7 +111,7 @@ const LanguageSelect = () => {
   // Prevent hydration mismatch by only rendering on client
   if (!isMounted) {
     return (
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 ">
         <div className="flex items-center space-x-3">
           <span className="text-xl">{currentOption?.flag}</span>
           <span className="font-medium text-lg">{currentOption?.label}</span>
@@ -132,7 +134,7 @@ const LanguageSelect = () => {
         instanceId="language-select"
         components={{
           DropdownIndicator: () => (
-            <div className="text-black">
+            <div className="text-red">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="black">
                 <path d="M6 8L2 4h8l-4 4z" />
               </svg>

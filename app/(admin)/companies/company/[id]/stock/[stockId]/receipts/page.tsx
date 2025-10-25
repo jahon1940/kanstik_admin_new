@@ -25,7 +25,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Pagination } from "@/components/ui/pagination";
 
-
 // Receipt type
 type Receipt = {
   id: number;
@@ -522,6 +521,21 @@ export default function StockReceiptsPage() {
     );
     setIsFilterModalOpen(false);
   };
+
+  const handleResetFilters = () => {
+    // Barcha filter qiymatlarini reset qilish
+    setSelectedCompany(null);
+    setSelectedProduct(null);
+    setSelectedPaymentType(null); // null qilib qo'yamiz
+    setDate(undefined);
+    setDate2(undefined);
+    setReceiptSearchNumber("");
+    setReceipts([]);
+
+    // Toast xabari
+    toast.success(t("app.pos.reset_filters"));
+  };
+
   // useEffect(() => {
   //   // getSearchProducts funksiyasini kerakli parametr bilan chaqiring
   //   const searchData = {
@@ -802,6 +816,13 @@ export default function StockReceiptsPage() {
                       className="cursor-pointer text-sm px-3 py-2"
                     >
                       {t("app.pos.generate_receipts")}
+                    </Button>
+                    <Button
+                      onClick={handleResetFilters}
+                      variant="outline"
+                      className="cursor-pointer text-sm px-3 py-2"
+                    >
+                      {t("app.pos.reset_filters")}
                     </Button>
                   </div>
                 </div>
@@ -2313,7 +2334,7 @@ export default function StockReceiptsPage() {
                             </div>
 
                             {/* Mobile Calendar Buttons */}
-                            <div className="md:hidden flex gap-3 w-full">
+                            <div className="md:hidden flex gap-3 w-full justify-between">
                               <Button
                                 variant="outline"
                                 onClick={() => setMobileCalendarOpen(true)}
@@ -2402,6 +2423,16 @@ export default function StockReceiptsPage() {
                     <div className="bg-gray-50 px-6 py-4 border-t flex flex-col gap-2">
                       <Button onClick={handleFilterApply} className="px-6">
                         {t("app.pos.generate_receipts")}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleResetFilters();
+                          
+                        }}
+                        variant="outline"
+                        className="px-6"
+                      >
+                        {t("app.pos.reset_filters")}
                       </Button>
                     </div>
                   </div>

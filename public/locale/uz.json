@@ -17,6 +17,7 @@
   "nav": {
     "companies": "Kompaniyalar",
     "reports": "Hisobotlar",
+    "management": "Boshqaruv",
     "menu": "Menyu",
     "clients": "Mijozlar",
     "webapp": "Veb-sayt va ilova",
@@ -123,6 +124,8 @@
       "discount_disabled": "O'chirilgan",
       "discount_percentage": "Chegirma foizini kiriting",
       "all": "Hammasi",
+      "reset_filters": "Filtrlarni tozalash",
+      "filters_reset": "Filtrlar tozalandi",
       "apply_changes": "O'zgarishlarni qo'llash",
       "applying": "Qo'llanmoqda...",
       "discount_updated_success": "Chegirma muvaffaqiyatli yangilandi",

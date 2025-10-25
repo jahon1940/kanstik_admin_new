@@ -27,6 +27,9 @@ import ReportIcon from "./icons/report";
 import CompanyIcon from "./icons/company";
 import { useAlertDialog } from "@/contexts/AlertDialogContext";
 import MenuIcon from "./icons/menu";
+import ManageIcon from "./icons/manage";
+import CompanyBoldIcon from "./icons/company-bold";
+import ReportBoldIcon from "./icons/repor-bold";
 
 export type NavItem = {
   label: string;
@@ -47,9 +50,9 @@ export const navItems: NavItem[] = [
     icon: (p) => <ReportIcon className={p.className} />,
   },
   {
-    label: "nav.menu",
-    href: "/menu",
-    icon: (p) => <MenuIcon className={p.className} />,
+    label: "nav.management",
+    href: "/management",
+    icon: (p) => <ManageIcon className={p.className} />,
   },
   // {
   //   label: "nav.clients",
@@ -249,38 +252,88 @@ export function MobileNav() {
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 h-16 bg-secondary border-t grid grid-cols-4 z-40 safe-area-pb">
-      {navItems.map((item) => {
-        const active =
-          pathname === item.href || pathname?.startsWith(item.href);
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "flex flex-col items-center justify-center text-xs gap-1 p-2",
-              active
-                ? "bg-primary text-white rounded-lg mx-1 my-1"
-                : "text-muted hover:bg-accent/50 rounded-lg mx-1 my-1"
-            )}
-            aria-label={t(item.label)}
-          >
-            {item.icon({
-              className: cn(
-                "w-5 h-5",
-                active ? "[&_path]:stroke-[#FFFFFF]" : "[&_path]:stroke-current"
-              ),
-            })}
-            <span
-              className={cn(
-                "text-[10px] font-medium truncate max-w-full",
-                active ? "text-white" : "text-muted-foreground"
-              )}
-            >
-              {t(item.label).replace("nav.", "")}
-            </span>
-          </Link>
-        );
-      })}
+      <Link
+        href="/companies"
+        className={cn(
+          "flex flex-col items-center justify-center text-xs gap-1 p-2"
+        )}
+      >
+        {pathname.startsWith("/companies") ? (
+          <CompanyBoldIcon
+            className={cn("group-hover:[&_path]:stroke-[#FFFFFF] w-6 h-6 ")}
+          />
+        ) : (
+          <CompanyIcon
+            className={cn("group-hover:[&_path]:stroke-[#FFFFFF] w-5 h-5 ")}
+          />
+        )}
+
+        {/* <span className={cn("whitespace-nowrap transition-all duration-300")}>
+          {t("nav.companies")}
+        </span> */}
+      </Link>
+      <Link
+        href="/reports"
+        className={cn(
+          "flex flex-col items-center justify-center text-xs gap-1 p-2"
+        )}
+      >
+        {pathname.startsWith("/reports") ? (
+          <ReportBoldIcon
+            className={cn("group-hover:[&_path]:stroke-[#FFFFFF] w-6 h-6")}
+          />
+        ) : (
+          <ReportIcon
+            className={cn("group-hover:[&_path]:stroke-[#FFFFFF] w-5 h-5")}
+          />
+        )}
+
+        {/* <span className={cn("whitespace-nowrap transition-all duration-300")}>
+          {t("nav.reports")}
+        </span> */}
+      </Link>
+      <Link
+        href="/management"
+        className={cn(
+          "flex flex-col items-center justify-center text-xs gap-1 p-2",
+          pathname.startsWith("/management")
+            ? "bg-primary text-white rounded-lg mx-1 my-1"
+            : "text-muted hover:bg-accent/50 rounded-lg mx-1 my-1"
+        )}
+      >
+        <ManageIcon
+          className={cn(
+            "group-hover:[&_path]:stroke-[#FFFFFF] ",
+            pathname?.startsWith("/management")
+              ? "[&_path]:stroke-[#FFFFFF] w-5 h-5"
+              : "group-hover:[&_path]:stroke-[#FFFFFF]  w-5 h-5"
+          )}
+        />
+        {/* <span className={cn("whitespace-nowrap transition-all duration-300")}>
+          {t("nav.management")}
+        </span> */}
+      </Link>
+      <Link
+        href="/menu"
+        className={cn(
+          "flex flex-col items-center justify-center text-xs gap-1 p-2",
+          pathname.startsWith("/menu")
+            ? "bg-primary text-white rounded-lg mx-1 my-1"
+            : "text-muted hover:bg-accent/50 rounded-lg mx-1 my-1"
+        )}
+      >
+        <MenuIcon
+          className={cn(
+            "group-hover:[&_path]:stroke-[#FFFFFF]   w-5 h-5",
+            pathname?.startsWith("/menu")
+              ? "[&_path]:stroke-[#FFFFFF]"
+              : "group-hover:[&_path]:stroke-[#FFFFFF] "
+          )}
+        />
+        {/* <span className={cn("whitespace-nowrap transition-all duration-300")}>
+          {t("nav.menu")}
+        </span> */}
+      </Link>
     </nav>
   );
 }

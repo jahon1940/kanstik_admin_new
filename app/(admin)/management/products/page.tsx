@@ -163,7 +163,7 @@ const ProductsPage = () => {
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary shrink-0 "
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
