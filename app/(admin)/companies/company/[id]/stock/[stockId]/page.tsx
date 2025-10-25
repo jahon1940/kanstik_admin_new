@@ -289,12 +289,11 @@ export default function StockPage() {
       <div className="">
         <div className="flex flex-col md:flex-row gap-4 items-start">
           {/* Chap panel */}
-          <div>
             <div className="w-full flex-shrink-0 md:w-[450px]  rounded-2xl p-4 bg-secondary shadow-lg shadow-black/10 dark:shadow-black/30 mb-6">
               <h1 className="text-xl  pb-1 mb-1">
                 {t("app.stock.account_title")}
               </h1>
-              <table className="text-sm border-separate border-spacing-x-2 mb-4">
+              <table className="w-full text-sm border-separate border-spacing-x-2 mb-4">
                 <tbody>
                   <tr>
                     <td className="py-1">{t("app.stock.organization")}:</td>
@@ -340,7 +339,6 @@ export default function StockPage() {
                 <ArrowIcon />
               </Link>
             </div>
-          </div>
 
           {/* O‘ng panel */}
           <div className="flex-1  rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full shadow-lg shadow-black/10 dark:shadow-black/30">
@@ -354,19 +352,19 @@ export default function StockPage() {
               <PlusIcon />
               {t("app.stock.add_cashier")}
             </button>
-            <table className="w-full text-sm relative border-separate border-spacing-y-2">
+            <table className="w-full text-xs relative border-separate border-spacing-y-2">
               <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                  <th className="text-left font-semibold px-3 py-2 sm:px-4 sm:py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                     №
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
+                  <th className="text-left font-semibold px-3 py-2 sm:px-4 sm:py-3 border-b w-[60%] border border-gray-300 border-l-0">
                     {t("app.company.name")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b w-[30%] border border-gray-300 border-l-0">
+                  <th className="text-left font-semibold px-3 py-2 sm:px-4 sm:py-3 border-b w-[30%] border border-gray-300 border-l-0">
                     {t("app.company.status")}
                   </th>
-                  <th className="text-left font-semibold px-4 py-3 border-b w-[20%] border-r border-gray-300 border border-l-0 rounded-r-lg">
+                  <th className="text-left font-semibold px-3 py-2 sm:px-4 sm:py-3 border-b w-[20%] border-r border-gray-300 border border-l-0 rounded-r-lg">
                     {t("ui.update")}
                   </th>
                 </tr>
@@ -409,7 +407,7 @@ export default function StockPage() {
                       </td>
                       <td className="border border-border">
                         <Link
-                          className="block px-4 py-3"
+                          className="block px-3 py-2 sm:px-4 sm:py-3"
                           href={{
                             pathname: `${pathname}/pos/${org.id}`,
                             query: { name: org.name },
@@ -420,7 +418,7 @@ export default function StockPage() {
                       </td>
                       <td className="border border-border border-l-0">
                         <Link
-                          className="block px-4 py-3"
+                          className="block px-3 py-2 sm:px-4 sm:py-3"
                           href={`${pathname}/pos/${org.id}`}
                         >
                           <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
@@ -429,7 +427,7 @@ export default function StockPage() {
                         </Link>
                       </td>
                       <td className="border border-border border-l-0 rounded-r-lg">
-                        <div className="px-4 py-3">
+                        <div className="px-3 py-2 sm:px-4 sm:py-3">
                           <span
                             onClick={() => {
                               console.log("update");
