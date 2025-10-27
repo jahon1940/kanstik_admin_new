@@ -253,7 +253,7 @@ export default function DiscountPage() {
         </div>
       </div>
       <div className="rounded-lg bg-card shadow-lg">
-        <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
+        <div className="overflow-auto h-[calc(100vh-9.5rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
           {/* Payments Tab */}
           <div className="w-full mt-0">
             <div className="space-y-4">

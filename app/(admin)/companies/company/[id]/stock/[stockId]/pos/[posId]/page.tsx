@@ -87,7 +87,7 @@ export default function Pos() {
       </div>
       {/* Main content - responsive */}
       <div className="rounded-lg bg-card shadow-lg">
-        <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 ">
+        <div className="overflow-auto h-[calc(100vh-9.5rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 ">
           {/* content - only visible on desktop/larger screens */}
           <div className="hidden md:block w-full">
             {/* info */}

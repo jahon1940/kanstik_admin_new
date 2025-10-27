@@ -289,59 +289,59 @@ export default function StockPage() {
       <div className="">
         <div className="flex flex-col md:flex-row gap-4 items-start">
           {/* Chap panel */}
-            <div className="w-full flex-shrink-0 md:w-[450px]  rounded-2xl p-4 bg-secondary shadow-lg shadow-black/10 dark:shadow-black/30 sm:mb-6">
-              <h1 className="text-xl  pb-1 mb-1">
-                {t("app.stock.account_title")}
-              </h1>
-              <table className="w-full text-sm border-separate border-spacing-x-2 mb-4">
-                <tbody>
-                  <tr>
-                    <td className="py-1">{t("app.stock.organization")}:</td>
-                    <td>
-                      <h1>{data?.organization}</h1>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-1">{t("app.stock.name")}:</td>
-                    <td>{data?.name}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1">{t("app.stock.phone")}:</td>
-                    <td>{data?.phone_number}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1">{t("app.stock.address")}:</td>
-                    <td>{data?.address}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1">{t("app.stock.region")}:</td>
-                    <td>{data?.region}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1 w-[40%]">
-                      {t("app.stock.products_by_stocks")}:
-                    </td>
-                    <td>{counts?.product_in_warehouses}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <Link
-                href={{
-                  pathname: `${pathname}/receipts`,
-                  query: { name: data?.name },
-                }}
-                className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
-              >
-                <div className="flex gap-2 items-center">
-                  <ReceiptsIcon />
-                  {t("app.stock.all_receipts")}
-                </div>
-                <ArrowIcon />
-              </Link>
-            </div>
+          <div className="w-full flex-shrink-0 md:w-[450px]  rounded-2xl p-4 bg-secondary shadow-lg shadow-black/10 dark:shadow-black/30 sm:mb-6">
+            <h1 className="text-xl  pb-1 mb-1">
+              {t("app.stock.account_title")}
+            </h1>
+            <table className="w-full text-sm border-separate border-spacing-x-2 mb-4">
+              <tbody>
+                <tr>
+                  <td className="py-1">{t("app.stock.organization")}:</td>
+                  <td>
+                    <h1>{data?.organization}</h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-1">{t("app.stock.name")}:</td>
+                  <td>{data?.name}</td>
+                </tr>
+                <tr>
+                  <td className="py-1">{t("app.stock.phone")}:</td>
+                  <td>{data?.phone_number}</td>
+                </tr>
+                <tr>
+                  <td className="py-1">{t("app.stock.address")}:</td>
+                  <td>{data?.address}</td>
+                </tr>
+                <tr>
+                  <td className="py-1">{t("app.stock.region")}:</td>
+                  <td>{data?.region}</td>
+                </tr>
+                <tr>
+                  <td className="py-1 w-[40%]">
+                    {t("app.stock.products_by_stocks")}:
+                  </td>
+                  <td>{counts?.product_in_warehouses}</td>
+                </tr>
+              </tbody>
+            </table>
+            <Link
+              href={{
+                pathname: `${pathname}/receipts`,
+                query: { name: data?.name },
+              }}
+              className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 w-full flex items-center justify-between "
+            >
+              <div className="flex gap-2 items-center">
+                <ReceiptsIcon />
+                {t("app.stock.all_receipts")}
+              </div>
+              <ArrowIcon />
+            </Link>
+          </div>
 
           {/* O‘ng panel */}
-          <div className="flex-1  rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full shadow-lg shadow-black/10 dark:shadow-black/30">
+          <div className="flex-1  rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full shadow-lg shadow-black/10 dark:shadow-black/30 overflow-x-hidden">
             <h1 className="text-xl mb-3">
               {t("app.stock.cashiers")} ({data?.name}){" "}
             </h1>
@@ -454,7 +454,7 @@ export default function StockPage() {
 
       {/* Modal for adding cash register */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-[90%] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-md">
           <DialogHeader>
             <DialogTitle>{t("app.stock.cash_register_data")}</DialogTitle>
           </DialogHeader>
