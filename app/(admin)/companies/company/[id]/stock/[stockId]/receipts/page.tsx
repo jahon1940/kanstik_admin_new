@@ -576,7 +576,7 @@ export default function StockReceiptsPage() {
             onClick={() => router.back()}
             className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0"
           >
-            <ChevronLeft className="h-3 w-3 md:h-4 md:w-4" />
+            <ChevronLeft className="h-4 w-4" />
           </button>
           <h1 className="text-base md:text-xl font-semibold truncate">
             {t("app.stock.account_receipts")} ({name})
@@ -843,7 +843,7 @@ export default function StockReceiptsPage() {
                   <table className="w-full text-sm relative border-separate border-spacing-y-2">
                     <thead className="sticky -top-[16px] z-10 bg-bgColor">
                       <tr>
-                        <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                        <th className="text-center font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                           №
                         </th>
                         <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
@@ -2427,7 +2427,6 @@ export default function StockReceiptsPage() {
                       <Button
                         onClick={() => {
                           handleResetFilters();
-                          
                         }}
                         variant="outline"
                         className="px-6"

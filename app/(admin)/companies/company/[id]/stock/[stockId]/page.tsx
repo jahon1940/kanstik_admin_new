@@ -439,15 +439,17 @@ export default function StockPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+          className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
+        <h1 className="text-base md:text-xl font-semibold truncate">
+          {t("app.company.title")}
+        </h1>
       </div>
       <div className="">
         <div className="flex flex-col md:flex-row gap-4 items-start">
@@ -504,7 +506,7 @@ export default function StockPage() {
           </div>
 
           {/* O‘ng panel */}
-          <div className="flex-1  rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-6rem)] w-full shadow-lg shadow-black/10 dark:shadow-black/30 overflow-x-hidden">
+          <div className="flex-1  rounded-2xl p-4 bg-secondary overflow-auto h-[calc(100vh-7rem)] w-full shadow-lg shadow-black/10 dark:shadow-black/30 overflow-x-hidden">
             <h1 className="text-xl mb-3">
               {t("app.stock.cashiers")} ({data?.name}){" "}
             </h1>
@@ -518,7 +520,7 @@ export default function StockPage() {
             <table className="w-full text-xs sm:text-sm relative border-separate border-spacing-y-2">
               <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-3 py-2 sm:px-4 sm:py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                  <th className="text-center font-semibold px-3 py-2 sm:px-4 sm:py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                     №
                   </th>
                   <th className="text-left font-semibold px-3 py-2 sm:px-4 sm:py-3 border-b w-[60%] border border-gray-300 border-l-0">

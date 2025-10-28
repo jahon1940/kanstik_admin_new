@@ -148,16 +148,16 @@ export default function ReportsPage() {
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+          className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <h1 className="text-lg md:text-xl font-semibold">
+        <h1 className="text-base md:text-xl font-semibold truncate">
           {t("app.reports.title2")}
         </h1>
       </div>
 
-      <div className="rounded-lg bg-card shadow-lg p-4 md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)]">
+      <div className="rounded-lg bg-card shadow-lg p-3  md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6.5rem)]">
         <div className="space-y-4">
           {/* Date filters - responsive */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">

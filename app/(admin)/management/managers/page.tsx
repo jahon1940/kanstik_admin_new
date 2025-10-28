@@ -30,7 +30,7 @@ export default function ManagersPage() {
   const { t } = useLanguage();
 
   const pathname = usePathname();
-    const router = useRouter();
+  const router = useRouter();
 
   const requestData = {
     search: "",
@@ -92,24 +92,23 @@ export default function ManagersPage() {
     setCurrentPage(page);
     fetchManagers(query, page);
   };
-  
+
   console.log(managers);
-  
 
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:px-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+          className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
         {/* Qidiruv paneli - responsive */}
 
-        <div className="flex items-center gap-2 rounded-md border px-3 py-2 bg-background w-full">
+        <div className="flex items-center gap-2 rounded-md border px-3 h-8 md:h-9 bg-background w-full">
           <Search size={16} className="text-muted-foreground flex-shrink-0" />
           <input
             type="search"
@@ -130,7 +129,7 @@ export default function ManagersPage() {
             <table className="w-full text-sm relative border-separate border-spacing-y-2">
               <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                  <th className="text-center font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                     №
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
@@ -190,16 +189,15 @@ export default function ManagersPage() {
                         )}
                       </td>
                       <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
-                        
-                          {org.role == "admin" ? (
-                            <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                              {org.role}
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
-                              {org.role}
-                            </span>
-                          )}
+                        {org.role == "admin" ? (
+                          <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                            {org.role}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                            {org.role}
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -224,12 +222,8 @@ export default function ManagersPage() {
               </div>
             ) : (
               managers.map((org) => (
-                <Link
+                <div
                   key={org.id}
-                  href={{
-                    pathname: `${pathname}/client/${org.id}`,
-                    query: { name: org.name },
-                  }}
                   className="block border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center justify-between">
@@ -242,7 +236,7 @@ export default function ManagersPage() {
                       {t("app.company.active")}
                     </span>
                   </div>
-                </Link>
+                </div>
               ))
             )}
           </div>

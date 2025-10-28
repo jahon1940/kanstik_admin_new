@@ -5,7 +5,7 @@ export default function DesktopOnlyMessage() {
 
   return (
     <div className="rounded-lg shadow-lg bg-card p-6">
-      <div className="flex flex-col items-center justify-center h-[calc(100vh-12.7rem)] md:h-[calc(100vh-9rem)] text-center">
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-13rem)] md:h-[calc(100vh-9rem)] text-center">
         <div className="max-w-md mx-auto">
           <div className="mb-6">
             <svg

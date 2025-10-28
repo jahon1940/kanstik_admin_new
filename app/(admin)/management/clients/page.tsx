@@ -29,7 +29,7 @@ export default function ClientsPage() {
   const { t } = useLanguage();
 
   const pathname = usePathname();
-    const router = useRouter();
+  const router = useRouter();
 
   const requestData = {
     url: null,
@@ -98,22 +98,21 @@ export default function ClientsPage() {
     setCurrentPage(page);
     fetchClients(query, page);
   };
-  
 
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:px-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+          className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
         {/* Qidiruv paneli - responsive */}
 
-        <div className="flex items-center gap-2 rounded-md border px-3 py-2 bg-background w-full">
+        <div className="flex h-8 md:h-9 items-center gap-2 px-2  rounded-md border  bg-background w-full">
           <Search size={16} className="text-muted-foreground flex-shrink-0" />
           <input
             type="search"
@@ -134,7 +133,7 @@ export default function ClientsPage() {
             <table className="w-full text-sm relative border-separate border-spacing-y-2">
               <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                  <th className="text-center font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                     №
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
@@ -148,10 +147,7 @@ export default function ClientsPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td
-                      colSpan={3}
-                      className=" rounded-lg px-4 py-6"
-                    >
+                    <td colSpan={3} className=" rounded-lg px-4 py-6">
                       <Loading />
                     </td>
                   </tr>

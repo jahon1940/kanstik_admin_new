@@ -135,7 +135,7 @@ export default function OrderPage() {
             <table className="w-full mb-3 text-sm relative border-separate border-spacing-y-2">
               <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                  <th className="text-center font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                     №
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">

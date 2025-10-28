@@ -70,11 +70,11 @@ export default function CompanyPage() {
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0 md:hidden"
+          className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -84,7 +84,7 @@ export default function CompanyPage() {
       </div>
       <div className="rounded-lg bg-card shadow-lg">
         {/* Qidiruv paneli */}
-        <div className="p-4">
+        <div className="p-3 md:p-4">
           <form
             className="flex items-center gap-3"
             role="search"
@@ -105,11 +105,11 @@ export default function CompanyPage() {
         </div>
 
         {/* Jadval: sticky sarlavha, 2 ustun */}
-        <div className="overflow-auto h-[calc(100vh-15rem)] md:h-[calc(100vh-11rem)] px-4">
+        <div className="overflow-auto h-[calc(100vh-14rem)] md:h-[calc(100vh-11rem)] px-3 md:px-4">
           <table className="w-full text-sm relative border-separate border-spacing-y-2">
             <thead className="sticky top-[0px] z-10 bg-bgColor">
               <tr>
-                <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                <th className="text-center font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                   №
                 </th>
                 <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">

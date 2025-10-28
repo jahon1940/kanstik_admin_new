@@ -113,7 +113,6 @@ const ProductsPage = () => {
   };
 
   console.log(selectedProduct?.stocks);
-  
 
   const getSearchProducts = async (
     searchData: any,
@@ -201,11 +200,11 @@ const ProductsPage = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:px-4 md:py-3 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
+      <div className="flex items-center gap-2 sm:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary shrink-0 "
+          className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0 "
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -216,7 +215,7 @@ const ProductsPage = () => {
             placeholder={t("app.pos.enter_product_name")}
             value={productSearchQuery}
             onChange={(e) => handleProductSearchInputChange(e.target.value)}
-            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
+            className="w-full px-4 h-8 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
           />
           {productSearchQuery && (
             <button
@@ -253,7 +252,7 @@ const ProductsPage = () => {
                 <table className="w-full text-sm relative border-separate border-spacing-y-2">
                   <thead className="sticky top-[0px] z-10 bg-bgColor">
                     <tr>
-                      <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                      <th className="text-center font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                         №
                       </th>
                       <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
@@ -265,7 +264,7 @@ const ProductsPage = () => {
                       <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                         {t("app.pos.product_classifier")}
                       </th>
-                      
+
                       <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
                         {t("app.pos.price")}
                       </th>
@@ -305,11 +304,13 @@ const ProductsPage = () => {
                             {product.classifier_title}
                           </div>
                         </td>
-                      
-                        <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
+
+                        <td className="border border-border border-l-0 rounded-r-lg px-4 py-3 min-w-[140px]">
                           <div className="font-semibold text-sm">
-                            {product.price?.toLocaleString("ru-RU") || 0}{" "}
-                            {t("app.pos.currency")}
+                            <div>
+                              {product.price?.toLocaleString("ru-RU") || 0}{" "}
+                              {t("app.pos.currency")}
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -320,7 +321,7 @@ const ProductsPage = () => {
 
               {/* Mobile Cards */}
               <div className="md:hidden">
-                <div className="space-y-3 p-4">
+                <div className="space-y-3 p-3 md:p-4">
                   {products.map((product: Product, index: number) => (
                     <div
                       key={product.id}
@@ -352,7 +353,6 @@ const ProductsPage = () => {
                           </div>
                         </div>
                       </div>
-                     
                     </div>
                   ))}
                 </div>

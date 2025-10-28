@@ -35,7 +35,7 @@ export default function MenuPage() {
         <h1 className="text-lg md:text-xl font-semibold">{t("nav.menu")}</h1>
       </div>
 
-      <div className="rounded-lg bg-card shadow-lg p-4 md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)]">
+      <div className="rounded-lg bg-card shadow-lg p-3 md:p-4 md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)]">
         <div className="space-y-4 w-full md:w-1/2 ">
           <Link
             href={{

@@ -68,7 +68,7 @@ export default function CompaniesPage() {
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <h1 className="text-base md:text-xl font-semibold truncate">
           {t("app.company.title")}
         </h1>
@@ -106,7 +106,7 @@ export default function CompaniesPage() {
             <table className="w-full text-sm relative border-separate border-spacing-y-2">
               <thead className="sticky top-[0px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border  rounded-l-lg">
+                  <th className="text-center font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border  rounded-l-lg">
                     №
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0 ">

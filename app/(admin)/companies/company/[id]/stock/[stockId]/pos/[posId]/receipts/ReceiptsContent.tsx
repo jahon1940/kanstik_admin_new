@@ -496,7 +496,7 @@ const ReceiptsContent = () => {
             <table className="w-full text-sm relative border-separate border-spacing-y-2 ">
               <thead className="sticky -top-[16px] z-10 bg-bgColor">
                 <tr>
-                  <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 rounded-l-lg">
+                  <th className="text-center font-semibold px-4 py-3 border-b border border-gray-300 rounded-l-lg">
                     №
                   </th>
                   <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
