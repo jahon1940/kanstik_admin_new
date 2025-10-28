@@ -405,6 +405,18 @@
     "enter_text": "Matnni kiriting",
     "add": "Qo'shish",
     "cancel": "Bekor qilish",
-    "show": "ko'rsatish"
+    "show": "ko'rsatish",
+    "please_select_start_date": "Iltimos, boshlanish sanasini tanlang",
+    "please_select_end_date": "Iltimos, tugash sanasini tanlang",
+    "please_select_category": "Iltimos, kamida bitta kategoriya tanlang",
+    "categories": "Kategoriyalar",
+    "children_categories": "Bolalar kategoriyalari",
+    "select_parent_category": "Bolalarni ko'rish uchun asosiy kategoriyani tanlang",
+    "discount_name": "Chegirma nomi",
+    "discount_percent": "Chegirma foizi (0-100)",
+    "barcode": "Shtrix kod",
+    "creating": "Yaratilmoqda...",
+    "updating": "Yangilanmoqda...",
+    "selected": "Tanlangan"
   }
 }

@@ -69,15 +69,18 @@ export default function CompanyPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-2 pl-4 min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
+      {/* Header - responsive */}
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg">
         <button
           type="button"
           onClick={() => router.back()}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary"
+          className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0 md:hidden"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <h1 className="text-xl font-semibold">{t("app.company.title")}</h1>
+        <h1 className="text-base md:text-xl font-semibold truncate">
+          {t("app.company.title")}
+        </h1>
       </div>
       <div className="rounded-lg bg-card shadow-lg">
         {/* Qidiruv paneli */}

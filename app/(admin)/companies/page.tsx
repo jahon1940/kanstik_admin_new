@@ -34,12 +34,12 @@ export default function CompaniesPage() {
     fetch(`${BASE_URL}/v1/admins/organizations`, requestOptions)
       .then((response) => {
         console.log(response);
-        
+
         return response.json();
       })
       .then((result) => {
         console.log(result);
-        
+
         if (!cancelled) setItems(result.results ?? []);
         setLoading(false);
         setError(null);
@@ -68,8 +68,8 @@ export default function CompaniesPage() {
   return (
     <div className="space-y-4">
       {/* Header - responsive */}
-      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-11 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)] ">
-        <h1 className="text-lg md:text-xl font-semibold">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg">
+        <h1 className="text-base md:text-xl font-semibold truncate">
           {t("app.company.title")}
         </h1>
       </div>
@@ -100,7 +100,7 @@ export default function CompaniesPage() {
         </div>
 
         {/* Jadval container - responsive height */}
-        <div className="overflow-auto h-[calc(100vh-13.5rem)] md:h-[calc(100vh-11rem)] px-3 md:px-4 pb-4">
+        <div className="overflow-auto h-[calc(100vh-13.7rem)] md:h-[calc(100vh-11rem)] px-3 md:px-4 pb-4">
           {/* Desktop table */}
           <div className="hidden md:block">
             <table className="w-full text-sm relative border-separate border-spacing-y-2">

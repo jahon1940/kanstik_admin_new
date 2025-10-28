@@ -30,6 +30,8 @@ import MenuIcon from "./icons/menu";
 import ManageIcon from "./icons/manage";
 import CompanyBoldIcon from "./icons/company-bold";
 import ReportBoldIcon from "./icons/repor-bold";
+import ManageBoldIcon from "./icons/manage-bold";
+import MenuBoldIcon from "./icons/menu-bold";
 
 export type NavItem = {
   label: string;
@@ -251,88 +253,68 @@ export function MobileNav() {
   const { t } = useTranslation();
 
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 h-16 bg-secondary border-t grid grid-cols-4 z-40 safe-area-pb">
+    <nav className="md:hidden fixed bottom-0 inset-x-2 h-16 bg-secondary border-t grid grid-cols-4 z-40 safe-area-pb gap-6 px-4">
       <Link
         href="/companies"
         className={cn(
-          "flex flex-col items-center justify-center text-xs gap-1 p-2"
+          "flex flex-col items-center justify-center text-xs gap-1 p-2",
+          pathname.startsWith("/companies")
+            ? "bg-primary/40 text-white rounded-lg mx-1 my-1"
+            : "rounded-lg mx-1 my-1"
         )}
       >
         {pathname.startsWith("/companies") ? (
-          <CompanyBoldIcon
-            className={cn("group-hover:[&_path]:stroke-[#FFFFFF] w-6 h-6 ")}
-          />
+          <CompanyBoldIcon className={cn("[&_path]:fill-primary w-6 h-6")} />
         ) : (
           <CompanyIcon
             className={cn("group-hover:[&_path]:stroke-[#FFFFFF] w-5 h-5 ")}
           />
         )}
-
-        {/* <span className={cn("whitespace-nowrap transition-all duration-300")}>
-          {t("nav.companies")}
-        </span> */}
       </Link>
       <Link
         href="/reports"
         className={cn(
-          "flex flex-col items-center justify-center text-xs gap-1 p-2"
+          "flex flex-col items-center justify-center text-xs gap-1 ",
+          pathname.startsWith("/reports")
+            ? "bg-primary/40 text-white rounded-lg mx-1 my-1"
+            : "rounded-lg mx-1 my-1"
         )}
       >
         {pathname.startsWith("/reports") ? (
-          <ReportBoldIcon
-            className={cn("group-hover:[&_path]:stroke-[#FFFFFF] w-6 h-6")}
-          />
+          <ReportBoldIcon className={cn("[&_path]:fill-primary w-6 h-6")} />
         ) : (
-          <ReportIcon
-            className={cn("group-hover:[&_path]:stroke-[#FFFFFF] w-5 h-5")}
-          />
+          <ReportIcon className={cn("w-5 h-5")} />
         )}
-
-        {/* <span className={cn("whitespace-nowrap transition-all duration-300")}>
-          {t("nav.reports")}
-        </span> */}
       </Link>
       <Link
         href="/management"
         className={cn(
           "flex flex-col items-center justify-center text-xs gap-1 p-2",
           pathname.startsWith("/management")
-            ? "bg-primary text-white rounded-lg mx-1 my-1"
-            : "text-muted hover:bg-accent/50 rounded-lg mx-1 my-1"
+            ? "bg-primary/40 text-white rounded-lg mx-1 my-1"
+            : "rounded-lg mx-1 my-1"
         )}
       >
-        <ManageIcon
-          className={cn(
-            "group-hover:[&_path]:stroke-[#FFFFFF] ",
-            pathname?.startsWith("/management")
-              ? "[&_path]:stroke-[#FFFFFF] w-5 h-5"
-              : "group-hover:[&_path]:stroke-[#FFFFFF]  w-5 h-5"
-          )}
-        />
-        {/* <span className={cn("whitespace-nowrap transition-all duration-300")}>
-          {t("nav.management")}
-        </span> */}
+        {pathname.startsWith("/management") ? (
+          <ManageBoldIcon className={cn("[&_path]:fill-primary w-6 h-6")} />
+        ) : (
+          <ManageIcon className={cn("w-5 h-5")} />
+        )}
       </Link>
       <Link
         href="/menu"
         className={cn(
           "flex flex-col items-center justify-center text-xs gap-1 p-2",
           pathname.startsWith("/menu")
-            ? "bg-primary text-white rounded-lg mx-1 my-1"
-            : "text-muted hover:bg-accent/50 rounded-lg mx-1 my-1"
+            ? "bg-primary/40 text-white rounded-lg mx-1 my-1"
+            : "rounded-lg mx-1 my-1"
         )}
       >
-        <MenuIcon
-          className={cn(
-            "group-hover:[&_path]:stroke-[#FFFFFF]   w-5 h-5",
-            pathname?.startsWith("/menu")
-              ? "[&_path]:stroke-[#FFFFFF]"
-              : "group-hover:[&_path]:stroke-[#FFFFFF] "
-          )}
-        />
-        {/* <span className={cn("whitespace-nowrap transition-all duration-300")}>
-          {t("nav.menu")}
-        </span> */}
+        {pathname.startsWith("/menu") ? (
+          <MenuBoldIcon className={cn("[&_path]:fill-primary w-6 h-6")} />
+        ) : (
+          <MenuIcon className={cn("w-5 h-5")} />
+        )}
       </Link>
     </nav>
   );
