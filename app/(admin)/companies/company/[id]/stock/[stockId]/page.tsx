@@ -27,6 +27,17 @@ import Image from "next/image";
 type Pose = {
   id: number;
   name: string;
+  gnk_id?: string;
+  enable_no_fiscal_sale?: boolean;
+  enable_delay?: boolean;
+  order_from_site?: boolean;
+  integration_with_1c?: boolean;
+  manager_sale?: boolean;
+  payment_dollar?: boolean;
+  show_purchase_price?: boolean;
+  edit_price?: boolean;
+  status?: boolean;
+  app_version?: string;
 };
 
 // Count  type
@@ -52,6 +63,8 @@ export default function StockPage() {
   const [error, setError] = useState<string | null>(null);
   const [counts, setCounts] = useState<Count | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedPosId, setSelectedPosId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     appVersion: "",
@@ -64,6 +77,7 @@ export default function StockPage() {
     paymentDollar: false,
     showPurchasePrice: false,
     editPrice: false,
+    status: true,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
@@ -209,20 +223,7 @@ export default function StockPage() {
 
         toast.success(t("toast.pos_created_successfully"));
         setIsModalOpen(false);
-        // Reset form
-        setFormData({
-          name: "",
-          appVersion: "",
-          gnkId: "",
-          enableNoFiscalSale: false,
-          enableDelay: false,
-          orderFromSite: false,
-          integrationWith1c: false,
-          managerSale: false,
-          paymentDollar: false,
-          showPurchasePrice: false,
-          editPrice: false,
-        });
+        resetForm();
         // Refresh the data
         getOrganization();
       } else {
@@ -267,6 +268,168 @@ export default function StockPage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const editPos = async () => {
+    // Validation
+    if (!formData.name.trim()) {
+      toast.error(t("toast.cash_register_name_required"));
+      return;
+    }
+
+    if (!formData.appVersion.trim()) {
+      toast.error(t("toast.app_version_required"));
+      return;
+    }
+
+    if (!formData.gnkId.trim()) {
+      toast.error(t("toast.gnk_id_required"));
+      return;
+    }
+
+    if (!selectedPosId) {
+      toast.error(t("toast.error_occurred"));
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+
+      const requestData = {
+        name: formData.name,
+        stock_id: Number(params.stockId),
+        gnk_id: formData.gnkId,
+        enable_no_fiscal_sale: formData.enableNoFiscalSale,
+        enable_delay: formData.enableDelay,
+        order_from_site: formData.orderFromSite,
+        integration_with_1c: formData.integrationWith1c,
+        manager_sale: formData.managerSale,
+        payment_dollar: formData.paymentDollar,
+        show_purchase_price: formData.showPurchasePrice,
+        edit_price: formData.editPrice,
+        status: formData.status,
+        app_version: formData.appVersion,
+      };
+
+      const requestOptions: RequestInit = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify(requestData),
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/pos/${selectedPosId}`,
+        requestOptions
+      );
+
+      // Check if response is ok first
+      if (response.ok) {
+        // Try to parse JSON, but handle cases where response might be empty
+        let result;
+        try {
+          const text = await response.text();
+          result = text ? JSON.parse(text) : {};
+        } catch (parseError) {
+          // If JSON parsing fails, treat as success with empty result
+          result = {};
+        }
+
+        toast.success(t("toast.pos_updated_successfully"));
+        setIsModalOpen(false);
+        resetForm();
+        // Refresh the data
+        getOrganization();
+      } else {
+        // Handle error response
+        let errorMessage = t("toast.error_occurred");
+        try {
+          const text = await response.text();
+          if (text) {
+            const errorResult = JSON.parse(text);
+            errorMessage = errorResult?.message || errorMessage;
+          }
+        } catch (parseError) {
+          // If we can't parse error response, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+    } catch (error: any) {
+      let errorMessage = t("toast.error_occurred");
+
+      if (error?.message) {
+        // Check if it's a network error
+        if (
+          error.message.includes("fetch") ||
+          error.message.includes("network")
+        ) {
+          errorMessage = t("toast.network_error");
+        } else if (error.message.includes("401")) {
+          errorMessage = t("toast.auth_error");
+        } else if (error.message.includes("403")) {
+          errorMessage = t("toast.permission_error");
+        } else if (error.message.includes("404")) {
+          errorMessage = t("toast.not_found_error");
+        } else if (error.message.includes("500")) {
+          errorMessage = t("toast.server_error");
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      appVersion: "",
+      gnkId: "",
+      enableNoFiscalSale: false,
+      enableDelay: false,
+      orderFromSite: false,
+      integrationWith1c: false,
+      managerSale: false,
+      paymentDollar: false,
+      showPurchasePrice: false,
+      editPrice: false,
+      status: true,
+    });
+    setIsEditMode(false);
+    setSelectedPosId(null);
+  };
+
+  const handleEditClick = (pos: Pose) => {
+    setFormData({
+      name: pos.name || "",
+      appVersion: pos.app_version || "",
+      gnkId: pos.gnk_id || "",
+      enableNoFiscalSale: pos.enable_no_fiscal_sale || false,
+      enableDelay: pos.enable_delay || false,
+      orderFromSite: pos.order_from_site || false,
+      integrationWith1c: pos.integration_with_1c || false,
+      managerSale: pos.manager_sale || false,
+      paymentDollar: pos.payment_dollar || false,
+      showPurchasePrice: pos.show_purchase_price || false,
+      editPrice: pos.edit_price || false,
+      status: pos.status !== undefined ? pos.status : true,
+    });
+    setSelectedPosId(pos.id);
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
+
+  const handleAddClick = () => {
+    resetForm();
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -346,7 +509,7 @@ export default function StockPage() {
               {t("app.stock.cashiers")} ({data?.name}){" "}
             </h1>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleAddClick}
               className="bg-primary text-white px-4 py-2 rounded-md mb-4 cursor-pointer hover:bg-primary/90 flex items-center gap-2"
             >
               <PlusIcon />
@@ -429,14 +592,12 @@ export default function StockPage() {
                       <td className="border border-border border-l-0 rounded-r-lg">
                         <div className="px-3 py-2 sm:px-4 sm:py-3">
                           <span
-                            onClick={() => {
-                              console.log("update");
-                            }}
+                            onClick={() => handleEditClick(org)}
                             className="bg-[#6EC8F7] inline-block p-2 rounded-lg cursor-pointer  "
                           >
                             <Image
                               src="/icons/edit.svg"
-                              alt="home"
+                              alt="edit"
                               width={20}
                               height={20}
                             />
@@ -456,7 +617,11 @@ export default function StockPage() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-[90%] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-md">
           <DialogHeader>
-            <DialogTitle>{t("app.stock.cash_register_data")}</DialogTitle>
+            <DialogTitle>
+              {isEditMode
+                ? t("app.stock.edit_cash_register")
+                : t("app.stock.cash_register_data")}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -704,16 +869,48 @@ export default function StockPage() {
                   />
                 </button>
               </div>
+
+              {isEditMode && (
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">
+                    {t("app.stock.status")}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        status: !formData.status,
+                      })
+                    }
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      formData.status ? "bg-primary" : "bg-gray-200"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        formData.status ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Create button */}
+            {/* Create/Edit button */}
             <div className="pt-4">
               <Button
-                onClick={createPos}
+                onClick={isEditMode ? editPos : createPos}
                 disabled={isSubmitting}
                 className="w-full bg-primary hover:bg-primary/90 disabled:opacity-50"
               >
-                {isSubmitting ? t("app.stock.creating") : t("app.stock.create")}
+                {isSubmitting
+                  ? isEditMode
+                    ? t("app.stock.updating")
+                    : t("app.stock.creating")
+                  : isEditMode
+                  ? t("app.stock.update")
+                  : t("app.stock.create")}
               </Button>
             </div>
           </div>

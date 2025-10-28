@@ -4,6 +4,7 @@
     "no_data": "Ma'lumot topilmadi",
     "required": "majburiy",
     "pos_created_successfully": "Kassa muvaffaqiyatli yaratildi!",
+    "pos_updated_successfully": "Kassa muvaffaqiyatli yangilandi!",
     "cash_register_name_required": "Kassa nomi majburiy",
     "app_version_required": "Dastur versiyasi majburiy",
     "gnk_id_required": "GNK ID majburiy",
@@ -29,6 +30,7 @@
     "search": "Qidirish...",
     "company": {
       "title": "Kompaniyalar",
+      "barcode": "Shtrix-kod",
       "name": "Nomi",
       "status": "Tahrirlash",
       "not_found": "Ma'lumot topilmadi",
@@ -78,8 +80,12 @@
       "payment_dollar": "Dollar bilan to'lov",
       "show_purchase_price": "Sotib olish narxini ko'rsatish",
       "edit_price": "Narxni tahrirlash",
+      "status": "Holati",
+      "edit_cash_register": "Kassani tahrirlash",
       "create": "Yaratish",
-      "creating": "Yaratilmoqda..."
+      "creating": "Yaratilmoqda...",
+      "update": "Yangilash",
+      "updating": "Yangilanmoqda..."
     },
     "pos": {
       "title": "Kassa",
@@ -227,7 +233,8 @@
     "link2": "Qarama-qarshi tomonlar",
     "link3": "Menejerlar",
     "link4": "Chegirma",
-    "link5": "KVI Mahsulotlar"
+    "link5": "KVI Mahsulotlar",
+    "link6": "Kategoriya bo'yicha chegirma"
   },
   "product": {
     "modal": {
@@ -372,5 +379,32 @@
       "delete_confirmation_message": "Ushbu chegirmani o'chirishni xohlaysizmi? Bu amalni bekor qilib bo'lmaydi.",
       "yes_delete": "Ha, o'chirish"
     }
+  },
+  "responsive": {
+    "desktop_only_message": "Ushbu sahifa faqat kompyuter formatda foydalanish uchun mo'ljallangan."
+  },
+  "discount_modal": {
+    "select_region": "Categoriyalarni tanlang",
+    "region": "Hudud",
+    "tashkent": "Toshkent",
+    "almazar": "Olmazar",
+    "bektemir": "Bektemir",
+    "mirabad": "Mirabad",
+    "mirgaleb": "M.Ulug'bek",
+    "sergeli": "Sergeli",
+    "uchtepa": "Uchtepa",
+    "chilanzar": "Chilonzor",
+    "shaykhantakhur": "Shayxontohur",
+    "yunusabad": "Yunusobod",
+    "yakkasaray": "Yakkasaroy",
+    "yashnabad": "Yashnobod",
+    "select": "Tanlash",
+    "photo_for_site": "Sayt uchun rasm",
+    "photo_for_app": "Ilova uchun rasm",
+    "enter_title": "Sarlavhani kiriting",
+    "enter_text": "Matnni kiriting",
+    "add": "Qo'shish",
+    "cancel": "Bekor qilish",
+    "show": "ko'rsatish"
   }
 }

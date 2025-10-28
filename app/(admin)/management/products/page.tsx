@@ -112,6 +112,9 @@ const ProductsPage = () => {
     }
   };
 
+  console.log(selectedProduct?.stocks);
+  
+
   const getSearchProducts = async (
     searchData: any,
     page: number = 1,
@@ -262,9 +265,7 @@ const ProductsPage = () => {
                       <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
                         {t("app.pos.product_classifier")}
                       </th>
-                      <th className="text-left font-semibold px-4 py-3 border-b border border-gray-300 border-l-0">
-                        {t("app.pos.remaining_reserve")}
-                      </th>
+                      
                       <th className="text-left font-semibold px-4 py-3 border-b border-r border-gray-300 border border-l-0 rounded-r-lg">
                         {t("app.pos.price")}
                       </th>
@@ -304,14 +305,7 @@ const ProductsPage = () => {
                             {product.classifier_title}
                           </div>
                         </td>
-                        <td className="border border-border px-4 py-3">
-                          <div className="text-sm">
-                            {product.remaining || 0}
-                          </div>
-                          <div className="text-xs text-primary">
-                            {t("app.pos.own")}: {product.quantity || 0}
-                          </div>
-                        </td>
+                      
                         <td className="border border-border border-l-0 rounded-r-lg px-4 py-3">
                           <div className="font-semibold text-sm">
                             {product.price?.toLocaleString("ru-RU") || 0}{" "}
@@ -358,24 +352,7 @@ const ProductsPage = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                        <div className="text-sm">
-                          <span className="text-gray-600">
-                            {t("app.pos.remaining_reserve")}:{" "}
-                          </span>
-                          <span className="font-medium">
-                            {product.remaining || 0}
-                          </span>
-                        </div>
-                        <div className="text-sm">
-                          <span className="text-gray-600">
-                            {t("app.pos.own")}:{" "}
-                          </span>
-                          <span className="font-medium">
-                            {product.quantity || 0}
-                          </span>
-                        </div>
-                      </div>
+                     
                     </div>
                   ))}
                 </div>
@@ -437,7 +414,7 @@ const ProductsPage = () => {
             }
           }}
         >
-          <div className="bg-white rounded-lg shadow-2xl w-full max-w-sm sm:max-w-2xl md:max-w-4xl lg:max-w-6xl h-[95vh] sm:h-[90vh] md:h-[90vh] flex flex-col overflow-hidden">
+          <div className="bg-white rounded-lg shadow-2xl w-full max-w-md sm:max-w-2xl md:max-w-4xl lg:max-w-6xl h-[95vh] sm:h-[90vh] md:h-[90vh] flex flex-col overflow-hidden">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-3 md:p-4 border-b bg-gray-50">
               <h2 className="text-base md:text-lg font-semibold text-gray-900 truncate pr-2">
@@ -651,7 +628,8 @@ const ProductsPage = () => {
                             <td className="border border-border border-l-0 rounded-r-lg px-2 md:px-4 py-2 md:py-3">
                               <div className="text-xs md:text-sm">
                                 {t("product.modal.remaining_reserved")}:{" "}
-                                {item.remaining || 0}/{item.reserved || 0}
+                                {item.quantity || 0}/
+                                {item.quantity_reserve || 0}
                               </div>
                               <div className="text-xs text-primary">
                                 {t("product.modal.own_stock")}: {item.quantity}

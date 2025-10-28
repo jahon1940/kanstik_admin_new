@@ -62,6 +62,9 @@ export default function KviDiscountPage() {
   });
   const [formLoading, setFormLoading] = useState(false);
 
+  // Responsive state
+  const [isDesktop, setIsDesktop] = useState(true);
+
   const addDiscount = async () => {
     if (!formData.name.trim() || !formData.percent.trim()) {
       toast.error(t("discount.form.all_fields_required"));
@@ -389,6 +392,22 @@ export default function KviDiscountPage() {
     getProducts("", 1); // Load initial products
   }, []);
 
+  // Handle screen size detection
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 1024); // lg breakpoint (1024px)
+    };
+
+    // Check initial screen size
+    checkScreenSize();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkScreenSize);
+
+    // Cleanup event listener
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   // Cleanup timer on component unmount
   useEffect(() => {
     return () => {
@@ -416,268 +435,305 @@ export default function KviDiscountPage() {
           </h1>
         </div>
       </div>
-      <div className="rounded-lg  shadow-lg">
-        <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] ">
-          {/* Two Section Layout */}
-          <div className="flex gap-4 h-full">
-            {/* Left Section - Products */}
-            <div className="w-1/2 space-y-4 bg-card p-3 md:p-4 rounded-lg shadow-lg">
-              <div className="flex gap-2">
-                <div className="flex-1 relative">
-                  <input
-                    type="text"
-                    placeholder={t("kvi_discount.search_products")}
-                    value={productSearchQuery}
-                    onChange={(e) =>
-                      handleProductSearchInputChange(e.target.value)
-                    }
-                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
-                  <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
 
-              {/* Table Header */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center gap-3 font-semibold text-sm text-gray-700">
-                <div className="w-8 text-center flex-shrink-0">
-                  {t("kvi_discount.number_column")}
-                </div>
-                <div className="flex-1">{t("kvi_discount.product_column")}</div>
-                <div className="w-20 text-center flex-shrink-0">
-                  {t("kvi_discount.actions_column")}
-                </div>
-              </div>
-
-              <div className="space-y-2 max-h-[calc(100vh-18rem)] overflow-y-auto">
-                {productsLoading ? (
-                  <div className="flex justify-center items-center py-12">
-                    <Loading />
-                  </div>
-                ) : productsError ? (
-                  <div className="text-center py-12 text-red-600">
-                    {productsError}
-                  </div>
-                ) : !products?.length ? (
-                  <div className="text-center py-12 text-gray-500">
-                    {t("app.company.not_found")}
-                  </div>
-                ) : (
-                  products?.map((org: any, index: number) => (
-                    <div
-                      key={org.id}
-                      className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-3"
-                    >
-                      {/* Row Number */}
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium text-gray-600 flex-shrink-0">
-                        {(productsPagination.currentPage - 1) *
-                          productsPagination.pageSize +
-                          index +
-                          1}
-                      </div>
-
-                      {/* Product Info */}
-                      <div className="flex-1">
-                        <div className="text-xs text-gray-500">
-                          {t("kvi_discount.article")}: {org.vendor_code || "-"}
-                        </div>
-                        <div className="font-medium text-sm">{org.title}</div>
-                      </div>
-
-                      {/* Action Buttons */}
-
-                      <button
-                        onClick={() => {
-                          toast("add");
-                        }}
-                        className="bg-primary text-white p-2 rounded hover:bg-primary/80 cursor-pointer"
-                      >
-                        <PlusIcon />
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Products Pagination */}
-              {!productsLoading &&
-                products &&
-                products.length > 0 &&
-                productsPagination.totalPages > 1 && (
-                  <div className="mt-4">
-                    <Pagination
-                      currentPage={productsPagination.currentPage}
-                      totalPages={productsPagination.totalPages}
-                      onPageChange={(page) => {
-                        getProducts(productSearchQuery, page);
-                      }}
-                      showMoreItems={
-                        productsPagination.currentPage <
-                          productsPagination.totalPages ||
-                        (productsPagination.totalPages === 1 &&
-                          productsPagination.totalItems >
-                            productsPagination.pageSize) ||
-                        productsPagination.totalItems > products.length
-                          ? productsPagination.pageSize
-                          : 0
+      {isDesktop ? (
+        /* KVI elements*/
+        <div className="rounded-lg shadow-lg">
+          <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] ">
+            {/* Two Section Layout */}
+            <div className="flex gap-4 h-full">
+              {/* Left Section - Products */}
+              <div className="w-1/2 space-y-4 bg-card p-3 md:p-4 rounded-lg shadow-lg">
+                <div className="flex gap-2">
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      placeholder={t("kvi_discount.search_products")}
+                      value={productSearchQuery}
+                      onChange={(e) =>
+                        handleProductSearchInputChange(e.target.value)
                       }
-                      onShowMore={() => {
-                        if (
+                      className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                    <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Table Header */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center gap-3 font-semibold text-sm text-gray-700">
+                  <div className="w-8 text-center flex-shrink-0">
+                    {t("kvi_discount.number_column")}
+                  </div>
+                  <div className="flex-1">
+                    {t("kvi_discount.product_column")}
+                  </div>
+                  <div className="w-20 text-center flex-shrink-0">
+                    {t("kvi_discount.actions_column")}
+                  </div>
+                </div>
+
+                <div className="space-y-2 max-h-[calc(100vh-18rem)] overflow-y-auto">
+                  {productsLoading ? (
+                    <div className="flex justify-center items-center py-12">
+                      <Loading />
+                    </div>
+                  ) : productsError ? (
+                    <div className="text-center py-12 text-red-600">
+                      {productsError}
+                    </div>
+                  ) : !products?.length ? (
+                    <div className="text-center py-12 text-gray-500">
+                      {t("app.company.not_found")}
+                    </div>
+                  ) : (
+                    products?.map((org: any, index: number) => (
+                      <div
+                        key={org.id}
+                        className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-3"
+                      >
+                        {/* Row Number */}
+                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium text-gray-600 flex-shrink-0">
+                          {(productsPagination.currentPage - 1) *
+                            productsPagination.pageSize +
+                            index +
+                            1}
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="flex-1">
+                          <div className="text-xs text-gray-500">
+                            {t("kvi_discount.article")}:{" "}
+                            {org.vendor_code || "-"}
+                          </div>
+                          <div className="font-medium text-sm">{org.title}</div>
+                        </div>
+
+                        {/* Action Buttons */}
+
+                        <button
+                          onClick={() => {
+                            toast("add");
+                          }}
+                          className="bg-primary text-white p-2 rounded hover:bg-primary/80 cursor-pointer"
+                        >
+                          <PlusIcon />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Products Pagination */}
+                {!productsLoading &&
+                  products &&
+                  products.length > 0 &&
+                  productsPagination.totalPages > 1 && (
+                    <div className="mt-4">
+                      <Pagination
+                        currentPage={productsPagination.currentPage}
+                        totalPages={productsPagination.totalPages}
+                        onPageChange={(page) => {
+                          getProducts(productSearchQuery, page);
+                        }}
+                        showMoreItems={
                           productsPagination.currentPage <
                             productsPagination.totalPages ||
                           (productsPagination.totalPages === 1 &&
                             productsPagination.totalItems >
                               productsPagination.pageSize) ||
                           productsPagination.totalItems > products.length
-                        ) {
-                          getProducts(
-                            productSearchQuery,
-                            productsPagination.currentPage + 1,
-                            true
-                          );
+                            ? productsPagination.pageSize
+                            : 0
                         }
-                      }}
-                      disabled={productsLoading}
-                      className=""
-                    />
-                  </div>
-                )}
-            </div>
-
-            {/* Right Section - KVI Products */}
-            <div className="w-1/2 space-y-4 bg-card p-3 md:p-4 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center px-3 py-1.5">
-                <h3 className="text-lg font-semibold">
-                  {t("kvi_discount.added_products")}
-                </h3>
-               
-              </div>
-
-              {/* Table Header */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center gap-3 font-semibold text-sm text-gray-700">
-                <div className="w-8 text-center flex-shrink-0">
-                  {t("kvi_discount.number_column")}
-                </div>
-                <div className="flex-1">{t("kvi_discount.product_column")}</div>
-                <div className="w-20 text-center flex-shrink-0">
-                  {t("kvi_discount.actions_column")}
-                </div>
-              </div>
-
-              <div className="space-y-2 max-h-[calc(100vh-18rem)] overflow-y-auto">
-                {loading ? (
-                  <div className="flex justify-center items-center py-12">
-                    <Loading />
-                  </div>
-                ) : error ? (
-                  <div className="text-center py-12 text-red-600">{error}</div>
-                ) : !kviProducts?.length ? (
-                  <div className="text-center py-12 text-gray-500">
-                    {t("app.company.not_found")}
-                  </div>
-                ) : (
-                  kviProducts?.map((org: any, index: number) => (
-                    <div
-                      key={org.id}
-                      className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-3"
-                    >
-                      {/* Row Number */}
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium text-gray-600 flex-shrink-0">
-                        {(pagination.currentPage - 1) * pagination.pageSize +
-                          index +
-                          1}
-                      </div>
-
-                      {/* Product Info */}
-                      <div className="flex-1">
-                        <div className="text-xs text-gray-500">
-                          {t("kvi_discount.article")}:{" "}
-                          {org.product.vendor_code || "-"}
-                        </div>
-                        <div className="font-medium text-sm">
-                          {org.product.title}
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-
-                      <button
-                        onClick={() => {
-                          toast("delete");
+                        onShowMore={() => {
+                          if (
+                            productsPagination.currentPage <
+                              productsPagination.totalPages ||
+                            (productsPagination.totalPages === 1 &&
+                              productsPagination.totalItems >
+                                productsPagination.pageSize) ||
+                            productsPagination.totalItems > products.length
+                          ) {
+                            getProducts(
+                              productSearchQuery,
+                              productsPagination.currentPage + 1,
+                              true
+                            );
+                          }
                         }}
-                        className="bg-red-500 text-white p-2 rounded hover:bg-red-600 cursor-pointer"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </button>
+                        disabled={productsLoading}
+                        className=""
+                      />
                     </div>
-                  ))
-                )}
+                  )}
               </div>
 
-              {/* Pagination */}
-              {!loading &&
-                kviProducts &&
-                kviProducts.length > 0 &&
-                pagination.totalPages > 1 && (
-                  <div className="mt-4">
-                    <Pagination
-                      currentPage={pagination.currentPage}
-                      totalPages={pagination.totalPages}
-                      onPageChange={(page) => {
-                        getKviDiscounts(page);
-                      }}
-                      showMoreItems={
-                        pagination.currentPage < pagination.totalPages ||
-                        (pagination.totalPages === 1 &&
-                          pagination.totalItems > pagination.pageSize) ||
-                        pagination.totalItems > kviProducts.length
-                          ? pagination.pageSize
-                          : 0
-                      }
-                      onShowMore={() => {
-                        if (
+              {/* Right Section - KVI Products */}
+              <div className="w-1/2 space-y-4 bg-card p-3 md:p-4 rounded-lg shadow-lg">
+                <div className="flex justify-between items-center px-3 py-1.5">
+                  <h3 className="text-lg font-semibold">
+                    {t("kvi_discount.added_products")}
+                  </h3>
+                </div>
+
+                {/* Table Header */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center gap-3 font-semibold text-sm text-gray-700">
+                  <div className="w-8 text-center flex-shrink-0">
+                    {t("kvi_discount.number_column")}
+                  </div>
+                  <div className="flex-1">
+                    {t("kvi_discount.product_column")}
+                  </div>
+                  <div className="w-20 text-center flex-shrink-0">
+                    {t("kvi_discount.actions_column")}
+                  </div>
+                </div>
+
+                <div className="space-y-2 max-h-[calc(100vh-18rem)] overflow-y-auto">
+                  {loading ? (
+                    <div className="flex justify-center items-center py-12">
+                      <Loading />
+                    </div>
+                  ) : error ? (
+                    <div className="text-center py-12 text-red-600">
+                      {error}
+                    </div>
+                  ) : !kviProducts?.length ? (
+                    <div className="text-center py-12 text-gray-500">
+                      {t("app.company.not_found")}
+                    </div>
+                  ) : (
+                    kviProducts?.map((org: any, index: number) => (
+                      <div
+                        key={org.id}
+                        className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-3"
+                      >
+                        {/* Row Number */}
+                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium text-gray-600 flex-shrink-0">
+                          {(pagination.currentPage - 1) * pagination.pageSize +
+                            index +
+                            1}
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="flex-1">
+                          <div className="text-xs text-gray-500">
+                            {t("kvi_discount.article")}:{" "}
+                            {org.product.vendor_code || "-"}
+                          </div>
+                          <div className="font-medium text-sm">
+                            {org.product.title}
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+
+                        <button
+                          onClick={() => {
+                            toast("delete");
+                          }}
+                          className="bg-red-500 text-white p-2 rounded hover:bg-red-600 cursor-pointer"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Pagination */}
+                {!loading &&
+                  kviProducts &&
+                  kviProducts.length > 0 &&
+                  pagination.totalPages > 1 && (
+                    <div className="mt-4">
+                      <Pagination
+                        currentPage={pagination.currentPage}
+                        totalPages={pagination.totalPages}
+                        onPageChange={(page) => {
+                          getKviDiscounts(page);
+                        }}
+                        showMoreItems={
                           pagination.currentPage < pagination.totalPages ||
                           (pagination.totalPages === 1 &&
                             pagination.totalItems > pagination.pageSize) ||
                           pagination.totalItems > kviProducts.length
-                        ) {
-                          getKviDiscounts(pagination.currentPage + 1, true);
+                            ? pagination.pageSize
+                            : 0
                         }
-                      }}
-                      disabled={loading}
-                      className=""
-                    />
-                  </div>
-                )}
+                        onShowMore={() => {
+                          if (
+                            pagination.currentPage < pagination.totalPages ||
+                            (pagination.totalPages === 1 &&
+                              pagination.totalItems > pagination.pageSize) ||
+                            pagination.totalItems > kviProducts.length
+                          ) {
+                            getKviDiscounts(pagination.currentPage + 1, true);
+                          }
+                        }}
+                        disabled={loading}
+                        className=""
+                      />
+                    </div>
+                  )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        /* mobile and tablet */
+        <div className="rounded-lg shadow-lg bg-card p-6">
+          <div className="flex flex-col items-center justify-center h-[calc(100vh-12rem)] text-center">
+            <div className="max-w-md mx-auto">
+              <div className="mb-6">
+                <svg
+                  className="w-16 h-16 mx-auto text-gray-400 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                {t("responsive.desktop_only_message")}
+              </h3>
+              
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Add Discount Modal */}
       {isAddDiscountModalOpen && (

@@ -32,8 +32,14 @@ export default function CompaniesPage() {
     };
 
     fetch(`${BASE_URL}/v1/admins/organizations`, requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        
+        return response.json();
+      })
       .then((result) => {
+        console.log(result);
+        
         if (!cancelled) setItems(result.results ?? []);
         setLoading(false);
         setError(null);

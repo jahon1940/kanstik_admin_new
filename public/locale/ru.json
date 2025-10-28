@@ -4,6 +4,7 @@
     "no_data": "Данные не найдены",
     "required": "обязательно",
     "pos_created_successfully": "Касса успешно создана!",
+    "pos_updated_successfully": "Касса успешно обновлена!",
     "cash_register_name_required": "Название кассы обязательно",
     "app_version_required": "Версия программы обязательна",
     "gnk_id_required": "GNK ID обязателен",
@@ -30,6 +31,7 @@
     "company": {
       "title": "Компании",
       "name": "Название",
+      "barcode": "Штрихкод",
       "status": "Действие",
       "not_found": "Данные не найдены",
       "active": "Активен",
@@ -78,8 +80,12 @@
       "payment_dollar": "Оплата долларами",
       "show_purchase_price": "Показать цену покупки",
       "edit_price": "Редактировать цену",
+      "status": "Статус",
+      "edit_cash_register": "Редактировать кассу",
       "create": "Создать",
-      "creating": "Создание..."
+      "creating": "Создание...",
+      "update": "Обновить",
+      "updating": "Обновление..."
     },
     "pos": {
       "title": "Касса",
@@ -225,9 +231,10 @@
   "menu": {
     "link1": "Номенклатура",
     "link2": "Контрагенты",
-    "link3": "Сатрутники",
+    "link3": "Сотрутники",
     "link4": "Скидка",
-    "link5": "KVI Продукти"
+    "link5": "KVI Продукти",
+    "link6": "Скидка по категории"
   },
   "product": {
     "modal": {
@@ -372,5 +379,32 @@
       "delete_confirmation_message": "Вы уверены, что хотите удалить эту скидку? Это действие нельзя отменить.",
       "yes_delete": "Да, удалить"
     }
+  },
+  "responsive": {
+    "desktop_only_message": "Эта страница предназначена только для использования в компьютерном формате."
+  },
+  "discount_modal": {
+    "select_region": "Выберите категории",
+    "region": "Регион",
+    "tashkent": "Ташкент",
+    "almazar": "Алмазар",
+    "bektemir": "Бектемир",
+    "mirabad": "Мирабад",
+    "mirgaleb": "М.Улугбек",
+    "sergeli": "Сергели",
+    "uchtepa": "Учтепа",
+    "chilanzar": "Чиланзар",
+    "shaykhantakhur": "Шайхантахур",
+    "yunusabad": "Юнусабад",
+    "yakkasaray": "Яккасарай",
+    "yashnabad": "Яшнабад",
+    "select": "Выбрать",
+    "photo_for_site": "Фото для сайта",
+    "photo_for_app": "Фото для приложение",
+    "enter_title": "Введите заголовок",
+    "enter_text": "Введите текст",
+    "add": "Добавить",
+    "cancel": "Отменить",
+    "show": "показывать"
   }
 }
