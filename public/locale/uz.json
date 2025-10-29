@@ -364,12 +364,14 @@
       "edit_discount_title": "Chegirmani tahrirlash",
       "discount_name": "Chegirma nomi",
       "discount_name_placeholder": "Chegirma nomini kiriting...",
-      "discount_percent": "Chegirma foizi",
+      "discount_percent": "Chegirma foizi (0-100)",
       "discount_percent_placeholder": "Foizni kiriting (0-100)...",
+      "barcode": "Shtrix kod",
       "add_discount": "Chegirma qo'shish",
       "update_discount": "Chegirmani yangilash",
       "adding": "Qo'shilmoqda...",
       "updating": "Yangilanmoqda...",
+      "creating": "Yaratilmoqda...",
       "all_fields_required": "Barcha maydonlar to'ldirilishi shart",
       "invalid_percent": "Foiz 0 dan 100 gacha bo'lgan son bo'lishi kerak",
       "discount_added_success": "Chegirma muvaffaqiyatli qo'shildi!",
@@ -377,14 +379,17 @@
       "discount_deleted_success": "Chegirma muvaffaqiyatli o'chirildi!",
       "delete_confirmation_title": "Chegirmani o'chirish?",
       "delete_confirmation_message": "Ushbu chegirmani o'chirishni xohlaysizmi? Bu amalni bekor qilib bo'lmaydi.",
-      "yes_delete": "Ha, o'chirish"
+      "yes_delete": "Ha, o'chirish",
+      "please_select_start_date": "Boshlanish sanasini tanlang",
+      "please_select_end_date": "Tugash sanasini tanlang",
+      "please_select_category": "Kamida bitta kategoriya tanlang"
     }
   },
   "responsive": {
     "desktop_only_message": "Ushbu sahifa faqat kompyuter formatda foydalanish uchun mo'ljallangan."
   },
   "discount_modal": {
-    "select_region": "Categoriyalarni tanlang",
+    "select_region": "Kategoriyalarni tanlang",
     "region": "Hudud",
     "tashkent": "Toshkent",
     "almazar": "Olmazar",
@@ -399,12 +404,14 @@
     "yakkasaray": "Yakkasaroy",
     "yashnabad": "Yashnobod",
     "select": "Tanlash",
+    "selected": "Tanlangan",
     "photo_for_site": "Sayt uchun rasm",
     "photo_for_app": "Ilova uchun rasm",
     "enter_title": "Sarlavhani kiriting",
     "enter_text": "Matnni kiriting",
     "add": "Qo'shish",
     "cancel": "Bekor qilish",
-    "show": "ko'rsatish"
+    "show": "ko'rsatish",
+    "select_parent_category": "Ichki kategoriyalarini ko'rish uchun asosiy kategoriyani tanlang"
   }
 }

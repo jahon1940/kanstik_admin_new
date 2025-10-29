@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import DesktopOnlyMessage from "@/components/DesktopOnlyMessage";
 
 export default function DiscountCategoryPage() {
   const router = useRouter();
@@ -54,100 +55,98 @@ export default function DiscountCategoryPage() {
   const [open2, setOpen2] = React.useState(false);
   const [date2, setDate2] = React.useState<string | undefined>(undefined);
 
- 
+  const createDiscount = async () => {
+    // Validation
+    if (!formData.name.trim()) {
+      toast.error(t("discount.form.all_fields_required"));
+      return;
+    }
 
-   const createDiscount = async () => {
-     // Validation
-     if (!formData.name.trim()) {
-       toast.error(t("discount.form.all_fields_required"));
-       return;
-     }
+    if (!formData.percent.trim()) {
+      toast.error(t("discount.form.all_fields_required"));
+      return;
+    }
 
-     if (!formData.percent.trim()) {
-       toast.error(t("discount.form.all_fields_required"));
-       return;
-     }
+    if (!formData.barcode.trim()) {
+      toast.error(t("discount.form.all_fields_required"));
+      return;
+    }
 
-     if (!formData.barcode.trim()) {
-       toast.error(t("discount.form.all_fields_required"));
-       return;
-     }
+    if (!date) {
+      toast.error(t("discount.form.please_select_start_date"));
+      return;
+    }
 
-     if (!date) {
-       toast.error("Please select start date");
-       return;
-     }
+    if (!date2) {
+      toast.error(t("discount.form.please_select_end_date"));
+      return;
+    }
 
-     if (!date2) {
-       toast.error("Please select end date");
-       return;
-     }
+    if (selectedCategories.length === 0) {
+      toast.error(t("discount.form.please_select_category"));
+      return;
+    }
 
-     if (selectedCategories.length === 0) {
-       toast.error("Please select at least one category");
-       return;
-     }
+    const percentValue = parseFloat(formData.percent);
+    if (isNaN(percentValue) || percentValue <= 0 || percentValue > 100) {
+      toast.error(t("discount.form.invalid_percent"));
+      return;
+    }
 
-     const percentValue = parseFloat(formData.percent);
-     if (isNaN(percentValue) || percentValue <= 0 || percentValue > 100) {
-       toast.error(t("discount.form.invalid_percent"));
-       return;
-     }
+    setFormLoading(true);
 
-     setFormLoading(true);
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
 
-     try {
-       const myHeaders = new Headers();
-       myHeaders.append("Content-Type", "application/json");
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
 
-       if (getDeviceToken()) {
-         myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-       }
+      const requestData = {
+        name: formData.name.trim(),
+        percent: percentValue,
+        barcode: formData.barcode.trim(),
+        categories: selectedCategories,
+        start_date: date,
+        end_date: date2,
+      };
 
-       const requestData = {
-         name: formData.name.trim(),
-         percent: percentValue,
-         barcode: formData.barcode.trim(),
-         categories: selectedCategories,
-         start_date: date,
-         end_date: date2,
-       };
+      const requestOptions: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(requestData),
+        redirect: "follow",
+      };
 
-       const requestOptions: RequestInit = {
-         method: "POST",
-         headers: myHeaders,
-         body: JSON.stringify(requestData),
-         redirect: "follow",
-       };
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/discount-campaigns`,
+        requestOptions
+      );
 
-       const response = await fetch(
-         `${BASE_URL}/v1/admins/discount-campaigns`,
-         requestOptions
-       );
+      if (response.ok) {
+        toast.success(t("discount.form.discount_added_success"));
+        setIsAddDiscountModalOpen(false);
+        setFormData({
+          name: "",
+          percent: "",
+          barcode: "",
+        });
+        setSelectedCategories([]);
+        setDate(undefined);
+        setDate2(undefined);
+        getDiscountTypes(); // Refresh the list
+      } else {
+        throw new Error(t("toast.error_occurred"));
+      }
+    } catch (error: any) {
+      const msg = error?.message || t("toast.network_error");
+      toast.error(msg);
+    } finally {
+      setFormLoading(false);
+    }
+  };
 
-       if (response.ok) {
-         toast.success(t("discount.form.discount_added_success"));
-         setIsAddDiscountModalOpen(false);
-         setFormData({
-           name: "",
-           percent: "",
-           barcode: "",
-         });
-         setSelectedCategories([]);
-         setDate(undefined);
-         setDate2(undefined);
-         getDiscountTypes(); // Refresh the list
-       } else {
-         throw new Error(t("toast.error_occurred"));
-       }
-     } catch (error: any) {
-       const msg = error?.message || t("toast.network_error");
-       toast.error(msg);
-     } finally {
-       setFormLoading(false);
-     }
-   };
-  
   const deleteDiscount = async (id: number) => {
     try {
       setLoading(true);
@@ -321,8 +320,6 @@ export default function DiscountCategoryPage() {
     });
   };
 
- 
-
   const updateDiscount = async () => {
     // Validation
     if (!formData.name.trim()) {
@@ -341,17 +338,17 @@ export default function DiscountCategoryPage() {
     }
 
     if (!date) {
-      toast.error("Please select start date");
+      toast.error(t("discount.form.please_select_start_date"));
       return;
     }
 
     if (!date2) {
-      toast.error("Please select end date");
+      toast.error(t("discount.form.please_select_end_date"));
       return;
     }
 
     if (selectedCategories.length === 0) {
-      toast.error("Please select at least one category");
+      toast.error(t("discount.form.please_select_category"));
       return;
     }
 
@@ -473,7 +470,7 @@ export default function DiscountCategoryPage() {
               <table className="w-full text-sm relative border-separate border-spacing-y-2">
                 <thead className="sticky top-[0px] z-10 bg-bgColor">
                   <tr>
-                    <th className="text-left font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
+                    <th className="text-center font-semibold px-2 py-3 border-b w-12 border-r border-gray-300 border rounded-l-lg">
                       №
                     </th>
                     <th className="text-left font-semibold px-4 py-3 border-b w-[60%] border border-gray-300 border-l-0">
@@ -586,7 +583,7 @@ export default function DiscountCategoryPage() {
                                     deleteDiscount(org.id);
                                   },
                                   onCancel: () => {
-                                    console.log("Discount deletion cancelled");
+                                    // Discount deletion cancelled
                                   },
                                 });
                               }}
@@ -701,7 +698,7 @@ export default function DiscountCategoryPage() {
                                 }`}
                               >
                                 {selectedCategories.includes(category.id)
-                                  ? "Selected"
+                                  ? t("discount_modal.selected")
                                   : t("discount_modal.select")}
                               </button>
                               <button
@@ -732,10 +729,10 @@ export default function DiscountCategoryPage() {
                         {childrenError}
                       </div>
                     ) : !childrenCategories?.length ? (
-                      <div className="text-center py-12 text-gray-500">
+                      <div className="text-center py-12 text-gray-500 overflow-hidden">
                         {selectedParentCategory
                           ? t("app.company.not_found")
-                          : "Select a parent category to view children"}
+                          : t("discount_modal.select_parent_category")}
                       </div>
                     ) : (
                       childrenCategories?.map((childCategory: any) => (
@@ -757,7 +754,7 @@ export default function DiscountCategoryPage() {
                                 }`}
                               >
                                 {selectedCategories.includes(childCategory.id)
-                                  ? "Selected"
+                                  ? t("discount_modal.selected")
                                   : t("discount_modal.select")}
                               </button>
                             </div>
@@ -777,7 +774,7 @@ export default function DiscountCategoryPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
                       }
-                      placeholder="Discount Name"
+                      placeholder={t("discount.form.discount_name")}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       disabled={formLoading}
                     />
@@ -791,7 +788,7 @@ export default function DiscountCategoryPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, percent: e.target.value })
                       }
-                      placeholder="Discount Percent (0-100)"
+                      placeholder={t("discount.form.discount_percent")}
                       min="0"
                       max="100"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -807,7 +804,7 @@ export default function DiscountCategoryPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, barcode: e.target.value })
                       }
-                      placeholder="Barcode"
+                      placeholder={t("discount.form.barcode")}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       disabled={formLoading}
                     />
@@ -928,8 +925,8 @@ export default function DiscountCategoryPage() {
               >
                 {formLoading
                   ? isEditMode
-                    ? "Updating..."
-                    : "Creating..."
+                    ? t("discount.form.updating")
+                    : t("discount.form.creating")
                   : isEditMode
                   ? t("discount.form.update_discount")
                   : t("discount_modal.add")}

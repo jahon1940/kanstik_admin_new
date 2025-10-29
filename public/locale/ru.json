@@ -364,12 +364,14 @@
       "edit_discount_title": "Редактировать скидку",
       "discount_name": "Название скидки",
       "discount_name_placeholder": "Введите название скидки...",
-      "discount_percent": "Процент скидки",
+      "discount_percent": "Процент скидки (0-100)",
       "discount_percent_placeholder": "Введите процент (0-100)...",
+      "barcode": "Штрихкод",
       "add_discount": "Добавить скидку",
       "update_discount": "Обновить скидку",
       "adding": "Добавление...",
       "updating": "Обновление...",
+      "creating": "Создание...",
       "all_fields_required": "Все поля обязательны для заполнения",
       "invalid_percent": "Процент должен быть числом от 0 до 100",
       "discount_added_success": "Скидка успешно добавлена!",
@@ -377,7 +379,10 @@
       "discount_deleted_success": "Скидка успешно удалена!",
       "delete_confirmation_title": "Удалить скидку?",
       "delete_confirmation_message": "Вы уверены, что хотите удалить эту скидку? Это действие нельзя отменить.",
-      "yes_delete": "Да, удалить"
+      "yes_delete": "Да, удалить",
+      "please_select_start_date": "Пожалуйста, выберите дату начала",
+      "please_select_end_date": "Пожалуйста, выберите дату окончания",
+      "please_select_category": "Пожалуйста, выберите хотя бы одну категорию"
     }
   },
   "responsive": {
@@ -399,12 +404,14 @@
     "yakkasaray": "Яккасарай",
     "yashnabad": "Яшнабад",
     "select": "Выбрать",
+    "selected": "Выбрано",
     "photo_for_site": "Фото для сайта",
     "photo_for_app": "Фото для приложение",
     "enter_title": "Введите заголовок",
     "enter_text": "Введите текст",
     "add": "Добавить",
     "cancel": "Отменить",
-    "show": "показывать"
+    "show": "показывать",
+    "select_parent_category": "Выберите родительскую категорию, чтобы просмотреть ее подкатегории."
   }
 }
