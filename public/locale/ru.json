@@ -405,18 +405,6 @@
     "enter_text": "Введите текст",
     "add": "Добавить",
     "cancel": "Отменить",
-    "show": "показывать",
-    "please_select_start_date": "Пожалуйста, выберите дату начала",
-    "please_select_end_date": "Пожалуйста, выберите дату окончания",
-    "please_select_category": "Пожалуйста, выберите хотя бы одну категорию",
-    "categories": "Категории",
-    "children_categories": "Дочерние категории",
-    "select_parent_category": "Выберите родительскую категорию для просмотра дочерних",
-    "discount_name": "Название скидки",
-    "discount_percent": "Процент скидки (0-100)",
-    "barcode": "Штрихкод",
-    "creating": "Создание...",
-    "updating": "Обновление...",
-    "selected": "Выбрано"
+    "show": "показывать"
   }
 }
