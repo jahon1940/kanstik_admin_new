@@ -426,7 +426,7 @@ export default function DiscountCategoryPage() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg">
+      <div className="flex items-center gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-[0px_0px_20px_4px_rgba(0,_0,_0,_0.1)]">
         <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
           <button
             type="button"
@@ -436,11 +436,13 @@ export default function DiscountCategoryPage() {
             <ChevronLeft className="h-3 w-3 md:h-4 md:w-4" />
           </button>
           <h1 className="text-base md:text-xl font-semibold truncate">
-            {t("app.management.discounts")}
+            {t("menu.link6")}
           </h1>
         </div>
       </div>
-      <div className="rounded-lg bg-card shadow-lg">
+
+      {/* Desktop version */}
+      <div className="hidden lg:block rounded-lg bg-card shadow-lg">
         <div className="overflow-auto h-[calc(100vh-9.5rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4">
           {/* Payments Tab */}
           <div className="w-full mt-0">
@@ -935,6 +937,11 @@ export default function DiscountCategoryPage() {
           </div>
         </div>
       )}
+
+      {/* Mobile version - show DesktopOnlyMessage */}
+      <div className="lg:hidden">
+        <DesktopOnlyMessage />
+      </div>
     </div>
   );
 }

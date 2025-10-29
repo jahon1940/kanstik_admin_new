@@ -56,165 +56,14 @@ export default function KviDiscountPage() {
   // Add/Edit Discount Modal state
   const [isAddDiscountModalOpen, setIsAddDiscountModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedDiscount, setSelectedDiscount] = useState<any>(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    percent: "",
-  });
-  const [formLoading, setFormLoading] = useState(false);
+
 
   // Responsive state
   const [isDesktop, setIsDesktop] = useState(true);
 
-  const addDiscount = async () => {
-    if (!formData.name.trim() || !formData.percent.trim()) {
-      toast.error(t("discount.form.all_fields_required"));
-      return;
-    }
-
-    const percentValue = parseFloat(formData.percent);
-    if (isNaN(percentValue) || percentValue <= 0 || percentValue > 100) {
-      toast.error(t("discount.form.invalid_percent"));
-      return;
-    }
-
-    setFormLoading(true);
-
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-
-      const requestOptions: RequestInit = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          percent: percentValue,
-        }),
-        redirect: "follow",
-      };
-
-      const response = await fetch(
-        `${BASE_URL}/v1/admins/discount-types`,
-        requestOptions
-      );
-
-      if (response.ok) {
-        toast.success(t("discount.form.discount_added_success"));
-        setIsAddDiscountModalOpen(false);
-        setFormData({ name: "", percent: "" });
-        getKviDiscounts(1);
-      } else {
-        throw new Error(t("toast.error_occurred"));
-      }
-    } catch (error: any) {
-      const msg = error?.message || t("toast.network_error");
-      toast.error(msg);
-    } finally {
-      setFormLoading(false);
-    }
-  };
-
-  const updateDiscount = async () => {
-    if (!formData.name.trim() || !formData.percent.trim()) {
-      toast.error(t("discount.form.all_fields_required"));
-      return;
-    }
-
-    const percentValue = parseFloat(formData.percent);
-    if (isNaN(percentValue) || percentValue <= 0 || percentValue > 100) {
-      toast.error(t("discount.form.invalid_percent"));
-      return;
-    }
-
-    if (!selectedDiscount?.id) {
-      toast.error(t("toast.error_occurred"));
-      return;
-    }
-
-    setFormLoading(true);
-
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-
-      const requestOptions: RequestInit = {
-        method: "PUT",
-        headers: myHeaders,
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          percent: percentValue,
-        }),
-        redirect: "follow",
-      };
-
-      const response = await fetch(
-        `${BASE_URL}/v1/admins/discount-types/${selectedDiscount.id}`,
-        requestOptions
-      );
-
-      if (response.ok) {
-        toast.success(t("discount.form.discount_updated_success"));
-        setIsAddDiscountModalOpen(false);
-        setIsEditMode(false);
-        setSelectedDiscount(null);
-        setFormData({ name: "", percent: "" });
-        getKviDiscounts(1); // Refresh the list
-      } else {
-        throw new Error(t("toast.error_occurred"));
-      }
-    } catch (error: any) {
-      const msg = error?.message || t("toast.network_error");
-      toast.error(msg);
-    } finally {
-      setFormLoading(false);
-    }
-  };
-
-  const deleteDiscount = async (id: number) => {
-    try {
-      setLoading(true);
-
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      if (getDeviceToken()) {
-        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
-      }
-
-      const requestOptions: RequestInit = {
-        method: "DELETE",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      const response = await fetch(
-        `${BASE_URL}/v1/admins/discount-types/${id}`,
-        requestOptions
-      );
-
-      if (response.ok) {
-        toast.success(t("discount.form.discount_deleted_success"));
-        getKviDiscounts(1); // Refresh the list
-      } else {
-        const result = await response.json();
-        throw new Error(result.message || t("toast.error_occurred"));
-      }
-    } catch (error: any) {
-      const msg = error?.message || t("toast.network_error");
-      toast.error(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
+ 
+ 
 
   const getProducts = async (
     searchTerm: string = "",
@@ -439,7 +288,7 @@ export default function KviDiscountPage() {
       {isDesktop ? (
         /* KVI elements*/
         <div className="rounded-lg shadow-lg">
-          <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] ">
+          <div className="overflow-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6.5rem)] ">
             {/* Two Section Layout */}
             <div className="flex gap-4 h-full">
               {/* Left Section - Products */}
@@ -486,7 +335,7 @@ export default function KviDiscountPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2 max-h-[calc(100vh-18rem)] overflow-y-auto">
+                <div className="space-y-2 max-h-[calc(100vh-19rem)] overflow-y-auto">
                   {productsLoading ? (
                     <div className="flex justify-center items-center py-12">
                       <Loading />
@@ -603,7 +452,7 @@ export default function KviDiscountPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2 max-h-[calc(100vh-18rem)] overflow-y-auto">
+                <div className="space-y-2 max-h-[calc(100vh-19rem)] overflow-y-auto">
                   {loading ? (
                     <div className="flex justify-center items-center py-12">
                       <Loading />
@@ -711,127 +560,7 @@ export default function KviDiscountPage() {
         <DesktopOnlyMessage />
       )}
 
-      {/* Add Discount Modal */}
-      {isAddDiscountModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setIsAddDiscountModalOpen(false);
-              setIsEditMode(false);
-              setSelectedDiscount(null);
-              setFormData({ name: "", percent: "" });
-            }
-          }}
-        >
-          <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {isEditMode
-                  ? t("discount.form.edit_discount_title")
-                  : t("discount.form.add_discount_title")}
-              </h2>
-              <button
-                onClick={() => {
-                  setIsAddDiscountModalOpen(false);
-                  setIsEditMode(false);
-                  setSelectedDiscount(null);
-                  setFormData({ name: "", percent: "" });
-                }}
-                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-6">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (isEditMode) {
-                    updateDiscount();
-                  } else {
-                    addDiscount();
-                  }
-                }}
-                className="space-y-4"
-              >
-                {/* Name Field */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("discount.form.discount_name")}
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    placeholder={t("discount.form.discount_name_placeholder")}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    disabled={formLoading}
-                  />
-                </div>
-
-                {/* Percent Field */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("discount.form.discount_percent")}
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.01"
-                    value={formData.percent}
-                    onChange={(e) =>
-                      setFormData({ ...formData, percent: e.target.value })
-                    }
-                    placeholder={t(
-                      "discount.form.discount_percent_placeholder"
-                    )}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    disabled={formLoading}
-                  />
-                </div>
-
-                {/* Form Actions */}
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setIsAddDiscountModalOpen(false);
-                      setIsEditMode(false);
-                      setSelectedDiscount(null);
-                      setFormData({ name: "", percent: "" });
-                    }}
-                    className="flex-1"
-                    disabled={formLoading}
-                  >
-                    {t("alert.cancel")}
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="flex-1"
-                    disabled={formLoading}
-                  >
-                    {formLoading
-                      ? isEditMode
-                        ? t("discount.form.updating")
-                        : t("discount.form.adding")
-                      : isEditMode
-                      ? t("discount.form.update_discount")
-                      : t("discount.form.add_discount")}
-                  </Button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
+     
     </div>
   );
 }
