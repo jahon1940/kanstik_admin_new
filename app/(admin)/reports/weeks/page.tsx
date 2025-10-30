@@ -1,0 +1,42 @@
+"use client";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
+import { ChevronLeft, CalendarDays } from "lucide-react";
+
+export default function WeeksReportPage() {
+  const router = useRouter();
+  const { t } = useTranslation();
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 bg-secondary rounded-md p-3 md:p-4 min-h-14 md:min-h-16 shadow-lg">
+        <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-md border border-primary/40 text-muted hover:bg-primary hover:text-white transition-colors cursor-pointer bg-secondary flex-shrink-0"
+          >
+            <ChevronLeft className="h-3 w-3 md:h-4 md:w-4" />
+          </button>
+          <h1 className="text-base md:text-xl font-semibold truncate">
+            {t("app.reports.sales_by_weeks")}
+          </h1>
+        </div>
+      </div>
+
+      <div className="rounded-lg bg-card shadow-lg">
+        <div className="overflow-auto h-[calc(100vh-9.5rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center space-y-6">
+            <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center">
+              <CalendarDays className="w-12 h-12 text-gray-400" />
+            </div>
+            <p className="text-lg text-gray-500 font-medium">
+              {t("common.coming_soon")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

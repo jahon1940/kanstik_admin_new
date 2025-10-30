@@ -417,6 +417,9 @@
   "responsive": {
     "desktop_only_message": "Эта страница предназначена только для использования в компьютерном формате."
   },
+  "common": {
+    "coming_soon": "Скоро..."
+  },
   "discount_modal": {
     "select_region": "Выберите категории",
     "region": "Регион",

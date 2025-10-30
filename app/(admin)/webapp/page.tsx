@@ -2,6 +2,7 @@
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import SiteIcon from "@/components/icons/site";
 
 export default function WebAppPage() {
   const { t } = useTranslation();
@@ -22,9 +23,16 @@ export default function WebAppPage() {
         </h1>
       </div>
 
-      <div className="rounded-lg bg-card shadow-lg p-4 md:p-6">
-        <div className="text-center py-8 md:py-12">
-          <p className="text-muted-foreground text-sm md:text-base">Скоро...</p>
+      <div className="rounded-lg bg-card shadow-lg">
+        <div className="overflow-auto h-[calc(100vh-9.5rem)] md:h-[calc(100vh-6rem)] p-3 md:p-4 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center space-y-6">
+            <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center">
+              <SiteIcon className="w-12 h-12 text-gray-400" />
+            </div>
+            <p className="text-lg text-gray-500 font-medium">
+              {t("common.coming_soon")}
+            </p>
+          </div>
         </div>
       </div>
     </div>

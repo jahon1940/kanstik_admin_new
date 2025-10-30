@@ -155,7 +155,7 @@ export function Sidebar({
               key={item.href}
               href={item.href}
               className={cn(
-                "text-muted flex items-center rounded-md py-2 transition-colors min-w-0 h-10 group text-base",
+                "text-muted flex items-center rounded-md py-6 transition-colors min-w-0 h-10 group text-base",
                 active
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-primary/70 hover:text-secondary",

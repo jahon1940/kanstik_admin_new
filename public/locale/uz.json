@@ -417,6 +417,9 @@
   "responsive": {
     "desktop_only_message": "Ushbu sahifa faqat kompyuter formatda foydalanish uchun mo'ljallangan."
   },
+  "common": {
+    "coming_soon": "Tez orada..."
+  },
   "discount_modal": {
     "select_region": "Kategoriyalarni tanlang",
     "region": "Hudud",
