@@ -208,7 +208,7 @@ export default function ReportsPage() {
       <div className="rounded-lg bg-card shadow-lg p-3  md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6.5rem)]">
         <div className="space-y-4">
           {/* Date filters - responsive */}
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-col sm:flex-row flex-wrap gap-3">
             {/* Date selectors row */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Popover open={open} onOpenChange={setOpen}>

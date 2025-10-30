@@ -7,6 +7,7 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  
 }
 
 @custom-variant dark (&:is(.dark *));
