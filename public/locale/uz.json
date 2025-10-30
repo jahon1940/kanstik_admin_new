@@ -52,7 +52,28 @@
       "turnover": "Aylanma",
       "details": "Batafsil",
       "by_payment_types": "To'lov turlari bo'yicha",
-      "cashier": "Kassa"
+      "cashier": "Kassa",
+      "select_report_type": "Hisobot turini tanlang",
+      "sales_by_products": "Mahsulotlar bo'yicha sotuvlar",
+      "sales_by_products_desc": "Har bir mahsulot bo'yicha sotuv hisoboti",
+      "sales_by_categories": "Kategoriyalar bo'yicha sotuvlar",
+      "sales_by_categories_desc": "Mahsulot kategoriyalari bo'yicha sotuv hisoboti",
+      "sales_by_bundles": "Komplektlar bo'yicha sotuvlar",
+      "sales_by_bundles_desc": "Mahsulot komplektlari bo'yicha sotuv hisoboti",
+      "sales_by_days": "Kunlar bo'yicha sotuvlar",
+      "sales_by_days_desc": "Kunlik sotuv hisoboti",
+      "sales_by_weeks": "Haftalar bo'yicha sotuvlar",
+      "sales_by_weeks_desc": "Haftalik sotuv hisoboti",
+      "sales_by_months": "Oylar bo'yicha sotuvlar",
+      "sales_by_months_desc": "Oylik sotuv hisoboti",
+      "movement_report": "Harakat hisoboti",
+      "movement_report_desc": "Mahsulotlar harakati bo'yicha hisobot",
+      "agents_report": "Agentlar bo'yicha hisobot",
+      "agents_report_desc": "Sotuvchi agentlar bo'yicha hisobot",
+      "financial_report": "Moliyaviy hisobot",
+      "financial_report_desc": "Umumiy moliyaviy ko'rsatkichlar hisoboti",
+      "employees_report": "Xodimlar bo'yicha hisobot",
+      "employees_report_desc": "Xodimlar faoliyati bo'yicha hisobot"
     },
     "webapp": { "title": "Veb-sayt va ilova" },
     "stock": {
@@ -219,7 +240,7 @@
     },
     "management": {
       "discounts": "Chegirmalar",
-      "add_discount": "Skidka qo'shish"
+      "add_discount": "Chegirma qo'shish"
     },
     "pagination": {
       "show_more": "Ko'rsatish",
@@ -412,6 +433,6 @@
     "add": "Qo'shish",
     "cancel": "Bekor qilish",
     "show": "ko'rsatish",
-    "select_parent_category": "Ichki kategoriyalarini ko'rish uchun asosiy kategoriyani tanlang"
+    "select_parent_category": "Ichki kategoriyalarni ko'rish uchun asosiy kategoriyani tanlang"
   }
 }

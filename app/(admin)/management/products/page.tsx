@@ -231,7 +231,7 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      <div className="rounded-lg bg-card shadow-lg h-[calc(100vh-10rem)] md:h-[calc(100vh-6.5rem)] flex flex-col">
+      <div className="rounded-lg bg-card shadow-lg h-[calc(100vh-9.5rem)] md:h-[calc(100vh-6.5rem)] flex flex-col">
         {/* Products Content */}
         <div className="flex-1 overflow-y-auto  px-0 md:px-4 pb-4 ">
           {loading ? (
@@ -429,10 +429,10 @@ const ProductsPage = () => {
             </div>
             {/* Manage buttons */}
             <div className="border-b bg-gray-50 mb-5">
-              <div className="flex">
+              <div className="flex sm:flex-none sm:justify-start justify-center gap-2 sm:gap-0">
                 <button
                   onClick={() => setActiveModalTab("info")}
-                  className={`cursor-pointer px-3 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium border-b-2 transition-colors ${
+                  className={`cursor-pointer w-[45%] sm:w-auto px-3 md:px-6 py-3 sm:py-2 md:py-3 text-sm sm:text-xs md:text-sm font-medium border-b-2 transition-colors ${
                     activeModalTab === "info"
                       ? "border-blue-500 text-blue-600 bg-white"
                       : "border-transparent text-gray-500 hover:text-gray-700"
@@ -447,7 +447,7 @@ const ProductsPage = () => {
                 </button>
                 <button
                   onClick={() => setActiveModalTab("stocks")}
-                  className={`cursor-pointer px-3 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium border-b-2 transition-colors ${
+                  className={`cursor-pointer w-[45%] sm:w-auto px-3 md:px-6 py-3 sm:py-2 md:py-3 text-sm sm:text-xs md:text-sm font-medium border-b-2 transition-colors ${
                     activeModalTab === "stocks"
                       ? "border-blue-500 text-blue-600 bg-white"
                       : "border-transparent text-gray-500 hover:text-gray-700"

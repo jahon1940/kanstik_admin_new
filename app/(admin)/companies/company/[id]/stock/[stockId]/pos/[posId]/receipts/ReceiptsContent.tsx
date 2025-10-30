@@ -733,50 +733,61 @@ const ReceiptsContent = () => {
             }
           }}
         >
-          <div className="bg-bgColor rounded-lg shadow-2xl  max-w-[80%] sm:max-w-md w-full h-full  overflow-auto">
-            {/* Header */}
-            <div className="bg-gray-50 px-4 py-1  flex justify-between items-center">
-              <h2
-                className={`font-semibold flex items-center gap-2 text-sm ${
-                  selectedReceipt?.sent_to_1c
-                    ? "text-green-600"
-                    : "text-red-600 cursor-pointer"
-                }`}
-                onClick={() => {
-                  if (!selectedReceipt?.sent_to_1c) {
-                    setIsErrorModalOpen(true);
-                  }
-                }}
+          <div
+            className="bg-bgColor rounded-lg shadow-2xl  max-w-[80%] sm:max-w-md w-full h-full  overflow-y-auto relative"
+            style={{ overflow: "visible" }}
+          >
+            <div className="h-full overflow-y-auto rounded-lg">
+              {/* Close Arrow */}
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-0 -left-8 bg-bgColor rounded-sm  p-2 px-3  hover:bg-gray-50 transition-colors z-10 cursor-pointer"
               >
-                <Info /> {selectedReceipt?.id}
-              </h2>
-              {/* <button
+                <X className="w-5 h-5 text-gray-600" />
+              </button>
+              {/* Header */}
+              <div className="bg-gray-50 px-4 py-1  flex justify-between items-center">
+                <h2
+                  className={`font-semibold flex items-center gap-2 text-sm ${
+                    selectedReceipt?.sent_to_1c
+                      ? "text-green-600"
+                      : "text-red-600 cursor-pointer"
+                  }`}
+                  onClick={() => {
+                    if (!selectedReceipt?.sent_to_1c) {
+                      setIsErrorModalOpen(true);
+                    }
+                  }}
+                >
+                  <Info /> {selectedReceipt?.id}
+                </h2>
+                {/* <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
               >
                 ×
               </button> */}
-              {/* Status Info */}
-              <div className="w-1/2 text-right">
-                <span
-                  className={`text-xs leading-[0px] ${
-                    selectedReceipt?.sent_to_1c
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {selectedReceipt?.sent_to_1c
-                    ? t("app.pos.sent_to_1c")
-                    : t("app.pos.not_synchronized")}
-                </span>
+                {/* Status Info */}
+                <div className="w-1/2 text-right">
+                  <span
+                    className={`text-xs leading-[0px] ${
+                      selectedReceipt?.sent_to_1c
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {selectedReceipt?.sent_to_1c
+                      ? t("app.pos.sent_to_1c")
+                      : t("app.pos.not_synchronized")}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Receipt Content */}
-            <div
-              className="overflow-y-auto bg-white w-[90%] mx-auto mb-4"
-              style={{
-                clipPath: `polygon(
+              {/* Receipt Content */}
+              <div
+                className="overflow-y-auto bg-white w-[90%] mx-auto mb-4"
+                style={{
+                  clipPath: `polygon(
       0 10px, 5% 0, 10% 10px, 15% 0, 20% 10px, 25% 0,
       30% 10px, 35% 0, 40% 10px, 45% 0, 50% 10px,
       55% 0, 60% 10px, 65% 0, 70% 10px, 75% 0,
@@ -788,185 +799,189 @@ const ReceiptsContent = () => {
       30% 100%, 25% calc(100% - 10px), 20% 100%, 15% calc(100% - 10px),
       10% 100%, 5% calc(100% - 10px), 0 100%
     )`,
-              }}
-            >
-              {selectedReceipt && (
-                <div className="p-4 font-mono text-sm">
-                  {/* Store Header */}
-                  <div className="text-center mb-4  pb-3">
-                    <div className="text-lg font-bold">{t("app.pos.sale")}</div>
-                    <div className="text-xs text-gray-600">Kanstik</div>
-                  </div>
+                }}
+              >
+                {selectedReceipt && (
+                  <div className="p-4 font-mono text-sm">
+                    {/* Store Header */}
+                    <div className="text-center mb-4  pb-3">
+                      <div className="text-lg font-bold">
+                        {t("app.pos.sale")}
+                      </div>
+                      <div className="text-xs text-gray-600">Kanstik</div>
+                    </div>
 
-                  {/* Receipt Info */}
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between">
-                      <span>{t("app.pos.date_time")}:</span>
-                      <span className="font-semibold">
-                        {formatDate(selectedReceipt.close_time)}
-                      </span>
+                    {/* Receipt Info */}
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between">
+                        <span>{t("app.pos.date_time")}:</span>
+                        <span className="font-semibold">
+                          {formatDate(selectedReceipt.close_time)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>{t("app.pos.inn_pinfl")}:</span>
+                        <span>{selectedReceipt.fiscal_sign}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>{t("app.pos.cashier")}:</span>
+                        <span className="text-right max-w-[200px]">
+                          {selectedReceipt.staff_name}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span>{t("app.pos.inn_pinfl")}:</span>
-                      <span>{selectedReceipt.fiscal_sign}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>{t("app.pos.cashier")}:</span>
-                      <span className="text-right max-w-[200px]">
-                        {selectedReceipt.staff_name}
-                      </span>
-                    </div>
-                  </div>
 
-                  {/* Items Section */}
-                  <div className=" pt-3 mb-4">
-                    <div className="text-center font-semibold mb-2">
-                      {t("app.pos.products")}
-                    </div>
-                    <div className="space-y-2">
-                      {selectedReceipt?.products?.map((item: any, index) => {
-                        return (
-                          <div>
-                            <div
-                              key={index}
-                              className="flex justify-between items-start"
-                            >
-                              <div className="flex-1">
-                                <div className="font-medium">
-                                  {item.product.classifier_title}
+                    {/* Items Section */}
+                    <div className=" pt-3 mb-4">
+                      <div className="text-center font-semibold mb-2">
+                        {t("app.pos.products")}
+                      </div>
+                      <div className="space-y-2">
+                        {selectedReceipt?.products?.map((item: any, index) => {
+                          return (
+                            <div>
+                              <div
+                                key={index}
+                                className="flex justify-between items-start"
+                              >
+                                <div className="flex-1">
+                                  <div className="font-medium">
+                                    {item.product.classifier_title}
+                                  </div>
+                                  <div className="text-xs text-gray-600">
+                                    {item.quantity}.0 {t("app.pos.pcs")} х{" "}
+                                    {item.price /
+                                      item.quantity.toLocaleString("ru-RU")}
+                                  </div>
                                 </div>
-                                <div className="text-xs text-gray-600">
-                                  {item.quantity}.0 {t("app.pos.pcs")} х{" "}
-                                  {item.price /
-                                    item.quantity.toLocaleString("ru-RU")}
+                                <div className="text-right ml-2">
+                                  <div className="font-semibold">
+                                    {item.price?.toLocaleString("ru-RU")}
+                                  </div>
                                 </div>
                               </div>
-                              <div className="text-right ml-2">
-                                <div className="font-semibold">
-                                  {item.price?.toLocaleString("ru-RU")}
+                              {/* Tax Info */}
+                              <div className=" pt-3 mb-4">
+                                <div className="flex justify-between text-xs">
+                                  <span>
+                                    {t("app.pos.vat")}: ({item.vat_percent})
+                                  </span>
+                                  <span>{item.vat}</span>
+                                </div>
+                                <div className="flex justify-between text-xs">
+                                  <span>{t("app.pos.ikpu")}:</span>
+                                  <span>{item.class_code}</span>
                                 </div>
                               </div>
                             </div>
-                            {/* Tax Info */}
-                            <div className=" pt-3 mb-4">
-                              <div className="flex justify-between text-xs">
-                                <span>
-                                  {t("app.pos.vat")}: ({item.vat_percent})
-                                </span>
-                                <span>{item.vat}</span>
-                              </div>
-                              <div className="flex justify-between text-xs">
-                                <span>{t("app.pos.ikpu")}:</span>
-                                <span>{item.class_code}</span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Payment Summary */}
-                  <div className=" pt-3 mb-4">
-                    <div className="space-y-1">
-                      <div className="flex justify-between font-semibold">
-                        <span>{t("app.pos.amount")}:</span>
-                        <span>
-                          {(
-                            Number(
+                    {/* Payment Summary */}
+                    <div className=" pt-3 mb-4">
+                      <div className="space-y-1">
+                        <div className="flex justify-between font-semibold">
+                          <span>{t("app.pos.amount")}:</span>
+                          <span>
+                            {(
+                              Number(
+                                selectedReceipt?.received_cash
+                                  .toString()
+                                  .slice(0, -2)
+                              ) +
+                              Number(
+                                selectedReceipt?.received_card
+                                  .toString()
+                                  .slice(0, -2)
+                              )
+                            ).toLocaleString("ru-RU")}{" "}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>{t("app.pos.paid")}:</span>
+                          <span>
+                            {(
+                              Number(
+                                selectedReceipt?.received_cash
+                                  .toString()
+                                  .slice(0, -2)
+                              ) +
+                              Number(
+                                selectedReceipt?.received_card
+                                  .toString()
+                                  .slice(0, -2)
+                              )
+                            ).toLocaleString("ru-RU")}{" "}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>{t("app.pos.cash")}:</span>
+                          <span>
+                            {Number(
                               selectedReceipt?.received_cash
                                 .toString()
                                 .slice(0, -2)
-                            ) +
-                            Number(
+                            ).toLocaleString("ru-RU")}{" "}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>{t("app.pos.card")}:</span>
+                          <span>
+                            {Number(
                               selectedReceipt?.received_card
                                 .toString()
                                 .slice(0, -2)
-                            )
-                          ).toLocaleString("ru-RU")}{" "}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{t("app.pos.paid")}:</span>
-                        <span>
-                          {(
-                            Number(
-                              selectedReceipt?.received_cash
-                                .toString()
-                                .slice(0, -2)
-                            ) +
-                            Number(
-                              selectedReceipt?.received_card
-                                .toString()
-                                .slice(0, -2)
-                            )
-                          ).toLocaleString("ru-RU")}{" "}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{t("app.pos.cash")}:</span>
-                        <span>
-                          {Number(
-                            selectedReceipt?.received_cash
-                              .toString()
-                              .slice(0, -2)
-                          ).toLocaleString("ru-RU")}{" "}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{t("app.pos.card")}:</span>
-                        <span>
-                          {Number(
-                            selectedReceipt?.received_card
-                              .toString()
-                              .slice(0, -2)
-                          ).toLocaleString("ru-RU")}{" "}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{t("app.pos.bonus_card")}:</span>
-                        {/* bonus price */}
-                        <span>
-                          {selectedReceipt?.payments
-                            ?.find(
-                              (payment: any) =>
-                                payment.payment_type?.name === "Бонусы"
-                            )
-                            ?.price?.toLocaleString("ru-RU") || "0"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{t("app.pos.bonus_card_number")}:</span>
-                        <span>{selectedReceipt?.card_number}</span>
+                            ).toLocaleString("ru-RU")}{" "}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>{t("app.pos.bonus_card")}:</span>
+                          {/* bonus price */}
+                          <span>
+                            {selectedReceipt?.payments
+                              ?.find(
+                                (payment: any) =>
+                                  payment.payment_type?.name === "Бонусы"
+                              )
+                              ?.price?.toLocaleString("ru-RU") || "0"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>{t("app.pos.bonus_card_number")}:</span>
+                          <span>{selectedReceipt?.card_number}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Fiscal Details */}
-                  <div className=" pt-3 mb-4">
-                    <div className="text-center text-xs space-y-1">
-                      <div className="flex justify-between">
-                        <span>{t("app.pos.fm")}:</span>{" "}
-                        <span>{selectedReceipt?.terminal_id}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{t("app.pos.fp")}:</span>{" "}
-                        <span>414675046328</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{t("app.pos.receipt_number")} №:</span>
-                        <span>
-                          {selectedReceipt?.receipt_seq || selectedReceipt?.id}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>S/N:</span>{" "}
-                        <span>{selectedReceipt?.terminal_id}</span>
+                    {/* Fiscal Details */}
+                    <div className=" pt-3 mb-4">
+                      <div className="text-center text-xs space-y-1">
+                        <div className="flex justify-between">
+                          <span>{t("app.pos.fm")}:</span>{" "}
+                          <span>{selectedReceipt?.terminal_id}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>{t("app.pos.fp")}:</span>{" "}
+                          <span>414675046328</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>{t("app.pos.receipt_number")} №:</span>
+                          <span>
+                            {selectedReceipt?.receipt_seq ||
+                              selectedReceipt?.id}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>S/N:</span>{" "}
+                          <span>{selectedReceipt?.terminal_id}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

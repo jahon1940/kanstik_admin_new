@@ -52,7 +52,28 @@
       "turnover": "Оборот",
       "details": "Подробно",
       "by_payment_types": "По типам оплаты",
-      "cashier": "Касса"
+      "cashier": "Касса",
+      "select_report_type": "Выберите тип отчёта",
+      "sales_by_products": "Продажи по товарам",
+      "sales_by_products_desc": "Отчёт по продажам каждого товара",
+      "sales_by_categories": "Продажи по категориям",
+      "sales_by_categories_desc": "Отчёт по продажам категорий товаров",
+      "sales_by_bundles": "Продажи по комплектам",
+      "sales_by_bundles_desc": "Отчёт по продажам товарных комплектов",
+      "sales_by_days": "Продажи по дням",
+      "sales_by_days_desc": "Ежедневный отчёт по продажам",
+      "sales_by_weeks": "Продажи по неделям",
+      "sales_by_weeks_desc": "Еженедельный отчёт по продажам",
+      "sales_by_months": "Продажи по месяцам",
+      "sales_by_months_desc": "Ежемесячный отчёт по продажам",
+      "movement_report": "Отчёт по движению",
+      "movement_report_desc": "Отчёт по движению товаров",
+      "agents_report": "Отчёт по агентам",
+      "agents_report_desc": "Отчёт по торговым агентам",
+      "financial_report": "Финансовый отчёт",
+      "financial_report_desc": "Отчёт по общим финансовым показателям",
+      "employees_report": "Отчёт по сотрудникам",
+      "employees_report_desc": "Отчёт по деятельности сотрудников"
     },
     "webapp": { "title": "Сайт и приложение" },
     "stock": {
@@ -412,6 +433,6 @@
     "add": "Добавить",
     "cancel": "Отменить",
     "show": "показывать",
-    "select_parent_category": "Выберите родительскую категорию, чтобы просмотреть ее подкатегории."
+    "select_parent_category": "Выберите родительскую категорию для просмотра дочерних"
   }
 }
