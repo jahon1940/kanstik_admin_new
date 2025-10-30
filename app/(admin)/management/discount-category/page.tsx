@@ -613,7 +613,7 @@ export default function DiscountCategoryPage() {
       {/* Add Discount Modal */}
       {isAddDiscountModalOpen && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 h-full"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setIsAddDiscountModalOpen(false);
@@ -668,7 +668,7 @@ export default function DiscountCategoryPage() {
 
                 {/* Parent Category List */}
                 <div className="space-y-4 col-span-3">
-                  <div className="space-y-2 relative max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  <div className="space-y-2 relative max-h-[53vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                     {categoriesLoading ? (
                       <div className="flex justify-center items-center py-12">
                         <Loading />
@@ -721,7 +721,7 @@ export default function DiscountCategoryPage() {
 
                 {/* Children Category List */}
                 <div className="space-y-4 col-span-2">
-                  <div className="space-y-2 relative max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  <div className="space-y-2 relative max-h-[53vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                     {childrenLoading ? (
                       <div className="flex justify-center items-center py-12">
                         <Loading />

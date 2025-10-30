@@ -73,7 +73,9 @@
       "financial_report": "Moliyaviy hisobot",
       "financial_report_desc": "Umumiy moliyaviy ko'rsatkichlar hisoboti",
       "employees_report": "Xodimlar bo'yicha hisobot",
-      "employees_report_desc": "Xodimlar faoliyati bo'yicha hisobot"
+      "employees_report_desc": "Xodimlar faoliyati bo'yicha hisobot",
+      "average_receipt_report": "O'rtacha chek hisoboti",
+      "average_receipt_report_desc": "Sotuvlarning o'rtacha chek ko'rsatkichlari"
     },
     "webapp": { "title": "Veb-sayt va ilova" },
     "stock": {
@@ -251,11 +253,17 @@
   },
   "menu": {
     "link1": "Nomenklatura",
+    "link1_desc": "Mahsulotlar va tovarlarni boshqarish",
     "link2": "Qarama-qarshi tomonlar",
+    "link2_desc": "Mijozlar va kontragentlar ma'lumotlari",
     "link3": "Menejerlar",
+    "link3_desc": "Xodimlar va menejerlar boshqaruvi",
     "link4": "Chegirma",
+    "link4_desc": "Chegirmalar va aksiyalar sozlamalari",
     "link5": "KVI Mahsulotlar",
-    "link6": "Kategoriya bo'yicha chegirma"
+    "link5_desc": "KVI mahsulotlar va maxsus takliflar",
+    "link6": "Kategoriya bo'yicha chegirma",
+    "link6_desc": "Kategoriya bo'yicha chegirmalar"
   },
   "product": {
     "modal": {

@@ -13,6 +13,7 @@ import {
   Users,
   DollarSign,
   UserCheck,
+  Receipt,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -21,6 +22,13 @@ export default function ReportsPage() {
   const pathname = usePathname();
 
   const reportTypes = [
+    {
+      id: "average_receipt",
+      title: t("app.reports.average_receipt_report"),
+      icon: Receipt,
+      description: t("app.reports.average_receipt_report_desc"),
+      href: `${pathname}/receipts`,
+    },
     {
       id: "products",
       title: t("app.reports.sales_by_products"),
@@ -110,27 +118,27 @@ export default function ReportsPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {reportTypes.map((report) => {
-            const IconComponent = report.icon;
+          {reportTypes.map((link) => {
+            const IconComponent = link.icon;
             return (
               <Link
-                key={report.id}
+                key={link.id}
                 href={{
-                  pathname: report.href,
+                  pathname: link.href,
                   // query: { name: data?.name },
                 }}
-                className="group bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer"
+                className="group bg-white rounded-lg border border-gray-200 p-4 sm:p-6 hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer"
               >
-                <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-                    <IconComponent className="w-8 h-8 text-gray-500 group-hover:text-blue-600" />
+                <div className="flex flex-row sm:flex-col gap-3 sm:gap-0 items-center text-left sm:text-center sm:space-y-4">
+                  <div className="w-12 sm:w-16 h-12 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-blue-50 transition-colors flex-shrink-0">
+                    <IconComponent className="w-6 sm:w-8 h-6 sm:h-8 text-gray-500 group-hover:text-blue-600" />
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900 mb-1 text-sm md:text-base">
-                      {report.title}
+                      {link.title}
                     </h3>
                     <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
-                      {report.description}
+                      {link.description}
                     </p>
                   </div>
                 </div>
