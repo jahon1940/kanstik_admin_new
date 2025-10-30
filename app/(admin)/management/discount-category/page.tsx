@@ -685,7 +685,7 @@ export default function DiscountCategoryPage() {
                       categories?.map((category: any, index: number) => (
                         <div key={category.id} className="space-y-2 relative">
                           <div
-                            className={`bg-gray-50 rounded border relative px-3 py-2 flex items-center justify-between`}
+                            className={`bg-gray-50 rounded-lg border relative px-3 py-2 flex items-center justify-between`}
                           >
                             <div className="text-sm">{category.name}</div>
                             <div className="flex gap-2">
@@ -742,7 +742,7 @@ export default function DiscountCategoryPage() {
                           key={childCategory.id}
                           className="space-y-2 relative"
                         >
-                          <div className="bg-gray-50 rounded border relative px-3 py-2 flex items-center justify-between">
+                          <div className="bg-gray-50 rounded-lg border relative px-3 py-2 flex items-center justify-between">
                             <div className="text-sm">{childCategory.name}</div>
                             <div className="flex gap-2">
                               <button
