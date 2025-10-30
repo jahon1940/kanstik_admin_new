@@ -1,7 +1,7 @@
 "use client";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getDeviceToken } from "@/lib/token";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -25,14 +25,17 @@ export default function ReportsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const params = useParams();
-    const router = useRouter();
+  const router = useRouter();
 
   const [ordersSite, setOrdersSite] = useState<any>(null);
+  const [organizations, setOrganizations] = useState<any[]>([]);
+  const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
+  const [organizationsLoading, setOrganizationsLoading] = useState(false);
 
   const [open, setOpen] = React.useState(false);
-
   const [open2, setOpen2] = React.useState(false);
-  const [date2, setDate2] = React.useState<string | undefined>(undefined);
+  const [openOrgSelect, setOpenOrgSelect] = React.useState(false);
+
   const [ordersDate, setOrdersDate] = React.useState<string | undefined>(
     undefined
   );
@@ -40,7 +43,39 @@ export default function ReportsPage() {
     undefined
   );
 
-  const getOrders = (date: string, date2: string) => {
+  const getOrganizations = () => {
+    setOrganizationsLoading(true);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`${BASE_URL}/v1/admins/organizations`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+
+        setOrganizations(result.results || []);
+        setOrganizationsLoading(false);
+      })
+      .catch((e) => {
+        const msg =
+          e?.response?.data?.message || e?.message || t("toast.network_error");
+        toast.error(msg);
+        setOrganizationsLoading(false);
+      });
+  };
+
+  const getOrders = (date: string, date2: string, organizationId?: number) => {
     let cancelled = false;
 
     setLoading(true);
@@ -59,8 +94,12 @@ export default function ReportsPage() {
       redirect: "follow",
     };
 
+    const organizationParam = organizationId
+      ? `&organization_id=${organizationId}`
+      : "";
+
     fetch(
-      `${BASE_URL}/v1/admins/receipts/info?from_date=${date}&to_date=${date2}&page=1&page_size=200`,
+      `${BASE_URL}/v1/admins/receipts/info?from_date=${date}&to_date=${date2}&&organization_id=${organizationParam}&page=1&page_size=200`,
       requestOptions
     )
       .then((response) => response.json())
@@ -82,7 +121,11 @@ export default function ReportsPage() {
     };
   };
 
-  const downloadReport = async (date: string, date2: string) => {
+  const downloadReport = async (
+    date: string,
+    date2: string,
+    organizationId?: number
+  ) => {
     if (!date || !date2) {
       toast.error(t("app.pos.please_select_date"));
       return;
@@ -94,8 +137,12 @@ export default function ReportsPage() {
         myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
       }
 
+      const organizationParam = organizationId
+        ? `&organization_id=${organizationId}`
+        : "";
+
       const response = await fetch(
-        `${BASE_URL}/v1/admins/receipts/info/download-excel?from_date=${date}&to_date=${date2}`,
+        `${BASE_URL}/v1/admins/receipts/info/download-excel?from_date=${date}&to_date=${date2}${organizationParam}`,
         {
           method: "POST",
           headers: myHeaders,
@@ -127,8 +174,9 @@ export default function ReportsPage() {
     }
   };
 
-  console.log(ordersSite);
-  
+  useEffect(() => {
+    getOrganizations();
+  }, []);
 
   const formatDate = (isoString: string) => {
     const d = new Date(isoString);
@@ -160,14 +208,15 @@ export default function ReportsPage() {
       <div className="rounded-lg bg-card shadow-lg p-3  md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6.5rem)]">
         <div className="space-y-4">
           {/* Date filters - responsive */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <div className="flex justify-between sm:justify-start sm:gap-2">
+          <div className="space-y-3">
+            {/* Date selectors row */}
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     id="date"
-                    className="w-[49%] sm:w-46 justify-between font-normal text-sm"
+                    className="w-full sm:w-auto sm:min-w-[140px] justify-between font-normal text-sm"
                   >
                     {ordersDate ? ordersDate : t("app.pos.from")}
                     <ChevronDownIcon className="h-4 w-4" />
@@ -201,7 +250,7 @@ export default function ReportsPage() {
                   <Button
                     variant="outline"
                     id="date"
-                    className="w-[49%] sm:w-46 justify-between font-normal text-sm"
+                    className="w-full sm:w-auto sm:min-w-[140px] justify-between font-normal text-sm"
                   >
                     {ordersDate2 ? ordersDate2 : t("app.pos.to")}
                     <ChevronDownIcon className="h-4 w-4" />
@@ -229,28 +278,87 @@ export default function ReportsPage() {
                   />
                 </PopoverContent>
               </Popover>
+
+              {/* organization select */}
+              <Popover open={openOrgSelect} onOpenChange={setOpenOrgSelect}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full sm:w-auto sm:min-w-[180px] justify-between font-normal text-sm"
+                    disabled={organizationsLoading}
+                  >
+                    {selectedOrganization
+                      ? selectedOrganization.name
+                      : t("app.pos.select_company")}
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-0" align="start">
+                  <div className="max-h-60 overflow-y-auto">
+                    {organizationsLoading ? (
+                      <div className="p-4">
+                        <Loading />
+                      </div>
+                    ) : organizations.length === 0 ? (
+                      <div className="p-4 text-sm text-gray-500">
+                        {t("app.pos.no_companies_found")}
+                      </div>
+                    ) : (
+                      <div className="space-y-1 p-2">
+                        <button
+                          onClick={() => {
+                            setSelectedOrganization(null);
+                            setOpenOrgSelect(false);
+                          }}
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded-md"
+                        >
+                          {t("app.pos.all")}
+                        </button>
+                        {organizations.map((org: any) => (
+                          <button
+                            key={org.id}
+                            onClick={() => {
+                              setSelectedOrganization(org);
+                              setOpenOrgSelect(false);
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded-md"
+                          >
+                            {org.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
 
-            {/* Generate button - responsive */}
-            <div className="flex">
+            {/* Action buttons row */}
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Button
                 onClick={() => {
                   if (ordersDate && ordersDate2)
-                    getOrders(ordersDate, ordersDate2);
+                    getOrders(
+                      ordersDate,
+                      ordersDate2,
+                      selectedOrganization?.id
+                    );
                 }}
-                className="cursor-pointer text-sm px-3 py-2 w-full"
+                className="cursor-pointer text-sm px-3 py-2 w-full sm:w-auto"
               >
                 {t("app.reports.generate_orders")}
               </Button>
-            </div>
-            {/* download button */}
-            <div className="flex">
+
               <Button
                 onClick={() => {
                   if (ordersDate && ordersDate2)
-                    downloadReport(ordersDate, ordersDate2);
+                    downloadReport(
+                      ordersDate,
+                      ordersDate2,
+                      selectedOrganization?.id
+                    );
                 }}
-                className="cursor-pointer text-sm px-3 py-2 w-full"
+                className="cursor-pointer text-sm px-3 py-2 w-full sm:w-auto"
               >
                 {t("app.reports.download_reports")}
               </Button>

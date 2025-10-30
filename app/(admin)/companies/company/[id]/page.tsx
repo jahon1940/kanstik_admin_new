@@ -10,6 +10,7 @@ import Loading from "@/components/Loading";
 
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import { getDeviceToken } from "@/lib/token";
 
 type Organization = { id: number; name: string };
 
@@ -29,11 +30,18 @@ export default function CompanyPage() {
 
     setLoading(true);
     setError(null);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
     const requestOptions: RequestInit = {
       method: "GET",
+      headers: myHeaders,
       redirect: "follow",
     };
-
     fetch(
       `${BASE_URL}/v1/admins/organizations/${params.id}/stocks`,
       requestOptions

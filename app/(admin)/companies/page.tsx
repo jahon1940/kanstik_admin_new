@@ -9,6 +9,7 @@ import Loading from "@/components/Loading";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePathname } from "next/navigation";
+import { getDeviceToken } from "@/lib/token";
 
 type Organization = { id: number; name: string };
 
@@ -26,8 +27,16 @@ export default function CompaniesPage() {
 
     setLoading(true);
     setError(null);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (getDeviceToken()) {
+      myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+    }
+
     const requestOptions: RequestInit = {
       method: "GET",
+      headers: myHeaders,
       redirect: "follow",
     };
 
