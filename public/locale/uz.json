@@ -418,7 +418,11 @@
     "desktop_only_message": "Ushbu sahifa faqat kompyuter formatda foydalanish uchun mo'ljallangan."
   },
   "common": {
-    "coming_soon": "Tez orada..."
+    "coming_soon": "Tez orada...",
+    "admin_only_access": "Bu sahifadan faqatgina admin foydalana oladi"
+  },
+  "toast": {
+    "success": "Muvaffaqiyatli bajarildi"
   },
   "discount_modal": {
     "select_region": "Kategoriyalarni tanlang",

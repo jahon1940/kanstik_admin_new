@@ -111,11 +111,7 @@ export default function ReportsPage() {
       </div>
 
       <div className="rounded-lg bg-card shadow-lg p-4 md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)]">
-        <div className="mb-6">
-          <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-2">
-            {t("app.reports.select_report_type")}
-          </h2>
-        </div>
+       
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {reportTypes.map((link) => {

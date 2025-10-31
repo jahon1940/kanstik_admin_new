@@ -192,7 +192,7 @@ const ProductsPage = () => {
       setLoading(false);
     }
   };
-  console.log(selectedProduct);
+
 
   useEffect(() => {
     getSearchProducts({});
@@ -243,7 +243,7 @@ const ProductsPage = () => {
               <div className="text-lg mb-2">
                 {t("app.pos.no_products_found")}
               </div>
-              <div className="text-sm">{t("app.pos.try_different_search")}</div>
+              
             </div>
           ) : (
             <>

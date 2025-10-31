@@ -64,8 +64,49 @@ export default function CompaniesPage() {
     };
   };
 
+   const getCurrentUser = () => {
+     let cancelled = false;
+
+     setLoading(true);
+     setError(null);
+     const myHeaders = new Headers();
+     myHeaders.append("Content-Type", "application/json");
+
+     if (getDeviceToken()) {
+       myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+     }
+
+     const requestOptions: RequestInit = {
+       method: "GET",
+       headers: myHeaders,
+       redirect: "follow",
+     };
+
+     fetch(`${BASE_URL}/v1/admins/current`, requestOptions)
+       .then((response) => {
+         return response.json();
+       })
+       .then((result) => {
+         if (!cancelled) {
+         localStorage.setItem("currentUser", JSON.stringify(result))
+         };
+         setLoading(false);
+         setError(null);
+       })
+       .catch((e) => {
+         const msg =
+           e?.response?.data?.message || e?.message || t("toast.network_error");
+         if (!cancelled) setError(msg);
+         toast.error(msg);
+       });
+     return () => {
+       cancelled = true;
+     };
+   };
+
   useEffect(() => {
     getOrganization();
+    getCurrentUser()
   }, []);
 
   const filtered = useMemo(() => {

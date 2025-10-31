@@ -1,6 +1,5 @@
 "use client";
 import Loading from "@/components/Loading";
-import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,9 +8,9 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import { useAlertDialog } from "@/contexts/AlertDialogContext";
-import { ChevronLeft, X } from "lucide-react";
-import PlusIcon from "@/components/icons/plus";
+import { ChevronLeft, Plus, Trash, X } from "lucide-react";
 import DesktopOnlyMessage from "@/components/DesktopOnlyMessage";
+import TrashIcon from "@/components/icons/trash";
 
 export default function KviDiscountPage() {
   const router = useRouter();
@@ -53,17 +52,8 @@ export default function KviDiscountPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Add/Edit Discount Modal state
-  const [isAddDiscountModalOpen, setIsAddDiscountModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-
-
   // Responsive state
   const [isDesktop, setIsDesktop] = useState(true);
-
- 
- 
- 
 
   const getProducts = async (
     searchTerm: string = "",
@@ -237,6 +227,80 @@ export default function KviDiscountPage() {
     };
   };
 
+  const addKviProduct = async (productId: number) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestOptions: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify({
+          product_ids: [productId],
+        }),
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/product-kvi-discounts`,
+        requestOptions
+      );
+
+      if (response.ok) {
+        toast.success(t("toast.success"));
+        // Refresh both lists
+        getProducts(productSearchQuery, productsPagination.currentPage);
+        getKviDiscounts(pagination.currentPage);
+      } else {
+        const result = await response.json();
+        throw new Error(result.message || t("toast.error_occurred"));
+      }
+    } catch (error: any) {
+      const msg = error?.message || t("toast.network_error");
+      toast.error(msg);
+    }
+  };
+  const deleteKviProduct = async (kviProductId: number) => {
+    console.log(kviProductId);
+    
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      if (getDeviceToken()) {
+        myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
+      }
+
+      const requestOptions: RequestInit = {
+        method: "DELETE",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/v1/admins/product-kvi-discounts/${kviProductId}`,
+        requestOptions
+      );
+
+      if (response.ok) {
+        toast.success(t("toast.success"));
+        // Refresh both lists
+        getProducts(productSearchQuery, productsPagination.currentPage);
+        getKviDiscounts(pagination.currentPage);
+      } else {
+        const result = await response.json();
+        throw new Error(result.message || t("toast.error_occurred"));
+      }
+    } catch (error: any) {
+      const msg = error?.message || t("toast.network_error");
+      toast.error(msg);
+    }
+  };
+
   useEffect(() => {
     getKviDiscounts(1);
     getProducts("", 1); // Load initial products
@@ -266,7 +330,6 @@ export default function KviDiscountPage() {
       }
     };
   }, [productSearchTimer]);
-
 
   return (
     <div className="space-y-4">
@@ -372,15 +435,27 @@ export default function KviDiscountPage() {
                         </div>
 
                         {/* Action Buttons */}
-
-                        <button
-                          onClick={() => {
-                            toast("add");
-                          }}
-                          className="bg-primary text-white p-2 rounded hover:bg-primary/80 cursor-pointer"
-                        >
-                          <PlusIcon />
-                        </button>
+                        {org.in_kvi ? (
+                          <button
+                            onClick={() => {
+                              // Note: This might need KVI product ID instead of product ID
+                              // depending on API requirements
+                              deleteKviProduct(org.id);
+                            }}
+                            className="bg-[#ED6C3C] inline-block p-2 rounded-md cursor-pointer"
+                          >
+                            <TrashIcon width={16} height={16} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              addKviProduct(org.id);
+                            }}
+                            className="bg-primary inline-block p-2 rounded-md cursor-pointer text-white"
+                          >
+                            <Plus width={16} height={16} />
+                          </button>
+                        )}
                       </div>
                     ))
                   )}
@@ -493,23 +568,11 @@ export default function KviDiscountPage() {
 
                         <button
                           onClick={() => {
-                            toast("delete");
+                            deleteKviProduct(org.id);
                           }}
-                          className="bg-red-500 text-white p-2 rounded hover:bg-red-600 cursor-pointer"
+                          className="bg-[#ED6C3C] inline-block p-2 rounded-md cursor-pointer"
                         >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            />
-                          </svg>
+                          <TrashIcon width={16} height={16} />
                         </button>
                       </div>
                     ))
@@ -559,8 +622,6 @@ export default function KviDiscountPage() {
         /* mobile and tablet */
         <DesktopOnlyMessage />
       )}
-
-     
     </div>
   );
 }

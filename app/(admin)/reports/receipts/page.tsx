@@ -382,7 +382,7 @@ export default function ReportsPage() {
           ) : (
             <div className="space-y-4">
               {ordersSite?.map((org: any, index: number) => (
-                <StockReport key={org?.id} data={org} formatDate={formatDate} />
+                <StockReport key={index} data={org} formatDate={formatDate} />
               ))}
             </div>
           )}

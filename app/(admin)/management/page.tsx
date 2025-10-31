@@ -4,12 +4,23 @@ import { useTranslation } from "react-i18next";
 import { usePathname } from "next/navigation";
 
 import Link from "next/link";
-import { Package, Users, UserCheck, Percent, Tag, Gift } from "lucide-react";
+import {
+  Package,
+  Users,
+  UserCheck,
+  Percent,
+  Tag,
+  Gift,
+  Shield,
+} from "lucide-react";
+import { getCurrentUser } from "@/lib/token";
 
 export default function ManagementPage() {
   const pathname = usePathname();
   const { t } = useTranslation();
 
+  const currentUser = getCurrentUser();
+  const isAdmin = currentUser?.is_admin;
   const managementLinks = [
     {
       id: "products",
@@ -65,41 +76,48 @@ export default function ManagementPage() {
       </div>
 
       <div className="rounded-lg bg-card shadow-lg p-4 md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)]">
-        <div className="mb-6">
-          <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-2">
-            {t("nav.management")}
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {managementLinks.map((link) => {
-            const IconComponent = link.icon;
-            return (
-              <Link
-                key={link.id}
-                href={{
-                  pathname: link.href,
-                  // query: { name: data?.name },
-                }}
-                className="group bg-white rounded-lg border border-gray-200 p-4 sm:p-6 hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer"
-              >
-                <div className="flex flex-row sm:flex-col gap-3 sm:gap-0 items-center text-left sm:text-center sm:space-y-4">
-                  <div className="w-12 sm:w-16 h-12 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-blue-50 transition-colors flex-shrink-0">
-                    <IconComponent className="w-6 sm:w-8 h-6 sm:h-8 text-gray-500 group-hover:text-blue-600" />
+        {isAdmin ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {managementLinks.map((link) => {
+              const IconComponent = link.icon;
+              return (
+                <Link
+                  key={link.id}
+                  href={{
+                    pathname: link.href,
+                    // query: { name: data?.name },
+                  }}
+                  className="group bg-white rounded-lg border border-gray-200 p-4 sm:p-6 hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer"
+                >
+                  <div className="flex flex-row sm:flex-col gap-3 sm:gap-0 items-center text-left sm:text-center sm:space-y-4">
+                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-blue-50 transition-colors flex-shrink-0">
+                      <IconComponent className="w-6 sm:w-8 h-6 sm:h-8 text-gray-500 group-hover:text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-900 mb-1 text-sm md:text-base">
+                        {link.title}
+                      </h3>
+                      <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
+                        {link.description}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900 mb-1 text-sm md:text-base">
-                      {link.title}
-                    </h3>
-                    <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
-                      {link.description}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="flex flex-col items-center space-y-6">
+              <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Shield className="w-12 h-12 text-gray-400" />
+              </div>
+              <p className="text-lg text-gray-500 font-medium text-center max-w-md">
+                {t("common.admin_only_access")}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
