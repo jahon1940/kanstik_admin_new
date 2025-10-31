@@ -48,6 +48,9 @@ export default function DiscountCategoryPage() {
   });
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [formLoading, setFormLoading] = useState(false);
+  const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(
+    null
+  );
 
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<string | undefined>(undefined);
@@ -306,6 +309,19 @@ export default function DiscountCategoryPage() {
     return () => {
       cancelled = true;
     };
+  };
+
+  const toggleCategoryExpansion = (categoryId: number) => {
+    if (expandedCategoryId === categoryId) {
+      // If already expanded, collapse it
+      setExpandedCategoryId(null);
+      setChildrenCategories(null);
+      setSelectedParentCategory(null);
+    } else {
+      // If not expanded or different category, expand it
+      setExpandedCategoryId(categoryId);
+      getChildrenCategories(categoryId);
+    }
   };
 
   const toggleCategorySelection = (categoryId: number) => {
@@ -705,11 +721,21 @@ export default function DiscountCategoryPage() {
                               </button>
                               <button
                                 onClick={() =>
-                                  getChildrenCategories(category.id)
+                                  toggleCategoryExpansion(category.id)
                                 }
-                                className="cursor-pointer bg-blue-600 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-700"
+                                className={`cursor-pointer text-white px-3 py-1 rounded-md text-xs transition-colors ${
+                                  expandedCategoryId === category.id
+                                    ? "bg-green-600 hover:bg-green-700"
+                                    : "bg-blue-600 hover:bg-blue-700"
+                                }`}
                               >
-                                <ChevronRight/>
+                                <ChevronRight
+                                  className={`transition-transform duration-200 ${
+                                    expandedCategoryId === category.id
+                                      ? "rotate-180"
+                                      : ""
+                                  }`}
+                                />
                               </button>
                             </div>
                           </div>

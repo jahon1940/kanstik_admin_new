@@ -13,7 +13,8 @@
     "auth_error": "Ошибка авторизации",
     "permission_error": "Нет доступа",
     "not_found_error": "Данные не найдены",
-    "server_error": "Ошибка сервера"
+    "server_error": "Ошибка сервера",
+    "success": "Успешно выполнено"
   },
   "nav": {
     "companies": "Компании",
@@ -420,9 +421,6 @@
   "common": {
     "coming_soon": "Скоро...",
     "admin_only_access": "Этой страницей могут пользоваться только администраторы"
-  },
-  "toast": {
-    "success": "Успешно выполнено"
   },
   "discount_modal": {
     "select_region": "Выберите категории",

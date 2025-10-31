@@ -13,7 +13,8 @@
     "auth_error": "Avtorizatsiya xatoligi",
     "permission_error": "Ruxsat yo'q",
     "not_found_error": "Ma'lumot topilmadi",
-    "server_error": "Server xatoligi"
+    "server_error": "Server xatoligi",
+    "success": "Muvaffaqiyatli bajarildi"
   },
   "nav": {
     "companies": "Kompaniyalar",
@@ -421,9 +422,7 @@
     "coming_soon": "Tez orada...",
     "admin_only_access": "Bu sahifadan faqatgina admin foydalana oladi"
   },
-  "toast": {
-    "success": "Muvaffaqiyatli bajarildi"
-  },
+ 
   "discount_modal": {
     "select_region": "Kategoriyalarni tanlang",
     "region": "Hudud",
