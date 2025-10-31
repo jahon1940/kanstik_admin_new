@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { usePathname } from "next/navigation";
 
@@ -19,8 +19,19 @@ export default function ManagementPage() {
   const pathname = usePathname();
   const { t } = useTranslation();
 
-  const currentUser = getCurrentUser();
-  const isAdmin = currentUser?.is_admin;
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window !== "undefined") {
+      const user = getCurrentUser();
+      setCurrentUser(user);
+      setIsAdmin(user?.is_admin === true);
+    }
+    setIsLoading(false);
+  }, []);
   const managementLinks = [
     {
       id: "products",
@@ -76,7 +87,11 @@ export default function ManagementPage() {
       </div>
 
       <div className="rounded-lg bg-card shadow-lg p-4 md:p-6 overflow-auto h-[calc(100vh-10rem)] md:h-[calc(100vh-6rem)]">
-        {isAdmin ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : isAdmin ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {managementLinks.map((link) => {
               const IconComponent = link.icon;
