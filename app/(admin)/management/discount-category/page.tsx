@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 import Image from "next/image";
 import { useAlertDialog } from "@/contexts/AlertDialogContext";
-import { ChevronDownIcon, ChevronLeft, X } from "lucide-react";
+import { ChevronDownIcon, ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -693,7 +693,7 @@ export default function DiscountCategoryPage() {
                                 onClick={() =>
                                   toggleCategorySelection(category.id)
                                 }
-                                className={`cursor-pointer px-3 py-1 rounded text-xs transition-colors ${
+                                className={`cursor-pointer px-3 py-1 rounded-md text-xs transition-colors ${
                                   selectedCategories.includes(category.id)
                                     ? "bg-green-600 text-white hover:bg-green-700"
                                     : "bg-blue-600 text-white hover:bg-blue-700"
@@ -707,9 +707,9 @@ export default function DiscountCategoryPage() {
                                 onClick={() =>
                                   getChildrenCategories(category.id)
                                 }
-                                className="cursor-pointer bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700"
+                                className="cursor-pointer bg-blue-600 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-700"
                               >
-                                {t("discount_modal.show")}
+                                <ChevronRight/>
                               </button>
                             </div>
                           </div>
@@ -749,7 +749,7 @@ export default function DiscountCategoryPage() {
                                 onClick={() =>
                                   toggleCategorySelection(childCategory.id)
                                 }
-                                className={`cursor-pointer px-3 py-1 rounded text-xs transition-colors ${
+                                className={`cursor-pointer px-3 py-1 rounded-md text-xs transition-colors ${
                                   selectedCategories.includes(childCategory.id)
                                     ? "bg-green-600 text-white hover:bg-green-700"
                                     : "bg-blue-600 text-white hover:bg-blue-700"
