@@ -160,7 +160,6 @@ export default function DiscountCategoryPage() {
       if (getDeviceToken()) {
         myHeaders.append("Device-Token", `Kanstik ${getDeviceToken()}`);
       }
-
       const requestOptions: RequestInit = {
         method: "DELETE",
         headers: myHeaders,
