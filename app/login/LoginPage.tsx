@@ -5,10 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/api";
 import { setDeviceToken } from "@/lib/token";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 import Image from "next/image";
 
 import { useTranslation } from "react-i18next";
+import SettingsIcon from "@/components/icons/setting";
 
 type LoginResponse = {
   data?: {
@@ -25,6 +26,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Company settings modal state
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [settingsLoading, setSettingsLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -82,11 +88,38 @@ export default function LoginPage() {
     }
   }
 
+  const saveCompanySettings = async () => {
+    if (!companyName.trim()) {
+      toast.error(t("settings.company_name_required"));
+      return;
+    }
+
+    setSettingsLoading(true);
+    try {
+      // Here you would typically save to localStorage or make an API call
+      localStorage.setItem("companyName", companyName.toLowerCase());
+      toast.success(t("settings.company_saved_success"));
+      setIsSettingsModalOpen(false);
+      setCompanyName("");
+    } catch (error) {
+      toast.error(t("toast.error_occurred"));
+    } finally {
+      setSettingsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Side - Login Form */}
-      <div className="flex-1 md:flex-3 flex items-center justify-center bg-white px-4 md:px-8 py-8 md:py-0">
+      <div className="flex-1 md:flex-3 flex items-center justify-center bg-white px-4 md:px-8 py-8 md:py-0 relative">
         <div className="w-full max-w-md">
+          {/* select company */}
+          <div
+            className="absolute right-20 top-10 cursor-pointer"
+            onClick={() => setIsSettingsModalOpen(true)}
+          >
+            <SettingsIcon width={25} height={25} />
+          </div>
           {/* Logo */}
           <div className="text-center mb-6 md:mb-8">
             <div className="inline-block">
@@ -250,6 +283,81 @@ export default function LoginPage() {
           />
         </div>
       </div>
+
+      {/* Company Settings Modal */}
+      {isSettingsModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsSettingsModalOpen(false);
+              setCompanyName("");
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-2xl w-full max-w-md">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {t("settings.company_settings")}
+              </h2>
+              <button
+                onClick={() => {
+                  setIsSettingsModalOpen(false);
+                  setCompanyName("");
+                }}
+                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-[#ed6b3c68] text-[#ff4400] p-2 cursor-pointer"
+              >
+                <X className="h-4 w-4 " />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t("settings.company_name_placeholder")}
+                  </label>
+                  <input
+                    type="text"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder={t("settings.company_name_input")}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={settingsLoading}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex justify-end gap-3 p-6 border-t">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSettingsModalOpen(false);
+                  setCompanyName("");
+                }}
+                disabled={settingsLoading}
+                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                {t("alert.cancel")}
+              </button>
+              <button
+                type="button"
+                onClick={saveCompanySettings}
+                disabled={settingsLoading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {settingsLoading
+                  ? t("alert.save_confirm") + "..."
+                  : t("alert.save_confirm")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

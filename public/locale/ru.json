@@ -386,7 +386,12 @@
   "settings": {
     "language": "Язык",
     "appearance": "Внешний вид",
-    "appearance_desc": "Настройка внешнего вида приложения (в следующих обновлениях)"
+    "appearance_desc": "Настройка внешнего вида приложения (в следующих обновлениях)",
+    "company_settings": "Настройки компании",
+    "company_name_input": "Название компании...",
+    "company_name_placeholder": "Введите название компании строчными буквами",
+    "company_name_required": "Название компании обязательно",
+    "company_saved_success": "Название компании успешно сохранено"
   },
   "discount": {
     "form": {

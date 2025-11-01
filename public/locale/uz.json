@@ -386,7 +386,12 @@
   "settings": {
     "language": "Til",
     "appearance": "Ko'rinish",
-    "appearance_desc": "Dastur ko'rinishini sozlash (keyingi yangilanishlarda)"
+    "appearance_desc": "Dastur ko'rinishini sozlash (keyingi yangilanishlarda)",
+    "company_settings": "Kompaniya sozlamalari",
+    "company_name_input": "Kompaniya nomi",
+    "company_name_placeholder": "Kompaniya nomini kichik harflarda kiriting",
+    "company_name_required": "Kompaniya nomi majburiy",
+    "company_saved_success": "Kompaniya nomi muvaffaqiyatli saqlandi"
   },
   "discount": {
     "form": {
@@ -422,7 +427,7 @@
     "coming_soon": "Tez orada...",
     "admin_only_access": "Bu sahifadan faqatgina admin foydalana oladi"
   },
- 
+
   "discount_modal": {
     "select_region": "Kategoriyalarni tanlang",
     "region": "Hudud",
